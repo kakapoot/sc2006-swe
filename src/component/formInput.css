@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+.formInput {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+}
+
+input {
+    padding: 8px 11px;
+    margin: 10px 0px;
+    border-radius: 6px;
+    border: 1px solid #B3B6B6;
+}
+
+label {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 30px;
+    margin: 20px;
+
+    color: #181B1A;
+}
+
+span {
+    font-size: 12px;
+    padding: 3px;
+    color: red;
+    display: none;
+}
+
+input:invalid ~ span {
+    display: block;
+}

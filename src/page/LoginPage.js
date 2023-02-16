@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import LoginImage from '../assets/login_image.png'
 
-import './loginPage.css';
+import './styles.css';
 import FormInput from '../component/FormInput';
 
 const LoginPage = () => {
@@ -42,7 +42,7 @@ const LoginPage = () => {
 
     return (
         <div className="loginPage">
-            <form className="loginForm" onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
                 <h1>Login</h1>
                 {inputs.map((input)=> (
                     <FormInput className= "loginFormInput"
@@ -53,7 +53,7 @@ const LoginPage = () => {
                 ))}
 
                 <button className="loginButton">LOGIN</button>
-                <button className="registerButton">SIGN UP</button>
+                <button className="signupButton">SIGN UP</button>
             </form>
             <img src={LoginImage} alt="login_image" className="loginImage" />
         </div>

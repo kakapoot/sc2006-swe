@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+.register-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  background-color: #503E9D;
+}
+
+.register-form-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 760px;
+  width: 940px;
+  background-color: #FFFFFF;
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  margin-left: 120px;
+}
+
+.register-button {
+  width: 30%;
+  height: 50px;
+  padding: 10px;
+  border-color: #FFFFFF;
+  border-radius: 10px;
+  border-style: solid;
+  background-color: #FB6D3A;
+  margin-top: 15px;
+  margin-bottom: 30px;
+  margin-left: -90px;
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-size: 16px;
+
+  color: #FFFFFF;
+
+  cursor: pointer;
+}
+
+.login-image {
+  height: 760px;
+  margin-left: 80px;
+}
+
+h1 {
+  text-align: left;
+  margin-left: 120px;
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 42px;
+
+  color: #181B1A;
+}
+
+label {
+  text-align: left;
+  padding: 0px 0px;
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 30px;
+
+  color: #181B1A;
+}
+
+input {
+  padding: 8px 11px;
+  margin: 10px 0px;
+  border-radius: 6px;
+  border: 1px solid #B3B6B6;
+}

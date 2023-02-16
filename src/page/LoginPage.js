@@ -1,63 +1,60 @@
 import React from 'react';
-import { useState } from 'react';
-import LoginImage from '../assets/login_image.png'
+import { useNavigate } from 'react-router-dom';
+//import { useState } from 'react';
+import LoginImage from '../assets/login_image.png';
 
-import './styles.css';
-import FormInput from '../component/FormInput';
+import './loginPage.css';
 
 const LoginPage = () => {
-    const [values, setValues] = useState({
-        username:"",
-        password:"",
-    })
 
-    const inputs = [
-        {
-            id:1,
-            name:"username",
-            type:"text",
-            placeholder:"Username",
-            errorMessage: "Invalid username!",
-            label:"Username",
-        },
-        {
-            id:2,
-            name:"password",
-            type:"password",
-            placeholder:"Password",
-            errorMessage:"Invalid password",
-            label:"Password",
-        }
-    ]
+  const navigate = useNavigate();
+
+  return (
+    <div className="login-page">
+      <div className="login-form-container">
+        <form>
+          <div className="login-form">
+            <h1>Login</h1>
+            <div className="input-field">
+              <label>Username</label>
+              <input
+                type="text"
+                name="username"
+                placeholder="Username" />
+            </div>
+            <div className="input-field">
+              <label>Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Password" />
+            </div>
+            <button className="login-button">LOGIN</button>
+            <button className="signup-button" onClick={() => navigate('/register/')}>SIGN UP</button>
+          </div>
+        </form>
+        <img src={LoginImage} alt="login-img" className="login-image" />
+      </div>
+    </div>
+  );
+}
+
+export default LoginPage
+
+
+/*
+    const [values, setValues] = useState({
+        username: "",
+        password: "",
+    })
 
     const handleSubmit = (e) => {
         e.preventDefault();
     }
 
     const onChange = (e) => {
-        setValues({...values, [e.target.name]: e.target.value})
+        setValues({ ...values, [e.target.name]: e.target.value })
     }
 
     console.log(values);
-
-    return (
-        <div className="loginPage">
-            <form onSubmit={handleSubmit}>
-                <h1>Login</h1>
-                {inputs.map((input)=> (
-                    <FormInput className= "loginFormInput"
-                        key={input.id} 
-                        {...input} 
-                        value={values[input.name]}
-                        onChange={onChange}/>
-                ))}
-
-                <button className="loginButton">LOGIN</button>
-                <button className="signupButton">SIGN UP</button>
-            </form>
-            <img src={LoginImage} alt="login_image" className="loginImage" />
-        </div>
-    )
-}
-
-export default LoginPage
+    */

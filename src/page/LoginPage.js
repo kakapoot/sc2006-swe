@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import LoginImage from '../assets/login_image.png';
 
 import './loginPage.css';
@@ -23,14 +23,14 @@ const LoginPage = () => {
     setErrors(validate(values));
     setIsSubmit(true);
   }
-
+  /*
   useEffect(() => {
     console.log(errors);
     if (Object.keys(errors).length === 0 && isSubmit) {
       console.log(values);
     }
   }, [errors]);
-
+  */
   const validate = (values) => {
     const errors = {};
     if (!values.username) {

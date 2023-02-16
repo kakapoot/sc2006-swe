@@ -2,30 +2,33 @@ import React from 'react';
 import { useState } from 'react';
 import LoginImage from '../assets/login_image.png'
 
-import './loginPage.css';
+import './registerPage.css';
 import FormInput from '../component/FormInput';
 
-const LoginPage = () => {
+const RegisterPage = () => {
     const [values, setValues] = useState({
+        name:"",
         username:"",
+        email:"",
         password:"",
+        confirmPassword:"",
     })
 
     const inputs = [
         {
             id:1,
-            name:"username",
+            name:"name",
             type:"text",
-            placeholder:"Username",
-            errorMessage: "Invalid username!",
-            label:"Username",
+            placeholder:"Name",
+            errorMessage: "Please input",
+            label:"Name",
         },
         {
             id:2,
-            name:"password",
-            type:"password",
-            placeholder:"Password",
-            errorMessage:"Invalid password",
+            name:"username",
+            type:"text",
+            placeholder:"Username",
+            errorMessage:"",
             label:"Password",
         }
     ]
@@ -43,7 +46,7 @@ const LoginPage = () => {
     return (
         <div className="loginPage">
             <form className="loginForm" onSubmit={handleSubmit}>
-                <h1>Login</h1>
+                <h1>Create your account</h1>
                 {inputs.map((input)=> (
                     <FormInput className= "loginFormInput"
                         key={input.id} 
@@ -60,4 +63,4 @@ const LoginPage = () => {
     )
 }
 
-export default LoginPage
+export default RegisterPage

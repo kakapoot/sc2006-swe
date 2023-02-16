@@ -3,7 +3,7 @@
 .formInput {
     display: flex;
     flex-direction: column;
-    width: 400px;
+    width: 450px;
 }
 
 input {
@@ -15,7 +15,7 @@ input {
 
 label {
     position: relative;
-    left: -60px;
+    left: -85px;
     top: 220px;
     font-family: 'Poppins';
     font-style: normal;

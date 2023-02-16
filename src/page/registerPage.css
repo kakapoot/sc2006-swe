@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins');
 
-.loginPage {
+.registerPage {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -8,7 +8,7 @@
     background-color: #503E9D;
 }
 
-.loginForm {
+.registerForm {
     position: absolute;
     width: 662px;
     height: 950px;
@@ -18,7 +18,7 @@
     padding: 0px 60px;
 }
 
-.loginFormInput {
+.registerFormInput {
     position: relative;
     left: 85px;
     top: 200px;

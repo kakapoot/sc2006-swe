@@ -20,7 +20,7 @@ const RegisterPage = () => {
             name:"name",
             type:"text",
             placeholder:"Name",
-            errorMessage: "Please input",
+            errorMessage: "Name required!",
             label:"Name",
         },
         {
@@ -30,6 +30,21 @@ const RegisterPage = () => {
             placeholder:"Username",
             errorMessage:"",
             label:"Password",
+        },
+        {
+            id:3,
+            name:"email",
+            type:"text",
+            placeholder:"Email",
+            errorMessage:["Email required"],
+            label:"Email" 
+        },
+        {
+            id:4,
+            name:"password",
+            type:"password",
+            placeholder:"Password",
+            errorMessage: "Password required",
         }
     ]
 
@@ -44,8 +59,8 @@ const RegisterPage = () => {
     console.log(values);
 
     return (
-        <div className="loginPage">
-            <form className="loginForm" onSubmit={handleSubmit}>
+        <div className="registerPage">
+            <form className="registerForm" onSubmit={handleSubmit}>
                 <h1>Create your account</h1>
                 {inputs.map((input)=> (
                     <FormInput className= "loginFormInput"

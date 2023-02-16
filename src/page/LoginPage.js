@@ -53,7 +53,7 @@ const LoginPage = () => {
                 ))}
 
                 <button className="loginButton">LOGIN</button>
-                <button className="registerButton">REGISTER</button>
+                <button className="registerButton">SIGN UP</button>
             </form>
             <img src={LoginImage} alt="login_image" className="loginImage" />
         </div>

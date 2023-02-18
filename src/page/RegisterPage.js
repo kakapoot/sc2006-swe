@@ -64,16 +64,16 @@ const RegisterPage = () => {
   };
 
   const navigate = useNavigate();
-  /*to shift navigator*/
+  /*navigator to shift to an email validator in final build*/
   return (
     <div className="register-page">
-      {Object.keys(errors).length === 0 && isSubmit ? (navigate('/')) : null}
+      {Object.keys(errors).length === 0 && isSubmit ? (navigate('/create_profile')) : null}
       <div className="register-form-container">
         <form onSubmit={handleSubmit}>
           <div className="register-form">
-            <h1>Create your Account</h1>
+            <h1 className="register-heading">Create your Account</h1>
             <div className="input-field">
-              <label>Name</label>
+              <label className="register-label">Name</label>
               <input
                 type="text"
                 name="fullname"
@@ -83,7 +83,7 @@ const RegisterPage = () => {
             </div>
             <p>{errors.fullname}</p>
             <div className="input-field">
-              <label>Username</label>
+              <label className="register-label">Username</label>
               <input
                 type="text"
                 name="username"
@@ -93,7 +93,7 @@ const RegisterPage = () => {
             </div>
             <p>{errors.username}</p>
             <div className="input-field">
-              <label>Email</label>
+              <label className="register-label">Email</label>
               <input
                 type="email"
                 name="email"
@@ -103,7 +103,7 @@ const RegisterPage = () => {
             </div>
             <p>{errors.email}</p>
             <div className="input-field">
-              <label>Password</label>
+              <label className="register-label">Password</label>
               <input
                 type="password"
                 name="password"
@@ -113,7 +113,7 @@ const RegisterPage = () => {
             </div>
             <p>{errors.password}</p>
             <div className="input-field">
-              <label>Confirm Password</label>
+              <label className="register-label">Confirm Password</label>
               <input
                 type="password"
                 name="confirmPassword"

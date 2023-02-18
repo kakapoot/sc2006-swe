@@ -3,6 +3,7 @@ import {Route, BrowserRouter, Routes} from 'react-router-dom';
 
 import LoginPage from './page/LoginPage';
 import RegisterPage from './page/RegisterPage';
+import ProfileCreationPage from './page/ProfileCreationPage';
 import './App.css';
 
 const App = () => {
@@ -12,6 +13,7 @@ const App = () => {
         <Routes>
           <Route path='/' element={<LoginPage />}/>
           <Route path='/register/' element={<RegisterPage />}/>
+          <Route path='/create_profile' element={<ProfileCreationPage />}/>
         </Routes>
       </BrowserRouter>   
     </div>

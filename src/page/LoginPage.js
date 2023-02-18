@@ -12,7 +12,7 @@ const LoginPage = () => {
     password: "",
   })
   const [errors, setErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
+  //const [isSubmit, setIsSubmit] = useState(false);
 
   const handleChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value });
@@ -21,7 +21,7 @@ const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors(validate(values));
-    setIsSubmit(true);
+    //setIsSubmit(true);
   }
   /*
   useEffect(() => {
@@ -47,14 +47,12 @@ const LoginPage = () => {
 
   return (
     <div className="login-page">
-      {Object.keys(errors).length === 0 && isSubmit ? (<div>placeholder for sign in success</div>) : null}
-      <pre>{JSON.stringify(values, undefined, 2)} FOR DEBUG</pre>
       <div className="login-form-container">
         <form onSubmit={handleSubmit}>
           <div className="login-form">
-            <h1>Login</h1>
+            <h1 className="login-heading">Login</h1>
             <div className="input-field">
-              <label>Username</label>
+              <label className="login-label">Username</label>
               <input
                 type="text"
                 name="username"
@@ -64,7 +62,7 @@ const LoginPage = () => {
             </div>
             <p>{errors.username}</p>
             <div className="input-field">
-              <label>Password</label>
+              <label className="login-label">Password</label>
               <input
                 type="password"
                 name="password"
@@ -87,12 +85,6 @@ export default LoginPage
 
 
 /*
-    const [values, setValues] = useState({
-        username: "",
-        password: "",
-    })
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-    }
+    {Object.keys(errors).length === 0 && isSubmit ? (<div>placeholder for sign in success</div>) : null}
+      <pre>{JSON.stringify(values, undefined, 2)} FOR DEBUG</pre>
     */

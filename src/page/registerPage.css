@@ -14,7 +14,7 @@
   align-items: center;
   justify-content: center;
   height: 760px;
-  width: 940px;
+  width: 960px;
   background-color: #FFFFFF;
 }
 
@@ -48,10 +48,10 @@
 
 .login-image {
   height: 760px;
-  margin-left: 80px;
+  margin-left: 75px;
 }
 
-h1 {
+.register-heading {
   text-align: left;
   margin-left: 120px;
   font-family: 'Poppins';
@@ -63,7 +63,7 @@ h1 {
   color: #181B1A;
 }
 
-label {
+.register-label {
   text-align: left;
   padding: 0px 0px;
 

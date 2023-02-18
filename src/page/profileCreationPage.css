@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+.create-profile-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  background-color: #503E9D;
+}
+
+.create-profile-form-container {
+  display: flex;
+  align-items: top;
+  justify-content: left;
+  height: 760px;
+  width: 960px;
+  background-color: #FFFFFF;
+}
+
+.create-profile-heading {
+  text-align: left;
+  margin-top: 40px;
+  margin-left: 100px;
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 42px;
+
+  color: #181B1A;
+}

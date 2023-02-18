@@ -1,0 +1,57 @@
+{% extends "flasherror.html" %}
+{% block body %}
+
+    <head>
+        <title>Index page</title>
+    </head>
+    <body>
+        <form action="{{url_for("show")}}" method="POST" enctype="multipart/form-data">
+            Username: <input type="text" name="username"> <br><br>
+			Email: <input type="text" name="email"> <br><br>
+            Name: <input type="text" name="name"><br><br>
+			Age:<input type="integer" name="age"> <br><br>
+			Gender: <br><br>
+			<input type="radio" name="gender" value="M" required> Male
+			<input type="radio" name="gender" value="F" required> Female
+			<br><br>
+			School:<input type="text" name="school"> <br> <br>
+			Study Interests:<br>
+			<input type="checkbox" name="SI" value="Languages">
+			<label for="Languages"> Languages</label><br>
+			<input type="checkbox" name="SI" value="Literature">
+			<label for="Literature"> Literature</label><br>
+			<input type="checkbox" name="SI" value="Communication">
+			<label for="Communication"> Communication</label>
+			<input type="checkbox" name="SI" value="Mathematics">
+			<label for="Mathematics"> Mathematics</label>
+			<input type="checkbox" name="SI" value="Philosophy">
+			<label for="Philosophy"> Philosophy</label>
+			<input type="checkbox" name="SI" value="Social Sciences">
+			<label for="Social Sciences"> Social Sciences</label>
+			<br><br>
+			Education Level: <br>
+			<input type="radio" name="educationLevel" value="Secondary" required> Secondary
+			<input type="radio" name="educationLevel" value="Post-Secondary" required> Post-Secondary
+			<input type="radio" name="educationLevel" value="University" required> University
+			<input type="radio" name="educationLevel" value="Masters" required> Masters
+			<input type="radio" name="educationLevel" value="PhD" required> PhD
+			<br><br>
+			Learning Style: <br>
+			<input type="checkbox" name="LS" value="visual">
+			<label for="visual"> Visual</label><br>
+			<input type="checkbox" name="LS" value="Auditory">
+			<label for="Auditory"> Auditory</label><br>
+			<input type="checkbox" name="LS" value="Read/Write">
+			<label for="Read/Write"> Read/Write</label>
+			<input type="checkbox" name="LS" value="Kinaesthetic">
+			<label for="Kinaesthetic"> Kinaesthetic</label>
+			<br><br>
+			About Me: <input type="text" name="aboutMe"> <br> <br>
+			
+			Picture: <input type="File" name="profilePic"><br><br>
+		
+            <input type="submit" value="Submit!">
+        </form>
+    </body>
+
+{% endblock %}

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
@@ -14,11 +13,12 @@ const ProfileCreationPage = () => {
           <div className="create-profile-form">
             <h1 className="create-profile-heading">Tell us more about yourself</h1>
             <label>Gender</label>
-            <DropdownButton id="dropdown-basic-button" title="Dropdown button">
-              <Dropdown.Item>Male</Dropdown.Item>
-              <Dropdown.Item>Female</Dropdown.Item>
-              <Dropdown.Item>Non-binary</Dropdown.Item>
-            </DropdownButton>
+            <select>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="non-binary">Non-binary</option>
+            </select>
+            <label>Birthday</label>
           </div>
         </form>
       </div>

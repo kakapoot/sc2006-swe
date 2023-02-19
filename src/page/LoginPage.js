@@ -7,6 +7,8 @@ import './loginPage.css';
 
 const LoginPage = () => {
 
+  const navigate = useNavigate();
+  
   const [values, setValues] = useState({
     username: "",
     password: "",
@@ -42,8 +44,6 @@ const LoginPage = () => {
 
     return errors;
   };
-
-  const navigate = useNavigate();
 
   return (
     <div className="login-page">

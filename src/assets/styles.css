@@ -1,0 +1,385 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  background-color: #503E9D;
+}
+
+.login-form-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 760px;
+  width: 960px;
+  background-color: #FFFFFF;
+}
+
+.login-image {
+  height: 760px;
+  margin-left: 75px;
+}
+
+.login-heading {
+  text-align: left;
+  margin-left: 120px;
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 42px;
+
+  color: #181B1A;
+}
+
+.login-label {
+  text-align: left;
+  padding: 0px 0px;
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 30px;
+
+  color: #181B1A;
+}
+
+.register-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  background-color: #503E9D;
+}
+
+.register-form-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 760px;
+  width: 960px;
+  background-color: #FFFFFF;
+}
+
+.register-heading {
+  text-align: left;
+  margin-left: 120px;
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 42px;
+
+  color: #181B1A;
+}
+
+.register-label {
+  text-align: left;
+  padding: 0px 0px;
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 30px;
+
+  color: #181B1A;
+}
+
+.create-profile-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  background-color: #503E9D;
+}
+
+.create-profile-form-container {
+  display: flex;
+  align-items: top;
+  justify-content: left;
+  height: 760px;
+  width: 960px;
+  background-color: #FFFFFF;
+}
+
+.create-profile-heading {
+  text-align: left;
+  margin-top: 40px;
+  margin-left: 100px;
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 42px;
+
+  color: #181B1A;
+}
+
+.create-profile-label {
+  text-align: left;
+  padding: 0px 0px;
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 30px;
+
+  color: #181B1A;
+}
+
+.create-profile-input-container {
+  display: flex;
+  flex-direction: column;
+  width: 370px;
+  margin-left: 100px;
+}
+
+.create-profile-input-error {
+  text-align: left;
+  margin-left: 100px;
+  margin-top: 0px;
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-size: 12px;
+
+  color: #FF0000;
+}
+
+.create-profile-input-error-gender {
+  text-align: left;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 0px;
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-size: 12px;
+
+  color: #FF0000;
+}
+
+.create-profile-input-error-birthday {
+  text-align: left;
+  margin-left: 0px;
+  margin-top: 0px;
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-size: 12px;
+
+  color: #FF0000;
+}
+
+.left-to-right-block {
+  text-align: left;
+  display: flex;
+  flex-direction: row;
+}
+
+.create-profile-cb-button-container {
+  width: 750px;
+}
+
+.create-profile-cb-button {
+  margin: 5px 8px 5px 0px;
+  background-color: #ECECED;
+  border-radius: 4px;
+  border: 1px solid #fff;
+  overflow: hidden;
+  float: left;
+}
+
+.create-profile-cb-label {
+  height: 20px;
+}
+
+.create-profile-cb-label-span {
+  text-align: center;
+  padding: 2px 5px;
+  display: block;
+  
+  font-family: "Poppins";
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.create-profile-cb-label-input {
+  position: absolute;
+  display: none;
+  color: #fff !important;
+}
+
+.create-profile-cb-label-input + .create-profile-cb-label-span{color: #000000;}
+
+.create-profile-cb-label-input:checked + .create-profile-cb-label-span {
+  color: #FFFFFF;
+  background-color: #FB6D3A;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  margin-left: 120px;
+}
+
+.input-container-dropdown-gender {
+  display: flex;
+  flex-direction: column;
+  width: 140px;
+  margin-left: 100px;
+}
+
+.input-container-dropdown-birthday {
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  margin-left: 100px;
+}
+
+.input-field {
+  padding: 8px 10px;
+  margin: 10px 0px;
+  border-radius: 6px;
+  border: 1px solid #B3B6B6;
+}
+
+.input-error {
+  text-align: left;
+  margin-left: 120px;
+  margin-top: 0px;
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-size: 12px;
+
+  color: #FF0000;
+}
+
+.input-gender {
+  padding: 8px 10px;
+  margin: 10px 0px;
+  border-radius: 6px;
+  border: 1px solid #B3B6B6;
+
+  font-family: "Poppins";
+  margin: 5px 0px 10px 0px;
+}
+
+.input-gender-option {
+  font-family: 'Poppins';
+}
+
+.input-birthday {
+  padding: 8px 10px;
+  margin: 10px 0px;
+  border-radius: 6px;
+  border: 1px solid #B3B6B6;
+  
+  font-family: "Poppins";
+  margin: 5px 0px 10px 0px;
+}
+
+.text-area-box {
+  padding: 8px 10px;
+  margin: 10px 0px;
+  border-radius: 6px;
+  border: 1px solid #B3B6B6;
+
+  resize: none;
+  width: 720px;
+  height: 60px;
+  font-family: "Poppins";
+}
+
+.login-button {
+  width: 30%;
+  height: 50px;
+  padding: 10px;
+  border-color: #FFFFFF;
+  border-radius: 10px;
+  border-style: solid;
+  background-color: #503E9D;
+  margin-top: 40px;
+  margin-bottom: 30px;
+  margin-left: 118px;
+  margin-right: 70px;
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-size: 16px;
+
+  color: #FFFFFF;
+
+  cursor: pointer;
+}
+
+.signup-button {
+  width: 30%;
+  height: 50px;
+  padding: 10px;
+  border-color: #FFFFFF;
+  border-radius: 10px;
+  border-style: solid;
+  background-color: #FB6D3A;
+  margin-top: 15px;
+  margin-bottom: 30px;
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-size: 16px;
+
+  color: #FFFFFF;
+
+  cursor: pointer;
+}
+
+.register-button {
+  width: 30%;
+  height: 50px;
+  padding: 10px;
+  border-color: #FFFFFF;
+  border-radius: 10px;
+  border-style: solid;
+  background-color: #FB6D3A;
+  margin-top: 15px;
+  margin-bottom: 30px;
+  margin-left: -90px;
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-size: 16px;
+
+  color: #FFFFFF;
+
+  cursor: pointer;
+}
+
+.create-profile-finish-button {
+  width: 30%;
+  height: 50px;
+  padding: 10px;
+  border-color: #FFFFFF;
+  border-radius: 10px;
+  border-style: solid;
+  background-color: #503E9D;
+  margin-top: 30px;
+  margin-left: -150px;
+
+  font-family: 'Poppins';
+  font-style: normal;
+  font-size: 16px;
+
+  color: #FFFFFF;
+
+  cursor: pointer;
+}

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import LoginImage from '../assets/login_image.png';
 
-import './loginPage.css';
+import '../assets/styles.css';
 
 const LoginPage = () => {
 
@@ -51,26 +51,26 @@ const LoginPage = () => {
         <form onSubmit={handleSubmit}>
           <div className="login-form">
             <h1 className="login-heading">Login</h1>
-            <div className="input-field">
+            <div className="input-container">
               <label className="login-label">Username</label>
-              <input
+              <input className="input-field"
                 type="text"
                 name="username"
                 placeholder="Username" 
                 value={setValues.username}
                 onChange={handleChange}/>
             </div>
-            <p>{errors.username}</p>
-            <div className="input-field">
+            <p className="input-error">{errors.username}</p>
+            <div className="input-container">
               <label className="login-label">Password</label>
-              <input
+              <input className="input-field"
                 type="password"
                 name="password"
                 placeholder="Password" 
                 value={setValues.password}
                 onChange={handleChange}/>
             </div>
-            <p>{errors.password}</p>
+            <p className="input-error">{errors.password}</p>
             <button className="login-button">LOGIN</button>
             <button className="signup-button" onClick={() => navigate('/register/')}>SIGN UP</button>
           </div>

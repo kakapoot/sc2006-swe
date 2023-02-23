@@ -105,21 +105,21 @@ const ProfileCreationPage = () => {
               <label className="create-profile-label">Subject</label>
               <div className="create-profile-cb-button-container">
                 <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
-                      <span className="create-profile-cb-label-span">MATHEMATICS</span>
+                  <label for="mathematics" className="create-profile-cb-label">
+                    <input type="checkbox" className="create-profile-cb-label-input" id="mathematics" name="subject" value="mathematics"/>
+                    <span className="create-profile-cb-label-span">MATHEMATICS</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
                     <input type="checkbox" className="create-profile-cb-label-input"/>
-                      <span className="create-profile-cb-label-span">PHYSICS</span>
+                    <span className="create-profile-cb-label-span">PHYSICS</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
                     <input type="checkbox" className="create-profile-cb-label-input"/>
-                      <span className="create-profile-cb-label-span">BIOLOGY</span>
+                    <span className="create-profile-cb-label-span">BIOLOGY</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">

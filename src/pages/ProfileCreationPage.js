@@ -21,6 +21,27 @@ const ProfileCreationPage = () => {
   const [errors, setErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
 
+  const updateArray = (name) => {
+    var markedCheckbox = document.getElementsByName(name);
+    for (var checkbox of markedCheckbox) {
+      if (checkbox.checked && name === 'subject') {
+        values.subject.push(checkbox.value);
+      } else if (!checkbox.checked && name === 'subject') {
+        values.subject.pop(checkbox.value);
+      }
+      if (checkbox.checked && name === 'educationLevel') {
+        values.educationLevel.push(checkbox.value);
+      } else if (!checkbox.checked && name === 'educationLevel') {
+        values.educationLevel.pop(checkbox.value);
+      }
+      if (checkbox.checked && name === 'learningStyle') {
+        values.learningStyle.push(checkbox.value);
+      } else if (!checkbox.checked && name === 'learningStyle') {
+        values.learningStyle.pop(checkbox.value);
+      }
+    }
+  }
+
   const handleChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value });
   }
@@ -48,6 +69,15 @@ const ProfileCreationPage = () => {
     }
     if (!values.organization) {
       errors.organization = "Organization is required!";
+    }
+    if(values.subject.length === 0) {
+      errors.subject = "Please select at least one subject!"
+    }
+    if(values.educationLevel.length === 0) {
+      errors.educationLevel = "Please select your education level!"
+    }
+    if(values.learningStyle.length === 0) {
+      errors.learningStyle = "Please select your preferred learning style!"
     }
 
     return errors;
@@ -105,149 +135,152 @@ const ProfileCreationPage = () => {
               <label className="create-profile-label">Subject</label>
               <div className="create-profile-cb-button-container">
                 <div className="create-profile-cb-button">
-                  <label for="mathematics" className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" id="mathematics" name="subject" value="mathematics"/>
+                  <label className="create-profile-cb-label">
+                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="mathematics"/>
                     <span className="create-profile-cb-label-span">MATHEMATICS</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="physics"/>
                     <span className="create-profile-cb-label-span">PHYSICS</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="biology"/>
                     <span className="create-profile-cb-label-span">BIOLOGY</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="chemistry"/>
                       <span className="create-profile-cb-label-span">CHEMISTRY</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="english"/>
                       <span className="create-profile-cb-label-span">ENGLISH</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="art"/>
                       <span className="create-profile-cb-label-span">ART</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="music"/>
                       <span className="create-profile-cb-label-span">MUSIC</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="geography"/>
                       <span className="create-profile-cb-label-span">GEOGRAPHY</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="history"/>
                       <span className="create-profile-cb-label-span">HISTORY</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="computer science"/>
                       <span className="create-profile-cb-label-span">COMPUTER SCIENCE</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="business"/>
                       <span className="create-profile-cb-label-span">BUSINESS</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="engineering"/>
                       <span className="create-profile-cb-label-span">ENGINEERING</span>
                   </label>
                 </div>
               </div>
             </div>
+            <p className="create-profile-input-error">{errors.subject}</p> 
             <div className="create-profile-input-container">
               <label className="create-profile-label">Education Level</label>
               <div className="create-profile-cb-button-container">
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="educationLevel" value="secondary"/>
                       <span className="create-profile-cb-label-span">SECONDARY</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="educationLevel" value="polytechnic"/>
                       <span className="create-profile-cb-label-span">POLYTECHNIC</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="educationLevel" value="pre-university / jc"/>
                       <span className="create-profile-cb-label-span">PRE-UNIVERSITY / JC</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="educationLevel" value="university"/>
                       <span className="create-profile-cb-label-span">UNIVERSITY</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="educationLevel" value="post-graduate"/>
                       <span className="create-profile-cb-label-span">POST-GRADUATE</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="educationLevel" value="doctoral"/>
                       <span className="create-profile-cb-label-span">DOCTORAL</span>
                   </label>
                 </div>
               </div>
             </div>
+            <p className="create-profile-input-error">{errors.educationLevel}</p> 
             <div className="create-profile-input-container">
               <label className="create-profile-label">Learning Style</label>
               <div className="create-profile-cb-button-container">
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="learningStyle" value="visual"/>
                       <span className="create-profile-cb-label-span">VISUAL</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="learningStyle" value="auditory"/>
                       <span className="create-profile-cb-label-span">AUDITORY</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="learningStyle" value="reading / writing"/>
                       <span className="create-profile-cb-label-span">READING / WRITING</span>
                   </label>
                 </div>
                 <div className="create-profile-cb-button">
                   <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input"/>
+                    <input type="checkbox" className="create-profile-cb-label-input" name="learningStyle" value="kinesthetics"/>
                       <span className="create-profile-cb-label-span">KINESTHETIC</span>
                   </label>
                 </div>
               </div>
             </div>
+            <p className="create-profile-input-error">{errors.learningStyle}</p> 
             <button className="create-profile-finish-button">FINISH</button>
           </div>
         </form>

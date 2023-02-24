@@ -2,7 +2,7 @@
 
 
 ## Project Setup
-Setup by going to root directory and execute these commands in terminal
+Setup by going to root directory sc2006-swe and execute these commands in terminal
 
 Install all python packages:
 ```sh

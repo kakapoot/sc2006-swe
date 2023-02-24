@@ -95,7 +95,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 120vh;
 
   background-color: #503E9D;
 }
@@ -104,7 +104,7 @@
   display: flex;
   align-items: top;
   justify-content: left;
-  height: 760px;
+  height: 120vh;
   width: 960px;
   background-color: #FFFFFF;
 }

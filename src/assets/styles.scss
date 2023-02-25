@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+$primary: #503E9D;
+$secondary: #9184C8;
+$danger: #FB6D3A;
+$warning: #FFF0EB;
+$font-family-sans-serif: "Poppins", -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !default;
+
+a:hover {
+    text-decoration: none;
+}
+
+@import "../../node_modules/bootstrap/scss/bootstrap";

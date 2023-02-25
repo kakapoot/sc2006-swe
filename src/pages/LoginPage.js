@@ -6,7 +6,6 @@ import LoginImage from '../assets/login_image.png';
 import '../assets/styles.css';
 
 const LoginPage = () => {
-
   const navigate = useNavigate();
   
   const [values, setValues] = useState({
@@ -14,7 +13,7 @@ const LoginPage = () => {
     password: "",
   })
   const [errors, setErrors] = useState({});
-  //const [isSubmit, setIsSubmit] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
 
   const handleChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value });
@@ -24,6 +23,26 @@ const LoginPage = () => {
     e.preventDefault();
     setErrors(validate(values));
     //setIsSubmit(true);
+    // Send form data to Flask route
+    fetch('http://localhost:5000/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(values)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data); // Handle response data here
+      if (data.message === 'login successful') {
+        // Display success message to user
+      } else if (data.message === 'username found, wrong password') {
+        // Display error message to user
+      } else if (data.message === 'username not found') {
+        // Display error message to user
+      }
+    })
+    .catch(error => console.error(error));
   }
   /*
   useEffect(() => {
@@ -86,5 +105,6 @@ export default LoginPage
 
 /*
     {Object.keys(errors).length === 0 && isSubmit ? (<div>placeholder for sign in success</div>) : null}
+
       <pre>{JSON.stringify(values, undefined, 2)} FOR DEBUG</pre>
     */

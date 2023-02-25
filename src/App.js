@@ -14,6 +14,7 @@ const App = () => {
   return (
     <div className="App">
       <BrowserRouter>
+        {/* TODO: add router guards based on user authentication */}
         <Routes>
           <Route path='/' element={<LoginPage />} />
           <Route path='/register/' element={<RegisterPage />} />

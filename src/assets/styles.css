@@ -48,6 +48,10 @@
   color: #181B1A;
 }
 
+.logo-container {
+  margin-left: 70px;
+}
+
 .register-page {
   display: flex;
   align-items: center;

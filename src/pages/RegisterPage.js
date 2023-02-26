@@ -7,6 +7,9 @@ import '../assets/styles.css';
 
 const RegisterPage = () => {
 
+  const navigate = useNavigate();
+  /*navigator to shift to an email validator in final build*/
+
   const [values, setValues] = useState({
     fullname: "",
     username: "",
@@ -26,6 +29,33 @@ const RegisterPage = () => {
     e.preventDefault();
     setErrors(validate(values));
     setIsSubmit(true);
+    // Send form data to Flask route
+    fetch('http://localhost:5000/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(values)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data); // Handle response data here
+      if (data.message === 'username is taken') {
+        // Display error message to user
+      } 
+      else if (data.message === 'email is taken') {
+        // Display error message to user
+      } 
+      else if (data.message === 'email is invalid') {
+        // Display error message to user
+      }
+      else { //data.message = 'Registration Successful'
+        // Display success 
+       // fetch('http://localhost:5000/create_profile?username=' + encodeURIComponent(values.username))
+        navigate('/create_profile',{state: {username: values.username }});
+      }
+    }) 
+    .catch(error => console.error(error)); 
   }
 
   useEffect(() => {
@@ -46,7 +76,7 @@ const RegisterPage = () => {
     }
     if (!values.email) {
       errors.email = "Email is required!";
-    }
+    } 
     if (!values.password) {
       errors.password = "Password is required!";
     } else if (values.password.length < 8){
@@ -63,8 +93,7 @@ const RegisterPage = () => {
     return errors;
   };
 
-  const navigate = useNavigate();
-  /*navigator to shift to an email validator in final build*/
+  
   return (
     <div className="register-page">
       {Object.keys(errors).length === 0 && isSubmit ? (navigate('/create_profile')) : null}
@@ -132,3 +161,4 @@ const RegisterPage = () => {
 }
 
 export default RegisterPage
+ 

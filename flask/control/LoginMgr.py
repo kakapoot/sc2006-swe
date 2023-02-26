@@ -56,6 +56,9 @@ def login():
 
 # test with username: User1 , Password: 123456        
         
-        
+@LoginRoutes.route('/logout')
+def logout():
+   # remove the username from the session if it is there
+   session.pop('user', None) 
 
 

@@ -1,14 +1,16 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 import '../assets/styles.css';
 
 const ProfileCreationPage = () => {
 
+  const location = useLocation();
   const navigate = useNavigate();
 
   const [values, setValues] = useState({
+    username: location.state.username,
     gender: "",
     birthday: "",
     organization: "",
@@ -50,6 +52,31 @@ const ProfileCreationPage = () => {
     e.preventDefault();
     setErrors(validate(values));
     setIsSubmit(true);
+    // Send form data to Flask route
+    fetch('http://localhost:5000/create_profile', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(values)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data); // Handle response data here
+      if (data.message === 'username is taken') {
+        // Display error message to user
+      } 
+      else if (data.message === 'email is taken') {
+        // Display error message to user
+      } 
+      else if (data.message === 'email is invalid') {
+        // Display error message to user
+      }
+      else { //data.message = 'Registration Successful'
+        // Display success 
+      }
+    })
+    .catch(error => console.error(error));
   }
 
   useEffect(() => {

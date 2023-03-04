@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Navbar } from '../components/Navbar'
 import { GroupCard } from '../components/GroupCard'
 import { Searchbar } from '../components/Searchbar'
+import { FilterModal } from '../components/FilterModal'
 
 export default function FindGroupsPages() {
     // TODO: replace with actual data
@@ -21,6 +22,30 @@ export default function FindGroupsPages() {
     }
     ]
 
+    const tagData = {
+        subject: ["Mathematics", "Physics", "Biology", "Chemistry", "English", "Art", "Music", "Geography", "History", "Computer Science", "Business", "Engineering"],
+        educationLevel: ["Secondary", "Polytechnic", "Pre-university / JC", "University", "Post-graduate", "Doctoral"],
+        learningStyle: ["Visual", "Auditory", "Reading / Writing", "Kinesthetic"],
+        region: ["North", "South", "East", "West", "Central"],
+    }
+
+    const [searchText, setSearchText] = useState("")
+    const [filterTags, setFilterTags] = useState([])
+
+    const handleSearchTextChange = (searchText) => {
+        setSearchText(searchText)
+    }
+
+    const handleFilterTagsChange = (filterTags) => {
+        setFilterTags(filterTags)
+    }
+    // TODO : handle search with current search string and current filters
+    const handleSearch = () => {
+        console.log("Search text: " + searchText)
+        console.log("Filter tags: " + filterTags)
+        setSearchText("")
+    }
+
     return (
         <div className="container-fluid">
             <main className="row">
@@ -30,7 +55,12 @@ export default function FindGroupsPages() {
                     <div className="container">
                         {/* Header */}
                         <h2 className="my-5 d-flex"><strong>Public Groups</strong></h2>
-                        <Searchbar />
+                        <Searchbar searchText={searchText}
+                            onSearchTextChange={handleSearchTextChange}
+                            onSearch={handleSearch}
+                            onFilterTagsChange={handleFilterTagsChange}
+                            prevFilterTags={filterTags}
+                            tagData={tagData} />
 
                         {/* Groups */}
                         <div className="d-flex flex-column gap-5">

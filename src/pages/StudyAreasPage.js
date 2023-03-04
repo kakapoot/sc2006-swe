@@ -12,7 +12,7 @@ export default function StudyAreasPage() {
                     <div className="container">
                         {/* Header */}
                         <h2 className="my-5 d-flex"><strong>Study Areas</strong></h2>
-                        <Searchbar />
+                        {/* <Searchbar /> */}
 
                         <div>Map</div>
                     </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { GroupSelectableTag, GroupDisplayTag } from './GroupTag'
+import { SelectableTag, DisplayTag } from './Tag'
 
 export function FilterModal({ onFilterTagsChange, prevFilterTags, tagData }) {
     const [selectedTags, setSelectedTags] = useState([])
@@ -13,7 +13,6 @@ export function FilterModal({ onFilterTagsChange, prevFilterTags, tagData }) {
     }
 
     const handleResetSubmit = (e) => {
-        e.preventDefault()
         setSelectedTags([])
     }
 
@@ -35,6 +34,7 @@ export function FilterModal({ onFilterTagsChange, prevFilterTags, tagData }) {
 
     return (
         <div>
+            {/* Modal Button */}
             <button className="btn btn-primary p-3 d-flex align-items-center gap-3 text-uppercase"
                 data-bs-toggle="modal" data-bs-target="#modal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-funnel" viewBox="0 0 16 16">
@@ -43,31 +43,37 @@ export function FilterModal({ onFilterTagsChange, prevFilterTags, tagData }) {
                 <span>Filter</span>
             </button>
 
+            {/* Modal */}
             <div className="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="modalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-xl modal-dialog-scrollable">
                     <div className="p-4 modal-content">
+                        {/* Modal Header */}
                         <div className="modal-header">
                             <h3 className="modal-title" id="modalLabel"><strong>Filters</strong></h3>
                             <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
+
+                        {/* Modal Body */}
                         <div className="modal-body d-flex flex-column align-items-start gap-4">
                             {Object.entries(tagData).map(([tagType, tags]) => (
                                 <div key={tagType} className="d-flex flex-column align-items-start">
                                     <span><strong>{formatTagType(tagType)}</strong></span>
+
                                     <div className="d-flex flex-wrap gap-2">
                                         {tags.map((tag) =>
-                                            <div key={tag}><GroupSelectableTag name={tag} onSelectTag={handleSelectTag} isSelected={selectedTags.some(selectedTag => selectedTag === tag)} /></div>
+                                            <div key={tag}><SelectableTag name={tag} onSelectTag={handleSelectTag} isSelected={selectedTags.some(selectedTag => selectedTag === tag)} /></div>
                                         )}
                                     </div>
-
                                 </div>
                             ))}
                         </div>
+
+                        {/* Modal Footer */}
                         <div className="modal-footer d-flex flex-column align-items-start">
                             <h5 className="fs-5"><strong>Selected</strong></h5>
                             <div className="d-flex flex-wrap gap-2">
                                 {selectedTags.map((tag) =>
-                                    <div key={tag}><GroupDisplayTag name={tag} /></div>
+                                    <div key={tag}><DisplayTag name={tag} /></div>
                                 )}
                             </div>
                             <div className="mt-5 d-flex gap-3">

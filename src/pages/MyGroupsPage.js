@@ -3,7 +3,7 @@ import { Navbar } from '../components/Navbar'
 import { GroupCard } from '../components/GroupCard'
 
 export default function MyGroupsPage() {
-    // TODO: replace with actual data
+    // TODO: replace with actual fetched data
     const groups = [{
         id: "1",
         name: "Wholesome Study Group",
@@ -11,7 +11,7 @@ export default function MyGroupsPage() {
         tags: ["Mathematics", "Physics", "Secondary", "Visual", "Auditory", "East"],
         members: [
             {
-                userId: "2",
+                userId: "1",
                 imgSrc: "/user_img.png"
             }]
     },
@@ -22,7 +22,7 @@ export default function MyGroupsPage() {
         tags: ["Chemistry"],
         members: [
             {
-                userId: "2",
+                userId: "1",
                 imgSrc: "/user_img.png"
             },
             {
@@ -37,7 +37,7 @@ export default function MyGroupsPage() {
         tags: ["Chemistry"],
         members: [
             {
-                userId: "2",
+                userId: "1",
                 imgSrc: "/user_img.png"
             },
             {
@@ -52,7 +52,7 @@ export default function MyGroupsPage() {
         tags: ["Chemistry"],
         members: [
             {
-                userId: "2",
+                userId: "1",
                 imgSrc: "/user_img.png"
             },
             {

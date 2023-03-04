@@ -8,8 +8,8 @@ const currentTab = ({ isActive }) => {
 }
 
 export function Navbar() {
-    // TODO : replace with user ID of currently authenticated user context
-    const authUser = "1"
+    // TODO : replace with currently authenticated user context
+    const authUser = "0"
 
     return (
         <div className="col-auto bg-primary">

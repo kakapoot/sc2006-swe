@@ -5,7 +5,7 @@ import { Searchbar } from '../components/Searchbar'
 import { FilterModal } from '../components/FilterModal'
 
 export default function FindGroupsPages() {
-    // TODO: replace with actual data
+    // TODO: replace with actual fetched data
     const groups = [{
         id: "1",
         name: "Wholesome Study Group",
@@ -13,7 +13,7 @@ export default function FindGroupsPages() {
         tags: ["Mathematics", "Physics", "Secondary", "Visual", "Auditory", "East"],
         members: [
             {
-                userId: "2",
+                userId: "1",
                 imgSrc: "/user_img.png"
             },
             {
@@ -28,7 +28,7 @@ export default function FindGroupsPages() {
         tags: ["Chemistry"],
         members: [
             {
-                userId: "2",
+                userId: "1",
                 imgSrc: "/user_img.png"
             },
             {
@@ -38,6 +38,7 @@ export default function FindGroupsPages() {
     }
     ]
 
+    // TODO: replace with actual fetched data
     const tagData = {
         subjects: ["Mathematics", "Physics", "Biology", "Chemistry", "English", "Art", "Music", "Geography", "History", "Computer Science", "Business", "Engineering"],
         educationLevels: ["Secondary", "Polytechnic", "Pre-university / JC", "University", "Post-graduate", "Doctoral"],

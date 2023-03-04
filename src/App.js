@@ -22,7 +22,7 @@ const App = () => {
           <Route path='/my_groups' element={<MyGroupsPage />} />
           <Route path='/find_groups' element={<FindGroupsPage />} />
           <Route path='/study_areas' element={<StudyAreasPage />} />
-          <Route path='/profile' element={<ProfilePage />} />
+          <Route path='/profile/:userId' element={<ProfilePage />} />
         </Routes>
       </BrowserRouter>
     </div>

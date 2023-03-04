@@ -39,7 +39,7 @@ export function GroupCard({ group }) {
 
                 <div className="d-flex flex-wrap gap-2">
                     {/* replace key with img src*/}
-                    {group.members.map((memberImgSrc, index) => <UserIcon imgSrc={memberImgSrc} key={index} />)}
+                    {group.members.map((member, index) => <UserIcon imgSrc={member.imgSrc} userId={member.userId} key={index} />)}
                 </div>
             </div>
         </div>

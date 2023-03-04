@@ -9,28 +9,56 @@ export default function MyGroupsPage() {
         name: "Wholesome Study Group",
         studyArea: "Lee Kong Chian Reference Library",
         tags: ["Mathematics", "Physics", "Secondary", "Visual", "Auditory", "East"],
-        members: ["/user_img.png", "/user_img.png"]
+        members: [
+            {
+                userId: "2",
+                imgSrc: "/user_img.png"
+            }]
     },
     {
         id: "2",
         name: "Memes and Dreams",
         studyArea: "Tampines Regional Library",
         tags: ["Chemistry"],
-        members: ["/user_img.png", "/user_img.png", "/user_img.png"]
+        members: [
+            {
+                userId: "2",
+                imgSrc: "/user_img.png"
+            },
+            {
+                userId: "2",
+                imgSrc: "/user_img.png"
+            }]
     },
     {
         id: "3",
         name: "bofa",
         studyArea: "Tampines Regional Library",
         tags: ["Chemistry"],
-        members: ["/user_img.png", "/user_img.png", "/user_img.png"]
+        members: [
+            {
+                userId: "2",
+                imgSrc: "/user_img.png"
+            },
+            {
+                userId: "2",
+                imgSrc: "/user_img.png"
+            }]
     },
     {
         id: "4",
         name: "ligma",
         studyArea: "Tampines Regional Library",
         tags: ["Chemistry"],
-        members: ["/user_img.png", "/user_img.png", "/user_img.png"]
+        members: [
+            {
+                userId: "2",
+                imgSrc: "/user_img.png"
+            },
+            {
+                userId: "2",
+                imgSrc: "/user_img.png"
+            }]
     }
     ]
 

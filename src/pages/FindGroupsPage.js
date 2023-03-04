@@ -11,22 +11,38 @@ export default function FindGroupsPages() {
         name: "Wholesome Study Group",
         studyArea: "Lee Kong Chian Reference Library",
         tags: ["Mathematics", "Physics", "Secondary", "Visual", "Auditory", "East"],
-        members: ["/user_img.png", "/user_img.png"]
+        members: [
+            {
+                userId: "2",
+                imgSrc: "/user_img.png"
+            },
+            {
+                userId: "2",
+                imgSrc: "/user_img.png"
+            }]
     },
     {
         id: "2",
         name: "Memes and Dreams",
         studyArea: "Tampines Regional Library",
         tags: ["Chemistry"],
-        members: ["/user_img.png", "/user_img.png", "/user_img.png"]
+        members: [
+            {
+                userId: "2",
+                imgSrc: "/user_img.png"
+            },
+            {
+                userId: "2",
+                imgSrc: "/user_img.png"
+            }]
     }
     ]
 
     const tagData = {
-        subject: ["Mathematics", "Physics", "Biology", "Chemistry", "English", "Art", "Music", "Geography", "History", "Computer Science", "Business", "Engineering"],
-        educationLevel: ["Secondary", "Polytechnic", "Pre-university / JC", "University", "Post-graduate", "Doctoral"],
-        learningStyle: ["Visual", "Auditory", "Reading / Writing", "Kinesthetic"],
-        region: ["North", "South", "East", "West", "Central"],
+        subjects: ["Mathematics", "Physics", "Biology", "Chemistry", "English", "Art", "Music", "Geography", "History", "Computer Science", "Business", "Engineering"],
+        educationLevels: ["Secondary", "Polytechnic", "Pre-university / JC", "University", "Post-graduate", "Doctoral"],
+        learningStyles: ["Visual", "Auditory", "Reading / Writing", "Kinesthetic"],
+        regions: ["North", "South", "East", "West", "Central"],
     }
 
     const [searchText, setSearchText] = useState("")

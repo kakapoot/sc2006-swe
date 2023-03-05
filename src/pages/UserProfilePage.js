@@ -64,7 +64,7 @@ export default function UserProfilePage() {
                 {userProfileData && <div className="col">
                     {/* Header */}
                     <div className="row bg-secondary">
-                        <div className="col text-start">
+                        <div className="col">
                             <div className="d-flex justify-content-between align-items-center my-4 container">
                                 <div className="d-flex flex-column align-items-start text-light">
                                     <h5>@{userProfileData.username}</h5>
@@ -78,7 +78,7 @@ export default function UserProfilePage() {
                     </div>
 
                     {/* Profile */}
-                    <div className="col text-start">
+                    <div className="col">
                         <div className="container">
                             <div className="row my-5">
                                 {/* Profile Sidebar */}

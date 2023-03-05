@@ -74,7 +74,7 @@ export function EditGroupProfileModal({ buttonName, prevGroupProfileData, onGrou
                         </div>
 
                         {/* Modal Body */}
-                        <div className="modal-body d-flex flex-column align-items-start text-start gap-4">
+                        <div className="modal-body d-flex flex-column align-items-start gap-4">
 
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="name"><strong>Name</strong></label>

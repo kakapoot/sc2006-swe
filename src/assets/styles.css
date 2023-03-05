@@ -210,7 +210,7 @@
   text-align: center;
   padding: 2px 5px;
   display: block;
-  
+
   font-family: "Poppins";
   font-size: 14px;
   font-weight: 600;
@@ -222,9 +222,11 @@
   color: #fff !important;
 }
 
-.create-profile-cb-label-input + .create-profile-cb-label-span{color: #000000;}
+.create-profile-cb-label-input+.create-profile-cb-label-span {
+  color: #000000;
+}
 
-.create-profile-cb-label-input:checked + .create-profile-cb-label-span {
+.create-profile-cb-label-input:checked+.create-profile-cb-label-span {
   color: #FFFFFF;
   background-color: #FB6D3A;
 }
@@ -288,7 +290,7 @@
   margin: 10px 0px;
   border-radius: 6px;
   border: 1px solid #B3B6B6;
-  
+
   font-family: "Poppins";
   margin: 5px 0px 10px 0px;
 }
@@ -357,7 +359,7 @@
   background-color: #FB6D3A;
   margin-top: 15px;
   margin-bottom: 30px;
-  margin-left: -90px;
+  margin-left: 120px;
 
   font-family: 'Poppins';
   font-style: normal;

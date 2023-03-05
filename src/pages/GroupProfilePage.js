@@ -81,7 +81,7 @@ export default function GroupProfilePage() {
                 {groupProfileData && <div className="col">
                     {/* Header */}
                     <div className="row bg-secondary">
-                        <div className="col text-start">
+                        <div className="col">
                             <div className="d-flex justify-content-between align-items-center my-4 container">
                                 <div className="d-flex flex-column align-items-start text-light">
                                     <h5 className="text-uppercase">{groupProfileData.privacy} Group (Code: {groupProfileData.code})</h5>
@@ -117,7 +117,7 @@ export default function GroupProfilePage() {
                     </div>
 
                     {/* Profile */}
-                    <div className="col text-start">
+                    <div className="col">
                         <div className="container">
                             <div className="row my-5">
                                 {/* Profile Sidebar */}

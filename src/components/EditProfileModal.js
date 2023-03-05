@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { SelectableTag, DisplayTag } from './Tag'
 
-export function EditProfileModal() {
-    // TODO: fetch starting user profile data
-    const [prevProfileData, setPrevProfileData] = useState({ name: "", gender: "", birthday: "", organization: "", about: "", studyInterests: [], educationLevels: [], learningStyles: [] })
-
-    // TODO: replace with actual fetched data
+export function EditProfileModal({ prevUserProfileData, onUserProfileDataChange }) {
+    // TODO: replace with actual available tags
     const tagData = {
         studyInterests: ["Mathematics", "Physics", "Biology", "Chemistry", "English", "Art", "Music", "Geography", "History", "Computer Science", "Business", "Engineering"],
         educationLevels: ["Secondary", "Polytechnic", "Pre-university / JC", "University", "Post-graduate", "Doctoral"],
         learningStyles: ["Visual", "Auditory", "Reading / Writing", "Kinesthetic"],
     }
 
-    const [profile, setProfile] = useState(prevProfileData)
+    const [profile, setProfile] = useState(prevUserProfileData)
+
+    useEffect(() => {
+        setProfile(prevUserProfileData)
+    }, [prevUserProfileData])
+
 
     const handleInputChange = (inputType, inputValue) => {
         setProfile({ ...profile, [inputType]: inputValue })
@@ -31,12 +33,12 @@ export function EditProfileModal() {
     // TODO : update database with new user profile data
     const handleApplyChangesSubmit = () => {
         console.log(profile)
-        setPrevProfileData(profile)
+        onUserProfileDataChange(profile)
     }
 
     const handleClose = () => {
         // clear unsaved changes
-        setProfile(prevProfileData)
+        setProfile(prevUserProfileData)
     }
 
     const formatTagType = (text) => {
@@ -91,8 +93,8 @@ export function EditProfileModal() {
                                 <input type="text" value={profile.organization} onChange={(e) => handleInputChange("organization", e.target.value)} className="form-control" id="organisation" placeholder="Enter organisation..." />
                             </div>
                             <div className="form-group d-flex flex-column w-50">
-                                <label htmlFor="about"><strong>About Me</strong></label>
-                                <textarea value={profile.about} onChange={(e) => handleInputChange("about", e.target.value)} rows="4" className="form-control" id="about" placeholder="Enter a description about yourself..."></textarea>
+                                <label htmlFor="aboutMe"><strong>About Me</strong></label>
+                                <textarea value={profile.aboutMe} onChange={(e) => handleInputChange("aboutMe", e.target.value)} rows="4" className="form-control" id="aboutMe" placeholder="Enter a description about yourself..."></textarea>
                             </div>
 
                             {/* Tags */}

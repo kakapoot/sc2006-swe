@@ -6,7 +6,7 @@ import RegisterPage from './pages/RegisterPage';
 import ProfileCreationPage from './pages/ProfileCreationPage';
 import MyGroupsPage from './pages/MyGroupsPage';
 import StudyAreasPage from './pages/StudyAreasPage';
-import ProfilePage from './pages/ProfilePage';
+import UserProfilePage from './pages/UserProfilePage';
 import FindGroupsPage from './pages/FindGroupsPage';
 import './App.css';
 
@@ -22,7 +22,7 @@ const App = () => {
           <Route path='/my_groups' element={<MyGroupsPage />} />
           <Route path='/find_groups' element={<FindGroupsPage />} />
           <Route path='/study_areas' element={<StudyAreasPage />} />
-          <Route path='/profile/:userId' element={<ProfilePage />} />
+          <Route path='/profile/:userId' element={<UserProfilePage />} />
         </Routes>
       </BrowserRouter>
     </div>

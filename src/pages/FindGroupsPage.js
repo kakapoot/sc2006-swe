@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { Navbar } from '../components/Navbar'
 import { GroupCard } from '../components/GroupCard'
 import { Searchbar } from '../components/Searchbar'
-import { FilterModal } from '../components/FilterModal'
 
 export default function FindGroupsPages() {
     // TODO: replace with actual fetched data
     const groups = [{
-        id: "1",
+        groupId: "1",
         name: "Wholesome Study Group",
         studyArea: "Lee Kong Chian Reference Library",
+        // TODO : REFACTOR tags : { subjects: [...], ... }
         tags: ["Mathematics", "Physics", "Secondary", "Visual", "Auditory", "East"],
         members: [
             {
@@ -22,7 +22,7 @@ export default function FindGroupsPages() {
             }]
     },
     {
-        id: "2",
+        groupId: "2",
         name: "Memes and Dreams",
         studyArea: "Tampines Regional Library",
         tags: ["Chemistry"],
@@ -81,7 +81,7 @@ export default function FindGroupsPages() {
 
                         {/* Groups */}
                         <div className="d-flex flex-column gap-5">
-                            {groups.map((group) => <GroupCard group={group} key={group.id} />)}
+                            {groups.map((group) => <GroupCard group={group} key={group.groupId} />)}
                         </div>
                     </div>
                 </div>

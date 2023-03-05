@@ -3,7 +3,7 @@ import { Navbar } from '../components/Navbar'
 import { LargeUserIcon } from '../components/UserIcon'
 import { DisplayTag } from '../components/Tag'
 import { useParams } from 'react-router';
-import { EditProfileModal } from '../components/EditProfileModal';
+import { EditUserProfileModal } from '../components/EditUserProfileModal';
 
 export default function UserProfilePage() {
     const { userId } = useParams();
@@ -72,7 +72,7 @@ export default function UserProfilePage() {
                                 </div>
 
                                 {/* Show Edit button if profile belongs to authenticated user */}
-                                {isAuthenticatedUser && <EditProfileModal prevUserProfileData={userProfileData} onUserProfileDataChange={handleUserProfileDataChange} />}
+                                {isAuthenticatedUser && <EditUserProfileModal prevUserProfileData={userProfileData} onUserProfileDataChange={handleUserProfileDataChange} />}
                             </div>
                         </div>
                     </div>

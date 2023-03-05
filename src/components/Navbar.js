@@ -44,7 +44,7 @@ export function Navbar() {
                             <path fillRule="evenodd" d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103zM10 1.91l-4-.8v12.98l4 .8V1.91zm1 12.98 4-.8V1.11l-4 .8v12.98zm-6-.8V1.11l-4 .8v12.98l4-.8z" />
                         </svg>
                         <li className="d-sm-inline d-none">Study Areas</li></NavLink>
-                    <NavLink to={`/profile/${authUser}`} className={currentTab}>
+                    <NavLink to={`/user/${authUser}`} className={currentTab}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="text-secondary bi bi-person-vcard" viewBox="0 0 16 16">
                             <path d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5ZM9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8Zm1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5Z" />
                             <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2ZM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96c.026-.163.04-.33.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1.006 1.006 0 0 1 1 12V4Z" />
@@ -52,6 +52,7 @@ export function Navbar() {
                         <li className="d-sm-inline d-none">Profile</li></NavLink>
                 </ul>
 
+                {/* TODO : handle log out */}
                 {/* Log Out */}
                 <NavLink to="/" className="mt-auto mb-sm-5 py-3 btn btn-primary text-danger gap-3 d-flex align-items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-door-closed" viewBox="0 0 16 16">

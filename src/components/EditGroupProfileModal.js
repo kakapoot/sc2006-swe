@@ -36,6 +36,7 @@ export function EditGroupProfileModal({ buttonName, prevGroupProfileData, onGrou
     const handleApplyChangesSubmit = () => {
         console.log(profile)
         onGroupProfileDataChange(profile)
+        setProfile(prevGroupProfileData)
     }
 
     const handleClose = () => {
@@ -55,7 +56,7 @@ export function EditGroupProfileModal({ buttonName, prevGroupProfileData, onGrou
         <div>
             {/* Modal Button */}
             <button className="btn btn-primary p-3 d-flex align-items-center gap-3 text-uppercase"
-                data-bs-toggle="modal" data-bs-target="#modal">
+                data-bs-toggle="modal" data-bs-target="#editGroupProfileModal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16">
                     <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                 </svg>
@@ -63,12 +64,12 @@ export function EditGroupProfileModal({ buttonName, prevGroupProfileData, onGrou
             </button>
 
             {/* Modal */}
-            <div className="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+            <div className="modal fade" id="editGroupProfileModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="modalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-xl modal-dialog-scrollable">
                     <div className="p-4 modal-content">
                         {/* Modal Header */}
                         <div className="modal-header">
-                            <h3 className="modal-title" id="modalLabel"><strong>{buttonName}</strong></h3>
+                            <h3 className="modal-title" id="editGroupProfileModalLabel"><strong>{buttonName}</strong></h3>
                             <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 

@@ -4,6 +4,7 @@ import { GroupCard } from '../components/GroupCard'
 import { JoinPrivateGroupModal } from '../components/JoinPrivateGroupModal'
 import { EditGroupProfileModal } from '../components/EditGroupProfileModal'
 
+// TODO : integrate with mock database
 export default function MyGroupsPage() {
     // TODO: replace with actual fetched data
     const groups = [{
@@ -80,7 +81,7 @@ export default function MyGroupsPage() {
 
     // TODO : add created group to database
     const handleGroupProfileDataChange = (userProfileData) => {
-        console.log(userProfileData)
+
     }
 
     return (

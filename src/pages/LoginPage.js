@@ -1,6 +1,6 @@
 import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import LoginImage from '../assets/login_image.png';
 
 import '../assets/styles.css';
@@ -22,7 +22,7 @@ const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors(validate(values));
-    //setIsSubmit(true);
+    setIsSubmit(false);
     // Send form data to Flask route
     fetch('http://localhost:5000/login', {
     method: 'POST',
@@ -38,20 +38,21 @@ const LoginPage = () => {
         // Display success message to user
       } else if (data.message === 'username found, wrong password') {
         // Display error message to user
+        setIsSubmit(true);
       } else if (data.message === 'username not found') {
         // Display error message to user
       }
     })
     .catch(error => console.error(error));
   }
-  /*
+  
   useEffect(() => {
     console.log(errors);
     if (Object.keys(errors).length === 0 && isSubmit) {
       console.log(values);
     }
   }, [errors]);
-  */
+  
   const validate = (values) => {
     const errors = {};
     if (!values.username) {
@@ -68,6 +69,7 @@ const LoginPage = () => {
     <div className="login-page">
       <div className="login-form-container">
         <form onSubmit={handleSubmit}>
+        {Object.keys(errors).length === 0 && isSubmit ? navigate('my_groups') : null}
           <div className="login-form">
             <div className="logo-container">
               <span className="my-3 mx-5 d-flex align-items-center gap-3 text-primary">
@@ -109,10 +111,3 @@ const LoginPage = () => {
 }
 
 export default LoginPage
-
-
-/*
-    {Object.keys(errors).length === 0 && isSubmit ? (<div>placeholder for sign in success</div>) : null}
-
-      <pre>{JSON.stringify(values, undefined, 2)} FOR DEBUG</pre>
-    */

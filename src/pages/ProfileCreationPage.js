@@ -6,11 +6,11 @@ import '../assets/styles.css';
 
 const ProfileCreationPage = () => {
 
-  //const location = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
 
   const [values, setValues] = useState({
-    username: "",//location.state.username,
+    username: location.state.username,
     gender: "",
     birthday: "",
     organization: "",

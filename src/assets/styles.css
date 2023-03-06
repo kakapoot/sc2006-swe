@@ -1,23 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins');
 
-.login-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-
-  background-color: #503E9D;
-}
-
-.login-form-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 760px;
-  width: 960px;
-  background-color: #FFFFFF;
-}
-
 .login-image {
   height: 760px;
   margin-left: 75px;

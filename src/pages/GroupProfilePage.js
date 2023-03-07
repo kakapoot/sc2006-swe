@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Navbar } from '../components/Navbar'
-import { UserIcon } from '../components/UserIcon'
 import { DisplayTag } from '../components/Tag'
 import { useParams } from 'react-router';
 import { EditGroupProfileModal } from '../components/EditGroupProfileModal';
+import { Link } from 'react-router-dom';
 
 export default function GroupProfilePage() {
     const { groupId } = useParams();
@@ -42,13 +42,11 @@ export default function GroupProfilePage() {
             members: [
                 {
                     userId: "1",
-                    imgSrc: "/user_img.png",
                     name: "Lao Gan Ma",
                     organization: "Nanyang Technological University",
                 },
                 {
                     userId: "2",
-                    imgSrc: "/user_img.png",
                     name: "Bing Chilling",
                     organization: "Raffles Institution",
                 }],
@@ -155,19 +153,20 @@ export default function GroupProfilePage() {
                                         </div>
                                     </div>
 
-                                    <div>
+                                    <div className="w-100">
                                         {/* TODO : indicate group leader */}
                                         {/* TODO : disable setting capacity below current no. of members */}
                                         <h5><strong>Members ({groupProfileData.members.length} / {groupProfileData.capacity})</strong></h5>
                                         <div className="d-flex flex-column gap-4">
                                             {groupProfileData.members.map((member) =>
-                                                <div key={member.userId} className="d-flex gap-2">
-                                                    <UserIcon imgSrc={member.imgSrc} userId={member.userId} />
-                                                    <div className="d-flex flex-column">
-                                                        <span><strong>{member.name}</strong></span>
-                                                        <span>{member.organization}</span>
+                                                <Link to={`/user/${member.userId}`} className="text-start btn btn-warning">
+                                                    <div key={member.userId} className="d-flex gap-2">
+                                                        <div className="d-flex flex-column w-100">
+                                                            <span><strong>{member.name}</strong></span>
+                                                            <span>{member.organization}</span>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                </Link>
                                             )}
                                         </div>
                                     </div>

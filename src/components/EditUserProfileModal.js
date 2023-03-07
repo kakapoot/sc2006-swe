@@ -43,6 +43,7 @@ export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataCha
         setProfile(prevUserProfileData)
     }
 
+
     const formatTagType = (text) => {
         return text
             // insert a space between each word
@@ -74,7 +75,6 @@ export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataCha
 
                         {/* Modal Body */}
                         <div className="modal-body d-flex flex-column align-items-start gap-4">
-
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="name"><strong>Name</strong></label>
                                 <input type="text" value={profile.name} onChange={(e) => handleInputChange("name", e.target.value)} className="form-control" id="name" placeholder="Enter name..." />
@@ -98,6 +98,7 @@ export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataCha
                                 <label htmlFor="aboutMe"><strong>About Me</strong></label>
                                 <textarea value={profile.aboutMe} onChange={(e) => handleInputChange("aboutMe", e.target.value)} rows="4" className="form-control" id="aboutMe" placeholder="Enter a description about yourself..."></textarea>
                             </div>
+
 
                             {/* Tags */}
                             {Object.entries(tagData).map(([tagType, tags]) => (

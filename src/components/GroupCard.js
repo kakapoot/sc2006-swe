@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { DisplayTag } from './Tag'
-import { UserIcon } from './UserIcon'
 
 
 export function GroupCard({ group }) {
@@ -35,10 +34,6 @@ export function GroupCard({ group }) {
 
                 <div className="d-flex flex-wrap gap-2 ">
                     {group.tags.map((tag) => <DisplayTag name={tag} key={tag} />)}
-                </div>
-
-                <div className="d-flex flex-wrap gap-2">
-                    {group.members.map((member, index) => <UserIcon imgSrc={member.imgSrc} userId={member.userId} key={member.userId} />)}
                 </div>
             </div>
         </div>

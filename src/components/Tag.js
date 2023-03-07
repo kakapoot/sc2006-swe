@@ -14,7 +14,7 @@ export function SelectableTag({ name, isSelected, onSelectTag }) {
     }
 
     return (
-        <button onClick={handleClick} className={isSelected ? "btn btn-danger py-0 text-light text-uppercase" : "btn btn-warning py-0 text-uppercase"}>
+        <button type="button" onClick={handleClick} className={isSelected ? "btn btn-danger py-0 text-light text-uppercase" : "btn btn-warning py-0 text-uppercase"}>
             <strong>{name}</strong>
         </button>
     )

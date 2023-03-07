@@ -1,51 +1,55 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { SelectableTag } from '../components/Tag'
 
 import '../assets/styles.css';
 
 const ProfileCreationPage = () => {
 
-  const location = useLocation();
+  const tagData = {
+    studyInterests: ["Mathematics", "Physics", "Biology", "Chemistry", "English", "Art", "Music", "Geography", "History", "Computer Science", "Business", "Engineering"],
+    educationLevels: ["Secondary", "Polytechnic", "Pre-university / JC", "University", "Post-graduate", "Doctoral"],
+    learningStyles: ["Visual", "Auditory", "Reading / Writing", "Kinesthetic"],
+  }
+
+  //const location = useLocation();
   const navigate = useNavigate();
 
   const [values, setValues] = useState({
-    username: location.state.username,
+    //username: location.state.username,
     gender: "",
     birthday: "",
     organization: "",
     aboutMe: "",
-    subject: [],
-    educationLevel: [],
-    learningStyle: [],
+    studyInterests: [],
+    educationLevels: [],
+    learningStyles: [],
   })
 
   const [errors, setErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
 
-  const updateArray = (name) => {
-    var markedCheckbox = document.getElementsByName(name);
-    for (var checkbox of markedCheckbox) {
-      if (checkbox.checked && name === 'subject') {
-        values.subject.push(checkbox.value);
-      } else if (!checkbox.checked && name === 'subject') {
-        values.subject.pop(checkbox.value);
-      }
-      if (checkbox.checked && name === 'educationLevel') {
-        values.educationLevel.push(checkbox.value);
-      } else if (!checkbox.checked && name === 'educationLevel') {
-        values.educationLevel.pop(checkbox.value);
-      }
-      if (checkbox.checked && name === 'learningStyle') {
-        values.learningStyle.push(checkbox.value);
-      } else if (!checkbox.checked && name === 'learningStyle') {
-        values.learningStyle.pop(checkbox.value);
-      }
-    }
-  }
-
   const handleChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value });
+  }
+
+  const handleSelectTag = (selectedTagType, selectedTag) => {
+    values[selectedTagType].some(tag => tag === selectedTag)
+        ? setValues({ ...values, [selectedTagType]: values[selectedTagType].filter(tag => tag !== selectedTag) })
+        : setValues({ ...values, [selectedTagType]: [...values[selectedTagType], selectedTag] })
+  }
+
+  const handleIsSelected = (selectedTagType, selectedTag) => {
+      return values[selectedTagType].some(tag => tag === selectedTag)
+  }
+
+  const formatTagType = (text) => {
+    return text
+        // insert a space between each word
+        .replace(/([A-Z])/g, ' $1')
+        // uppercase first character of each word
+        .replace(/^./, (str) => str.toUpperCase())
   }
 
   const handleSubmit = (e) => {
@@ -97,14 +101,14 @@ const ProfileCreationPage = () => {
     if (!values.organization) {
       errors.organization = "Organization is required!";
     }
-    if(values.subject.length === 0) {
-      errors.subject = "Please select at least one subject!"
+    if(values.studyInterests.length === 0) {
+      errors.studyInterests = "Please select at least one subject!"
     }
-    if(values.educationLevel.length === 0) {
-      errors.educationLevel = "Please select your education level!"
+    if(values.educationLevels.length === 0) {
+      errors.educationLevels = "Please select your education level!"
     }
-    if(values.learningStyle.length === 0) {
-      errors.learningStyle = "Please select your preferred learning style!"
+    if(values.learningStyles.length === 0) {
+      errors.learningStyles = "Please select your preferred learning style!"
     }
 
     return errors;
@@ -127,7 +131,7 @@ const ProfileCreationPage = () => {
                   <option className='input-gender-option' value="female">Female</option>
                   <option className='input-gender-option' value="non-binary">Non-binary</option>
                 </select>
-                <p className="create-profile-input-error-gender">{errors.gender}</p>
+                <p className="create-profile-input-error-gender"><strong>{errors.gender}</strong></p>
               </div>
               <div className="input-container-dropdown-birthday">
                 <label className="create-profile-label">Birthday</label>
@@ -137,7 +141,7 @@ const ProfileCreationPage = () => {
                     min="1980-01-01" max="2020-12-31" 
                     value={setValues.birthday}
                     onChange={handleChange}/>
-                <p className="create-profile-input-error-birthday">{errors.birthday}</p>
+                <p className="create-profile-input-error-birthday"><strong>{errors.birthday}</strong></p>
               </div>          
             </div>
             <div className="create-profile-input-container">
@@ -149,165 +153,30 @@ const ProfileCreationPage = () => {
                   value={setValues.organization}
                   onChange={handleChange}/>
             </div>
-            <p className="create-profile-input-error">{errors.organization}</p> 
+            <p className="create-profile-input-error"><strong>{errors.organization}</strong></p> 
             <div className="create-profile-input-container">
               <label className="create-profile-label">About Me</label>
                 <textarea className="text-area-box"
-                  name="about_me" 
+                  name="aboutMe" 
                   placeholder="Enter a basic description here."
-                  value={setValues.about_me}
+                  value={setValues.aboutMe}
                   onChange={handleChange}/>
             </div>
             <div className="create-profile-input-container">
-              <label className="create-profile-label">Subject</label>
-              <div className="create-profile-cb-button-container">
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="mathematics"/>
-                    <span className="create-profile-cb-label-span">MATHEMATICS</span>
-                  </label>
+              {Object.entries(tagData).map(([tagType, tags]) => (
+                <div key={tagType} className="create-profile-label">
+                  <span><strong>{formatTagType(tagType)}</strong></span>
+
+                  <div className="create-profile-tag-container">
+                    {tags.map((tag) =>
+                      <div key={tag}><SelectableTag name={tag} onSelectTag={() => { handleSelectTag(tagType, tag) }} isSelected={handleIsSelected(tagType, tag)} /></div>
+                  )}
+                  </div>
+
+                  <p className="create-profile-input-error-tag">{errors[tagType]}</p> 
                 </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="physics"/>
-                    <span className="create-profile-cb-label-span">PHYSICS</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="biology"/>
-                    <span className="create-profile-cb-label-span">BIOLOGY</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="chemistry"/>
-                      <span className="create-profile-cb-label-span">CHEMISTRY</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="english"/>
-                      <span className="create-profile-cb-label-span">ENGLISH</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="art"/>
-                      <span className="create-profile-cb-label-span">ART</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="music"/>
-                      <span className="create-profile-cb-label-span">MUSIC</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="geography"/>
-                      <span className="create-profile-cb-label-span">GEOGRAPHY</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="history"/>
-                      <span className="create-profile-cb-label-span">HISTORY</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="computer science"/>
-                      <span className="create-profile-cb-label-span">COMPUTER SCIENCE</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="business"/>
-                      <span className="create-profile-cb-label-span">BUSINESS</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="subject" value="engineering"/>
-                      <span className="create-profile-cb-label-span">ENGINEERING</span>
-                  </label>
-                </div>
-              </div>
+              ))}
             </div>
-            <p className="create-profile-input-error">{errors.subject}</p> 
-            <div className="create-profile-input-container">
-              <label className="create-profile-label">Education Level</label>
-              <div className="create-profile-cb-button-container">
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="educationLevel" value="secondary"/>
-                      <span className="create-profile-cb-label-span">SECONDARY</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="educationLevel" value="polytechnic"/>
-                      <span className="create-profile-cb-label-span">POLYTECHNIC</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="educationLevel" value="pre-university / jc"/>
-                      <span className="create-profile-cb-label-span">PRE-UNIVERSITY / JC</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="educationLevel" value="university"/>
-                      <span className="create-profile-cb-label-span">UNIVERSITY</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="educationLevel" value="post-graduate"/>
-                      <span className="create-profile-cb-label-span">POST-GRADUATE</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="educationLevel" value="doctoral"/>
-                      <span className="create-profile-cb-label-span">DOCTORAL</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-            <p className="create-profile-input-error">{errors.educationLevel}</p> 
-            <div className="create-profile-input-container">
-              <label className="create-profile-label">Learning Style</label>
-              <div className="create-profile-cb-button-container">
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="learningStyle" value="visual"/>
-                      <span className="create-profile-cb-label-span">VISUAL</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="learningStyle" value="auditory"/>
-                      <span className="create-profile-cb-label-span">AUDITORY</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="learningStyle" value="reading / writing"/>
-                      <span className="create-profile-cb-label-span">READING / WRITING</span>
-                  </label>
-                </div>
-                <div className="create-profile-cb-button">
-                  <label className="create-profile-cb-label">
-                    <input type="checkbox" className="create-profile-cb-label-input" name="learningStyle" value="kinesthetics"/>
-                      <span className="create-profile-cb-label-span">KINESTHETIC</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-            <p className="create-profile-input-error">{errors.learningStyle}</p> 
             <button className="create-profile-finish-button">FINISH</button>
           </div>
         </form>

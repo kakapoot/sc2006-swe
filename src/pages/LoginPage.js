@@ -66,8 +66,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center bg-primary">
-      <div className="d-flex justify-content-center align-items-center bg-white">
+    <div className="login-page">
+      <div className="login-form-container">
         <form onSubmit={handleSubmit}>
         {Object.keys(errors).length === 0 && isSubmit ? navigate('my_groups') : null}
           <div className="login-form">

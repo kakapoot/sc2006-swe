@@ -60,8 +60,28 @@ export default function FindGroupsPages() {
     const handleSearch = () => {
         console.log("Search text: " + searchText)
         console.log("Filter tags: " + filterTags)
+
+    ////////////////////////////////////////////////////////////////////////// AGNES
+        fetch('http://localhost:5000/find_groups', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(searchText + filterTags)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data); // Handle response data here
+            if (data.message === 'No such Group') {
+                // Display no group message to user
+            } 
+        })
+        .catch(error => console.error(error));
+        
         setSearchText("")
     }
+    
+    ////////////////////////////////////////////////////////////////////
 
     return (
         <div className="container-fluid">

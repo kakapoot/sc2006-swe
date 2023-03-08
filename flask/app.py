@@ -43,6 +43,7 @@ CORS(app)
 app.secret_key='secret'
 app.register_blueprint(RegisterRoutes)
 app.register_blueprint(LoginRoutes)
+app.register_blueprint(FindGroupRoutes)
 if __name__=='__main__':
     app.run(debug=True)
     

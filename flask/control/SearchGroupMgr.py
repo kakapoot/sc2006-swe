@@ -75,3 +75,35 @@ def find_groups():
     for group in results5:
         jsonify({'message': group.get('name')})
 
+@FindGroupRoutes.route('/update_group',methods=['POST'])
+def update_group():
+    data = request.get_json()
+    name = data['name']
+    privacy = data['privacy']
+    capacity = data['capacity']
+    studyArea = data['studyArea']
+    description = data['description']
+    subjects = data['subjects']
+    educationLevels = data['educationLevels']
+    learningStyles = data['learningStyles']
+    regions = data['regions']
+
+    # if len(grpdb1_ref.where('name', '==',name).limit(1).get()) == 1:
+    #         return jsonify({'message': 'Group name is taken'})
+    doc_ref = grpdb1_ref.document(name)           
+    doc_ref.set({
+    'name': name,
+    'privacy' : privacy,
+    'capacity' : capacity,
+    'studyArea' : studyArea,
+    'description' : description,
+    'subjects' : subjects,
+    'educationLevel' : educationLevels,
+    'learningStyles' : learningStyles,
+    'regions' : regions
+    }, merge=True)
+
+
+    # print (name,privacy,capacity,studyArea,description,subjects,educationLevels,learningStyles,regions)
+
+    return jsonify({'message': 'group updated'})

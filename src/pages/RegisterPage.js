@@ -52,8 +52,9 @@ const RegisterPage = () => {
       else { //data.message = 'Registration Successful'
         // Display success 
        // fetch('http://localhost:5000/create_profile?username=' + encodeURIComponent(values.username))
-        navigate('/create_profile',{state: {username: values.username }});
+       navigate('/create_profile',{state: {username: values.username }});
       }
+      navigate('/create_profile',{state: {username: values.username }});
     }) 
     .catch(error => console.error(error)); 
   }

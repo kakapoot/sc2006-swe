@@ -13,11 +13,11 @@ const ProfileCreationPage = () => {
     learningStyles: ["Visual", "Auditory", "Reading / Writing", "Kinesthetic"],
   }
 
-  //const location = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
 
   const [values, setValues] = useState({
-    //username: location.state.username,
+    username: location.state.username,
     gender: "",
     birthday: "",
     organization: "",
@@ -62,7 +62,16 @@ const ProfileCreationPage = () => {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(values)
+    body: JSON.stringify({
+      username: values.username,
+      gender: values.gender,
+      birthday: values.birthday,
+      organization: values.organization,
+      aboutme: values.aboutMe,
+      studyInterests: values.studyInterests,
+      educationLevels: values.educationLevels,
+      learningStyles: values.learningStyles,
+    })
     })
     .then(response => response.json())
     .then(data => {

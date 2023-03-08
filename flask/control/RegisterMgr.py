@@ -86,14 +86,15 @@ def create_profile():
         username = session.get('user')
         print(username)
     elif request.method == 'POST':
-        username = request.json.get('username')
-        gender = request.json.get('gender')
-        birthday = request.json.get('birthday')
-        organization = request.json.get('organization')
-        aboutme = request.json.get('about_me')
-        educationLevel = request.json.get('educationLevel', []) 
-        learningStyle = request.json.get('learningStyle', []) 
-        subject = request.json.get('subject', []) 
+        data = request.get_json()
+        username = data['username']
+        gender = data['gender']
+        birthday = data['birthday']
+        organization = data['organization']
+        aboutme = data['aboutme']
+        educationLevel = data['educationLevels']
+        learningStyle = data['learningStyles'] 
+        studyInterests = data['studyInterests']
         #edit their profile 
         doc_ref = userdb1_ref.document(username)
         
@@ -104,10 +105,12 @@ def create_profile():
         'about_me': aboutme,
         'educationLevel': educationLevel,
         'learningStyle': learningStyle,
-        'subject': subject
+        'studyInterests': studyInterests
          }, merge=True)
         
         #print(username)
+        
+        print("username:",username, gender,birthday,organization,aboutme,educationLevel,learningStyle,studyInterests)
         return jsonify({'message': 'profile creation sent'})
 
   # Your code to create the profile...

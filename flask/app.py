@@ -10,6 +10,7 @@ firebase_admin.initialize_app(cred)
 from entity import *
 from control.LoginMgr import LoginRoutes
 from control.RegisterMgr import RegisterRoutes
+from control.SearchGroupMgr import FindGroupRoutes
 import pyrebase
 from flask import Flask, session, render_template,request,redirect,jsonify
 from flask_cors import CORS

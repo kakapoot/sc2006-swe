@@ -37,6 +37,32 @@ export function EditGroupProfileModal({ buttonName, prevGroupProfileData, onGrou
         console.log(profile)
         onGroupProfileDataChange(profile)
         setProfile(prevGroupProfileData)
+        /////////////////////////////////////////////////// send to flask
+        fetch('http://localhost:5000/update_group', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: profile.name,
+            privacy: profile.privacy || "private",
+            capacity: profile.capacity,
+            studyArea: profile.studyArea,
+            description: profile.description,
+            subjects: profile.subjects,
+            educationLevels: profile.educationLevels,
+            learningStyles: profile.learningStyles,
+            regions: profile.regions
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data); // Handle response data here
+            //returns group updated, cant check if creating or updating
+          })
+        .catch(error => console.error(error));
+        //////////////////////////////////////////////////
+
     }
 
     const handleClose = () => {

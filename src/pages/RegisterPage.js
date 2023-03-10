@@ -52,9 +52,9 @@ const RegisterPage = () => {
       else { //data.message = 'Registration Successful'
         // Display success 
        // fetch('http://localhost:5000/create_profile?username=' + encodeURIComponent(values.username))
-       navigate('/create_profile',{state: {username: values.username }});
-      }
-      navigate('/create_profile',{state: {username: values.username }});
+       //navigate('/create_profile',{state: {username: values.username }});
+      } 
+      //navigate('/create_profile',{state: {username: values.username }});
     }) 
     .catch(error => console.error(error)); 
   }
@@ -97,7 +97,7 @@ const RegisterPage = () => {
   
   return (
     <div className="register-page">
-      {Object.keys(errors).length === 0 && isSubmit ? (navigate('/create_profile')) : null}
+      {Object.keys(errors).length === 0 && isSubmit ? navigate('/create_profile',{state: {username: values.username }}) : null}
       <div className="register-form-container">
         <form onSubmit={handleSubmit}>
           <div className="register-form">

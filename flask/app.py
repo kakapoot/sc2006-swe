@@ -14,6 +14,7 @@ from control.SearchGroupMgr import FindGroupRoutes
 import pyrebase
 from flask import Flask, session, render_template,request,redirect,jsonify
 from flask_cors import CORS
+#from flask_session import Session
 
 
 
@@ -42,6 +43,7 @@ os.environ["GCLOUD_PROJECT"] = "sc2006-e3ff1"
 app = Flask(__name__)
 CORS(app)
 app.secret_key='secret'
+app.config['SESSION_TYPE'] = 'filesystem'
 app.register_blueprint(RegisterRoutes)
 app.register_blueprint(LoginRoutes)
 app.register_blueprint(FindGroupRoutes)

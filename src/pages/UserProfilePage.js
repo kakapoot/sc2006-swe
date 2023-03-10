@@ -8,20 +8,40 @@ export default function UserProfilePage() {
     const { userId } = useParams();
     const [isAuthenticatedUser, setIsAuthenticatedUser] = useState(null)
     const [userProfileData, setUserProfileData] = useState(null)
+    const [user, setUser] = useState(null);
+
 
     // TODO 
     useEffect(() => {
-        if (userId === "0") {
+        ///////////////////////////////////////////// get current user
+        fetch('http://localhost:5000/currentuser')
+        .then(response => {
+            if (response.ok) {
+            return response.json();
+            } else {
+            throw new Error('Failed to fetch user');
+            }
+        })
+        .then(data => {
+            setUser(data.user);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+      //////////////////////////////////////////
+      //  if (userId === "0") {
+        if (user) {
             setIsAuthenticatedUser(true)
         } else {
             setIsAuthenticatedUser(false)
         }
         fetchUserProfileData()
     }, [isAuthenticatedUser, userId])
-
+ 
     // TODO : fetch user data based on user ID
     const fetchUserProfileData = () => {
         // check authenticated user context
+        // fetch(`/get_profile/${user}`)
         isAuthenticatedUser
             ? setUserProfileData({
                 username: "laoganma",

@@ -48,17 +48,28 @@ def login():
                 email = result.get('email')
             try:
                 user = auth.sign_in_with_email_and_password(email,password)
-                session['user']=username
+                session["user"]=username
                 return jsonify({'message': 'login successful'})
-            except:
-                return jsonify({'message': 'username found, wrong password'})
+            except Exception as e:
+                print(e)
+                return jsonify({'message': 'username found, wrong password' + ' ' + username + ' ' + password + ' ' + email})
 
 
-# test with username: User1 , Password: 123456        
-        
+# test with username: User11 , Password: P@ssw0rd      
+
+@LoginRoutes.route('/currentuser')
+def get_current_user():
+    user = session.get("user")
+    # if not user:
+    #     return jsonify({'error': 'Unauthorized'}), 401
+    return jsonify({
+        "user": user
+    })
+
 @LoginRoutes.route('/logout')
 def logout():
    # remove the username from the session if it is there
    session.pop('user', None) 
+   return jsonify({'message': 'logged out'})
 
 

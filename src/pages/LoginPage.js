@@ -35,6 +35,7 @@ const LoginPage = () => {
     .then(data => {
       console.log(data); // Handle response data here
       if (data.message === 'login successful') {
+        setIsSubmit(true);
         // Display success message to user
       } else if (data.message === 'username found, wrong password') {
         // Display error message to user

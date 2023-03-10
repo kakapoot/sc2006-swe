@@ -6,6 +6,7 @@ import sys
 import os
 import re
 import dns.resolver
+import flask
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from entity.user import User
@@ -114,3 +115,8 @@ def create_profile():
         return jsonify({'message': 'profile creation sent'})
 
   # Your code to create the profile...
+@RegisterRoutes.route('/get_profile/<username>')
+def get_profile(username):
+        user_doc = userdb1_ref.document(username).get()
+        if user_doc.exists:
+            return jsonify(user_doc.to_dict())    

@@ -8,9 +8,7 @@ cred = credentials.Certificate(dir_path + "/key/key.json")
 firebase_admin.initialize_app(cred)
 
 from entity import *
-from control.LoginMgr import LoginRoutes
-from control.RegisterMgr import RegisterRoutes
-from control.SearchGroupMgr import FindGroupRoutes
+
 import pyrebase
 from flask import Flask, session, render_template, request, redirect, jsonify
 from flask_cors import CORS
@@ -44,6 +42,11 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = "secret"
 app.config["SESSION_TYPE"] = "filesystem"
+
+from control.LoginMgr import LoginRoutes
+from control.RegisterMgr import RegisterRoutes
+from control.SearchGroupMgr import FindGroupRoutes
+
 app.register_blueprint(RegisterRoutes)
 app.register_blueprint(LoginRoutes)
 app.register_blueprint(FindGroupRoutes)

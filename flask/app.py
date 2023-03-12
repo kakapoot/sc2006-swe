@@ -12,11 +12,10 @@ from control.LoginMgr import LoginRoutes
 from control.RegisterMgr import RegisterRoutes
 from control.SearchGroupMgr import FindGroupRoutes
 import pyrebase
-from flask import Flask, session, render_template,request,redirect,jsonify
+from flask import Flask, session, render_template, request, redirect, jsonify
 from flask_cors import CORS
-#from flask_session import Session
 
-
+# from flask_session import Session
 
 
 dir_path = os.path.abspath(os.path.dirname(__file__))
@@ -34,19 +33,19 @@ config = {
 
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
+db = firestore.client()
 
 GOOGLE_APPLICATION_CREDENTIALS = dir_path + "/key/application_default_credentials.json"
 os.environ["GCLOUD_PROJECT"] = "sc2006-e3ff1"
 
 
-#initialise flask app
+# initialise flask app
 app = Flask(__name__)
 CORS(app)
-app.secret_key='secret'
-app.config['SESSION_TYPE'] = 'filesystem'
+app.secret_key = "secret"
+app.config["SESSION_TYPE"] = "filesystem"
 app.register_blueprint(RegisterRoutes)
 app.register_blueprint(LoginRoutes)
 app.register_blueprint(FindGroupRoutes)
-if __name__=='__main__':
+if __name__ == "__main__":
     app.run(debug=True)
-    

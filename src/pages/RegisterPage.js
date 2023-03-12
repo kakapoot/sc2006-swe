@@ -22,7 +22,7 @@ const RegisterPage = () => {
   const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$/;
 
   const handleChange = (e) => {
-    setValues({...values, [e.target.name]: e.target.value });
+    setValues({ ...values, [e.target.name]: e.target.value });
   }
 
   const handleSubmit = (e) => {
@@ -31,32 +31,35 @@ const RegisterPage = () => {
     setIsSubmit(true);
     // Send form data to Flask route
     fetch('http://localhost:5000/register', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(values)
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(values)
     })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data); // Handle response data here
-      if (data.message === 'username is taken') {
-        // Display error message to user
-      } 
-      else if (data.message === 'email is taken') {
-        // Display error message to user
-      } 
-      else if (data.message === 'email is invalid') {
-        // Display error message to user
-      }
-      else { //data.message = 'Registration Successful'
-        // Display success 
-       // fetch('http://localhost:5000/create_profile?username=' + encodeURIComponent(values.username))
-       //navigate('/create_profile',{state: {username: values.username }});
-      } 
-      //navigate('/create_profile',{state: {username: values.username }});
-    }) 
-    .catch(error => console.error(error)); 
+      .then(response => response.json())
+      .then(data => {
+        console.log(data); // Handle response data here
+        if (data.message === 'username is taken') {
+          // Display error message to user
+          console.log(data.message)
+        }
+        else if (data.message === 'email is taken') {
+          // Display error message to user
+          console.log(data.message)
+        }
+        else if (data.message === 'email is invalid') {
+          // Display error message to user
+          console.log(data.message)
+        }
+        else { //data.message = 'Registration Successful'
+          // Display success 
+          // fetch('http://localhost:5000/create_profile?username=' + encodeURIComponent(values.username))
+          //navigate('/create_profile',{state: {username: values.username }});
+        }
+        //navigate('/create_profile',{state: {username: values.username }});
+      })
+      .catch(error => console.error(error));
   }
 
   useEffect(() => {
@@ -77,10 +80,10 @@ const RegisterPage = () => {
     }
     if (!values.email) {
       errors.email = "Email is required!";
-    } 
+    }
     if (!values.password) {
       errors.password = "Password is required!";
-    } else if (values.password.length < 8){
+    } else if (values.password.length < 8) {
       errors.password = "Password must contain 8 or more characters!";
     } else if (!passwordRegex.test(values.password)) {
       errors.password = "Password must contain at least one uppercase letter, one number, and one symbol.";
@@ -94,10 +97,10 @@ const RegisterPage = () => {
     return errors;
   };
 
-  
+
   return (
     <div className="register-page">
-      {Object.keys(errors).length === 0 && isSubmit ? navigate('/create_profile',{state: {username: values.username }}) : null}
+      {Object.keys(errors).length === 0 && isSubmit ? navigate('/create_profile', { state: { username: values.username } }) : null}
       <div className="register-form-container">
         <form onSubmit={handleSubmit}>
           <div className="register-form">
@@ -109,7 +112,7 @@ const RegisterPage = () => {
                 name="fullname"
                 placeholder="Name"
                 value={setValues.fullname}
-                onChange={handleChange}/>
+                onChange={handleChange} />
             </div>
             <p className="input-error">{errors.fullname}</p>
             <div className="input-container">
@@ -119,7 +122,7 @@ const RegisterPage = () => {
                 name="username"
                 placeholder="Username"
                 value={setValues.username}
-                onChange={handleChange}/>
+                onChange={handleChange} />
             </div>
             <p className="input-error">{errors.username}</p>
             <div className="input-container">
@@ -129,7 +132,7 @@ const RegisterPage = () => {
                 name="email"
                 placeholder="Email"
                 value={setValues.email}
-                onChange={handleChange}/>
+                onChange={handleChange} />
             </div>
             <p className="input-error">{errors.email}</p>
             <div className="input-container">
@@ -139,7 +142,7 @@ const RegisterPage = () => {
                 name="password"
                 placeholder="Password"
                 value={setValues.password}
-                onChange={handleChange}/>
+                onChange={handleChange} />
             </div>
             <p className="input-error">{errors.password}</p>
             <div className="input-container">
@@ -149,7 +152,7 @@ const RegisterPage = () => {
                 name="confirmPassword"
                 placeholder="Confirm password"
                 value={setValues.confirmPassword}
-                onChange={handleChange}/>
+                onChange={handleChange} />
             </div>
             <p className="input-error">{errors.confirmPassword}</p>
             <button className="register-button">REGISTER</button>
@@ -162,4 +165,3 @@ const RegisterPage = () => {
 }
 
 export default RegisterPage
- 

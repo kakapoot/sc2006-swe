@@ -33,6 +33,10 @@ firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firestore.client()
 
+userdb = db.collection("userdb")
+groupdb = db.collection("groupdb")
+tagsdb = db.collection("tagsdb")
+
 GOOGLE_APPLICATION_CREDENTIALS = dir_path + "/key/application_default_credentials.json"
 os.environ["GCLOUD_PROJECT"] = "sc2006-e3ff1"
 
@@ -46,9 +50,17 @@ app.config["SESSION_TYPE"] = "filesystem"
 from control.LoginMgr import LoginRoutes
 from control.RegisterMgr import RegisterRoutes
 from control.SearchGroupMgr import FindGroupRoutes
+from control.Util import UtilRoutes
+from control.GroupMgr import GroupRoutes
+from control.UserMgr import UserRoutes
 
 app.register_blueprint(RegisterRoutes)
 app.register_blueprint(LoginRoutes)
 app.register_blueprint(FindGroupRoutes)
+app.register_blueprint(UtilRoutes)
+app.register_blueprint(GroupRoutes)
+app.register_blueprint(UserRoutes)
+
+
 if __name__ == "__main__":
     app.run(debug=True)

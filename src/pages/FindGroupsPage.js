@@ -2,51 +2,23 @@ import React, { useEffect, useState } from 'react'
 import { Navbar } from '../components/Navbar'
 import { GroupCard } from '../components/GroupCard'
 import { Searchbar } from '../components/Searchbar'
-import { responsivePropType } from 'react-bootstrap/esm/createUtilityClasses'
 
 export default function FindGroupsPages() {
-    // TODO: replace with actual fetched data
-    
-    // const groups = [{
-    //     groupId: "1",
-    //     name: "Wholesome Study Group",
-    //     studyArea: "Lee Kong Chian Reference Library",
-    //     // TODO : REFACTOR tags : { subjects: [...], ... }
-    //     tags: ["Mathematics", "Physics", "Secondary", "Visual", "Auditory", "East"],
-    //     members: [
-    //         {
-    //             userId: "1",
-    //             imgSrc: "/user_img.png"
-    //         },
-    //         {
-    //             userId: "2",
-    //             imgSrc: "/user_img.png"
-    //         }]
-    // },
-    // {
-    //     groupId: "2",
-    //     name: "Memes and Dreams",
-    //     studyArea: "Tampines Regional Library",
-    //     tags: ["Chemistry"],
-    //     members: [
-    //         {
-    //             userId: "1",
-    //             imgSrc: "/user_img.png"
-    //         },
-    //         {
-    //             userId: "2",
-    //             imgSrc: "/user_img.png"
-    //         }]
-    // }
-    // ]
+    const [tagData, setTagData] = useState({})
+    const [isLoading, setIsLoading] = useState(false)
 
-    // TODO: replace with actual fetched data
-    const tagData = {
-        subjects: ["Mathematics", "Physics", "Biology", "Chemistry", "English", "Art", "Music", "Geography", "History", "Computer Science", "Business", "Engineering"],
-        educationLevels: ["Secondary", "Polytechnic", "Pre-university / JC", "University", "Post-graduate", "Doctoral"],
-        learningStyles: ["Visual", "Auditory", "Reading / Writing", "Kinesthetic"],
-        regions: ["North", "South", "East", "West", "Central"],
-    }
+    // fetch available tags in database
+    useEffect(() => {
+        setIsLoading(true)
+        // Send form data to Flask route
+        fetch('http://localhost:5000/get_tags')
+            .then(response => response.json())
+            .then(data => {
+                setTagData(data)
+            })
+            .catch(error => console.error(error))
+            .finally(() => setIsLoading(false));
+    }, [])
 
     const [searchText, setSearchText] = useState("")
     const [filterTags, setFilterTags] = useState([])
@@ -54,6 +26,7 @@ export default function FindGroupsPages() {
     const handleSearchTextChange = (searchText) => {
         setSearchText(searchText)
     }
+
 
     const handleFilterTagsChange = (filterTags) => {
         setFilterTags(filterTags)
@@ -63,7 +36,8 @@ export default function FindGroupsPages() {
         console.log("Search text: " + searchText)
         console.log("Filter tags: " + filterTags)
 
-    ////////////////////////////////////////////////////////////////////////// AGNES
+        ////////////////////////////////////////////////////////////////////////// AGNES
+        setIsLoading(true)
         fetch('http://localhost:5000/find_groups', {
             method: 'POST',
             headers: {
@@ -71,35 +45,32 @@ export default function FindGroupsPages() {
             },
             body: JSON.stringify(searchText + filterTags)
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data); // Handle response data here
-            if (data.message === 'No such Group') {
-                // Display no group message to user
-            } 
-        })
-        .catch(error => console.error(error));
-        
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Handle response data here
+                if (data.message === 'No such Group') {
+                    // Display no group message to user
+                }
+            })
+            .catch(error => console.error(error))
+            .finally(setIsLoading(false));
+
         setSearchText("")
     }
-    
+
     ////////////////////////////////////////////////////////////////////////
     const [groups, setGroups] = useState([])
     useEffect(() => {
         fetch('http://127.0.0.1:5000/update_group', {
-            'method':'GET',
+            'method': 'GET',
             headers: {
-                'Content-Type':'applications/json'
+                'Content-Type': 'applications/json'
             }
         })
-        .then(response => response.json())
-        .then(response => setGroups(response))
-        .catch(error => console.log(error))
-    },[])
-    // [{'education_level': 'University', 'group_code': 'ABCD', 'privacy': 'Private', 'learning_style': ['Visual'], 'members': ['john3'], 'subjects': ['math', 'physics'], 'description': 'Lorem ', 'name': 'Wholesome Study Group', 'study_area': 'Lee Kong Chian Reference Library', 'region': ['Central'], 'capacity': '20'}, {'learning_style': ['Reading/Writing'], 'members': ['fred1', 'elroy7'], 'capacity': 10, 'study_area': 'Tampines Regional Library', 'privacy': 'Public', 'region': ['East'], 'subjects': ['chemistry'], 'name': 'Memes and Dreams', 'education_level': ['Junior College'], 'description': 'testing testing'}, {'description': 'sda', 'subjects': ['Engineering', 'Business', 'Computer Science', 'Physics', 'Biology', 'Chemistry'], 'privacy': 'private', 'studyArea': 'dsa', 'learningStyles': ['Kinesthetic', 'Reading / Writing'], 'educationLevel': ['Pre-university / JC', 'University'], 'capacity': 10, 'regions': ['East', 'West'], 'name': 'das'}, {'name': 'group1', 'learningStyles': ['Reading / Writing'], 'regions': ['East', 
-    // 'West'], 'educationLevel': ['Polytechnic'], 'capacity': 10, 'privacy': 'public', 'description': 'des1', 'subjects': ['Mathematics'], 'studyArea': 'area1'}, {'description': 'sda', 'capacity': 10, 'privacy': 
-    // 'private', 'studyArea': 'das', 'name': 'sad'}, {'subjects': ['History'], 'regions': ['East'], 'name': 'sda', 'learningStyles': ['Reading / Writing'], 'educationLevel': ['Polytechnic'], 'capacity': 10, 'description': 'sda', 'privacy': 'private', 'studyArea': 'dsa'}]
-    // Currently sent over in this format
+            .then(response => response.json())
+            .then(response => setGroups(response))
+            .catch(error => console.log(error))
+    }, [])
     /////////////////////////////////////////////////////////////////////////
 
 
@@ -120,11 +91,15 @@ export default function FindGroupsPages() {
                             prevFilterTags={filterTags}
                             tagData={tagData} />
 
+                        {isLoading &&
+                            <div className="spinner-border text-primary" role="status"></div>}
                         {/* Groups */}
-                        <div className="d-flex flex-column gap-5">
-                            {/* {groups.map((group) => <GroupCard group={group} key={group.groupId} />)} */}
-                            {groups.map((group) => <GroupCard group={group} key={group.name} />)}
-                        </div>
+                        {!isLoading &&
+                            <div className="d-flex flex-column gap-5">
+                                {/* {groups.map((group) => <GroupCard group={group} key={group.groupId} />)} */}
+                                {groups.map((group) => <GroupCard group={group} key={group.name} />)}
+                            </div>}
+
                     </div>
                 </div>
             </main>

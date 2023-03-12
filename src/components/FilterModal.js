@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { SelectableTag, DisplayTag } from './Tag'
+import { SelectableTag, DisplayTag, formatTagType } from './Tag'
 
 export function FilterModal({ onFilterTagsChange, prevFilterTags, tagData }) {
     const [selectedTags, setSelectedTags] = useState([])
@@ -22,14 +22,6 @@ export function FilterModal({ onFilterTagsChange, prevFilterTags, tagData }) {
 
     const handleClose = () => {
         setSelectedTags(prevFilterTags)
-    }
-
-    const formatTagType = (text) => {
-        return text
-            // insert a space between each word
-            .replace(/([A-Z])/g, ' $1')
-            // uppercase first character of each word
-            .replace(/^./, (str) => str.toUpperCase())
     }
 
     return (

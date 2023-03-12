@@ -4,6 +4,8 @@ import { DisplayTag } from './Tag'
 
 
 export function GroupCard({ group }) {
+
+
     return (
         <div className="card">
             <div className="card-header px-4 bg-secondary d-flex align-items-center justify-content-between">
@@ -33,7 +35,10 @@ export function GroupCard({ group }) {
                 </h5>
 
                 <div className="d-flex flex-wrap gap-2 ">
-                    {group.tags.map((tag) => <DisplayTag name={tag} key={tag} />)}
+                    {Object.entries(group.tags).map(([tagType, tags]) =>
+                        tags.map((tag) =>
+                            <DisplayTag name={tag} key={tag} />
+                        ))}
                 </div>
             </div>
         </div>

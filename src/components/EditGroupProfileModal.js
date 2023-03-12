@@ -1,81 +1,71 @@
 import React, { useEffect, useState } from 'react'
-import { SelectableTag } from './Tag'
+import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
 
 // TODO : ensure input fields are not blank
-export function EditGroupProfileModal({ buttonName, prevGroupProfileData, onGroupProfileDataChange }) {
-    // TODO : replace with actual available tags
-    const tagData = {
-        subjects: ["Mathematics", "Physics", "Biology", "Chemistry", "English", "Art", "Music", "Geography", "History", "Computer Science", "Business", "Engineering"],
-        educationLevels: ["Secondary", "Polytechnic", "Pre-university / JC", "University", "Post-graduate", "Doctoral"],
-        learningStyles: ["Visual", "Auditory", "Reading / Writing", "Kinesthetic"],
-        regions: ["North", "South", "East", "West", "Central"]
-    }
+export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataChange }) {
+    const [profile, setProfile] = useState(prevGroupData)
+    const [isLoading, setIsLoading] = useState(false)
+    const [tagData, setTagData] = useState({})
 
-    const [profile, setProfile] = useState(prevGroupProfileData)
+    // fetch available tags in database
+    useEffect(() => {
+        setIsLoading(true)
+        // Send form data to Flask route
+        fetch('http://localhost:5000/get_tags')
+            .then(response => response.json())
+            .then(data => {
+                setTagData(data)
+            })
+            .catch(error => console.error(error))
+            .finally(() => setIsLoading(false));
+    }, [])
 
     useEffect(() => {
-        setProfile(prevGroupProfileData)
-    }, [prevGroupProfileData])
-
+        setProfile(prevGroupData)
+    }, [prevGroupData])
 
     const handleInputChange = (inputType, inputValue) => {
         setProfile({ ...profile, [inputType]: inputValue })
     }
 
-    const handleSelectTag = (selectedTagType, selectedTag) => {
-        profile[selectedTagType].some(tag => tag === selectedTag)
-            ? setProfile({ ...profile, [selectedTagType]: profile[selectedTagType].filter(tag => tag !== selectedTag) })
-            : setProfile({ ...profile, [selectedTagType]: [...profile[selectedTagType], selectedTag] })
-    }
-
-    const handleIsSelected = (selectedTagType, selectedTag) => {
-        return profile[selectedTagType].some(tag => tag === selectedTag)
-    }
 
     // TODO : update database with new group profile data
     const handleApplyChangesSubmit = () => {
-        console.log(profile)
-        onGroupProfileDataChange(profile)
-        setProfile(prevGroupProfileData)
-        /////////////////////////////////////////////////// send to flask
-        fetch('http://localhost:5000/update_group', {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: profile.name,
-            privacy: profile.privacy || "private",
-            capacity: profile.capacity,
-            studyArea: profile.studyArea,
-            description: profile.description,
-            subjects: profile.subjects,
-            educationLevels: profile.educationLevels,
-            learningStyles: profile.learningStyles,
-            regions: profile.regions
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data); // Handle response data here
-            //returns group updated, cant check if creating or updating
-          })
-        .catch(error => console.error(error));
-        //////////////////////////////////////////////////
+        if (buttonName === "Create New Group") {
+            // TODO : if creating a new group, create unique groupId, set authenticated user as member and owner of group
+            console.log(profile)
+            onGroupDataChange(profile)
+            setProfile(prevGroupData)
+        }
 
+        else if (buttonName === "Edit Group") {
+            console.log(profile)
+            onGroupDataChange(profile)
+            setProfile(prevGroupData)
+
+            /////////////////////////////////////////////////// send to flask
+            setIsLoading(true)
+            fetch('http://localhost:5000/update_group', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ...profile })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); // Handle response data here
+                    //returns group updated, cant check if creating or updating
+                })
+                .catch(error => console.error(error))
+                .finally(() => setIsLoading(false));
+            //////////////////////////////////////////////////
+        }
     }
 
     const handleClose = () => {
         // clear unsaved changes
-        setProfile(prevGroupProfileData)
-    }
-
-    const formatTagType = (text) => {
-        return text
-            // insert a space between each word
-            .replace(/([A-Z])/g, ' $1')
-            // uppercase first character of each word
-            .replace(/^./, (str) => str.toUpperCase())
+        setProfile(prevGroupData)
     }
 
     return (
@@ -134,7 +124,7 @@ export function EditGroupProfileModal({ buttonName, prevGroupProfileData, onGrou
 
                                     <div className="d-flex flex-wrap gap-2">
                                         {tags.map((tag) =>
-                                            <div key={tag}><SelectableTag name={tag} onSelectTag={() => { handleSelectTag(tagType, tag) }} isSelected={handleIsSelected(tagType, tag)} /></div>
+                                            <div key={tag}><SelectableTag name={tag} onSelectTag={() => { handleSelectTag(profile, setProfile, tagType, tag) }} isSelected={handleIsSelected(profile, tagType, tag)} /></div>
                                         )}
                                     </div>
                                 </div>

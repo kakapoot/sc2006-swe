@@ -3,27 +3,26 @@ import sys
 import os
 import re
 import dns.resolver
-from app import firebase, auth, db
+from app import auth, db, userdb
 
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from entity.user import User
 
 RegisterRoutes = Blueprint("RegisterRoutes", __name__)
-userdb1_ref = db.collection("userdb1")
 
 
 @RegisterRoutes.route("/register", methods=["POST"])
 def register():
-    name = request.json.get("fullname")
+    name = request.json.get("name")
     username = request.json.get("username")
     password = request.json.get("password")
     email = request.json.get("email")
 
     # check for duplicate username/email, then check if email is valid
 
-    if len(userdb1_ref.where("username", "==", username).limit(1).get()) == 1:
+    if len(userdb.where("username", "==", username).limit(1).get()) == 1:
         return jsonify({"message": "username is taken"})
-    elif len(userdb1_ref.where("email", "==", email).limit(1).get()) == 1:
+    elif len(userdb.where("email", "==", email).limit(1).get()) == 1:
         return jsonify({"message": "email is taken"})
     else:
         try:
@@ -41,7 +40,7 @@ def register():
 
                 response = {"message": message, "data": data}
                 # create user
-                doc_ref = userdb1_ref.document(username)
+                doc_ref = userdb.document(username)
 
                 auth.create_user_with_email_and_password(email, password)
                 doc_ref.set(
@@ -70,48 +69,38 @@ def create_profile():
     elif request.method == "POST":
         data = request.get_json()
         username = data["username"]
+
         gender = data["gender"]
         birthday = data["birthday"]
         organization = data["organization"]
-        aboutme = data["aboutme"]
-        educationLevel = data["educationLevels"]
-        learningStyle = data["learningStyles"]
-        studyInterests = data["studyInterests"]
+        description = data["description"]
+        tags = data["tags"]
+        groups = []
+
         # edit their profile
-        doc_ref = userdb1_ref.document(username)
+        doc_ref = userdb.document(username)
 
         doc_ref.set(
             {
                 "gender": gender,
                 "birthday": birthday,
                 "organization": organization,
-                "about_me": aboutme,
-                "educationLevel": educationLevel,
-                "learningStyle": learningStyle,
-                "studyInterests": studyInterests,
+                "description": description,
+                "tags": tags,
+                "groups": groups,
             },
             merge=True,
         )
 
         # print(username)
 
-        print(
-            "username:",
-            username,
-            gender,
-            birthday,
-            organization,
-            aboutme,
-            educationLevel,
-            learningStyle,
-            studyInterests,
-        )
+        print(doc_ref)
         return jsonify({"message": "profile creation sent"})
 
 
 # Your code to create the profile...
 @RegisterRoutes.route("/get_profile/<username>")
 def get_profile(username):
-    user_doc = userdb1_ref.document(username).get()
+    user_doc = userdb.document(username).get()
     if user_doc.exists:
         return jsonify(user_doc.to_dict())

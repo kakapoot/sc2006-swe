@@ -1,7 +1,7 @@
 from flask import Flask, session, render_template, request, redirect, jsonify, Blueprint
 import sys
 import os
-from app import firebase, auth, db
+from app import auth, db, userdb
 
 # sys.path.insert(0, '../entity')
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -9,7 +9,6 @@ from entity.user import User
 
 
 LoginRoutes = Blueprint("LoginRoutes", __name__)
-userdb1_ref = db.collection("userdb1")
 
 
 @LoginRoutes.route("/")
@@ -25,7 +24,7 @@ def login():
         username = request.json.get("username")
         password = request.json.get("password")
 
-        query = userdb1_ref.where("username", "==", username).limit(1)
+        query = userdb.where("username", "==", username).limit(1)
         results = query.get()
         if len(results) == 0:
             return jsonify({"message": "Username not found"})

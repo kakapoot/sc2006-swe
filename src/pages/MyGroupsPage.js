@@ -4,79 +4,25 @@ import { GroupCard } from '../components/GroupCard'
 import { JoinPrivateGroupModal } from '../components/JoinPrivateGroupModal'
 import { EditGroupProfileModal } from '../components/EditGroupProfileModal'
 
-// TODO : integrate with mock database
 export default function MyGroupsPage() {
-    // TODO: replace with actual fetched data
-    const groups = [{
-        groupId: "1",
-        name: "Wholesome Study Group",
-        studyArea: "Lee Kong Chian Reference Library",
-        tags: ["Mathematics", "Physics", "Secondary", "Visual", "Auditory", "East"],
-        members: [
-            {
-                userId: "1",
-                imgSrc: "/user_img.png"
-            }]
-    },
-    {
-        groupId: "2",
-        name: "Memes and Dreams",
-        studyArea: "Tampines Regional Library",
-        tags: ["Chemistry"],
-        members: [
-            {
-                userId: "1",
-                imgSrc: "/user_img.png"
-            },
-            {
-                userId: "2",
-                imgSrc: "/user_img.png"
-            }]
-    },
-    {
-        groupId: "3",
-        name: "bofa",
-        studyArea: "Tampines Regional Library",
-        tags: ["Chemistry"],
-        members: [
-            {
-                userId: "1",
-                imgSrc: "/user_img.png"
-            },
-            {
-                userId: "2",
-                imgSrc: "/user_img.png"
-            }]
-    },
-    {
-        groupId: "4",
-        name: "ligma",
-        studyArea: "Tampines Regional Library",
-        tags: ["Chemistry"],
-        members: [
-            {
-                userId: "1",
-                imgSrc: "/user_img.png"
-            },
-            {
-                userId: "2",
-                imgSrc: "/user_img.png"
-            }]
-    }
-    ]
+    // TODO : fetch data from firebase based on currently authenticated user
+    const [groups, setGroups] = ([])
 
     const emptyGroupProfileData = {
+        groupId: "",
         name: "",
-        studyArea: "",
-        subjects: [],
-        educationLevels: [],
-        learningStyles: [],
-        regions: [],
-        members: [],
-        description: "",
-        code: "",
         privacy: "",
-        capacity: 10
+        capacity: 10,
+        studyArea: "",
+        description: "",
+        tags: {
+            subjects: [],
+            educationLevels: [],
+            learningStyles: [],
+            regions: []
+        },
+        members: [],
+        owner: "",
     }
 
     // TODO : add created group to database
@@ -97,7 +43,7 @@ export default function MyGroupsPage() {
 
                             {/* TODO: create group modal */}
                             <div className="d-flex gap-3">
-                                <EditGroupProfileModal buttonName="Create New Group" prevGroupProfileData={emptyGroupProfileData} onGroupProfileDataChange={handleGroupProfileDataChange} />
+                                <EditGroupProfileModal buttonName="Create New Group" prevGroupData={emptyGroupProfileData} onGroupDataChange={handleGroupProfileDataChange} />
 
                                 <JoinPrivateGroupModal />
                             </div>
@@ -105,7 +51,7 @@ export default function MyGroupsPage() {
 
                         {/* Groups */}
                         <div className="d-flex flex-column gap-5">
-                            {groups.map((group) => <GroupCard group={group} key={group.groupId} />)}
+                            {groups && groups.map((group) => <GroupCard group={group} key={group.groupId} />)}
                         </div>
                     </div>
                 </div>

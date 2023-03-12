@@ -11,14 +11,16 @@ const RegisterPage = () => {
   /*navigator to shift to an email validator in final build*/
 
   const [values, setValues] = useState({
-    fullname: "",
+    name: "",
     username: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    confirmPassword: ""
   })
   const [errors, setErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$/;
 
   const handleChange = (e) => {
@@ -29,6 +31,8 @@ const RegisterPage = () => {
     e.preventDefault();
     setErrors(validate(values));
     setIsSubmit(true);
+    setIsLoading(true)
+
     // Send form data to Flask route
     fetch('http://localhost:5000/register', {
       method: 'POST',
@@ -59,21 +63,17 @@ const RegisterPage = () => {
         }
         //navigate('/create_profile',{state: {username: values.username }});
       })
-      .catch(error => console.error(error));
+      .catch(error => console.error(error))
+      .finally(() => setIsLoading(false));
   }
 
-  useEffect(() => {
-    console.log(errors);
-    if (Object.keys(errors).length === 0 && isSubmit) {
-      console.log(values);
-    }
-  }, [errors]);
+
 
   /*to add email regex*/
   const validate = (values) => {
     const errors = {};
-    if (!values.fullname) {
-      errors.fullname = "Name is required!";
+    if (!values.name) {
+      errors.name = "Name is required!";
     }
     if (!values.username) {
       errors.username = "Username is required!";
@@ -100,28 +100,32 @@ const RegisterPage = () => {
 
   return (
     <div className="register-page">
-      {Object.keys(errors).length === 0 && isSubmit ? navigate('/create_profile', { state: { username: values.username } }) : null}
+      {!isLoading && Object.keys(errors).length === 0 && isSubmit ? navigate('/create_profile', { state: { username: values.username } }) : null}
+
       <div className="register-form-container">
-        <form onSubmit={handleSubmit}>
+        {isLoading &&
+          <div className="spinner-border text-primary" role="status"></div>}
+
+        {!isLoading && <form onSubmit={handleSubmit}>
           <div className="register-form">
             <h1 className="register-heading">Create your Account</h1>
             <div className="input-container">
               <label className="register-label">Name</label>
               <input className="input-field"
                 type="text"
-                name="fullname"
+                name="name"
                 placeholder="Name"
-                value={setValues.fullname}
+                value={values.name}
                 onChange={handleChange} />
             </div>
-            <p className="input-error">{errors.fullname}</p>
+            <p className="input-error">{errors.name}</p>
             <div className="input-container">
               <label className="register-label">Username</label>
               <input className="input-field"
                 type="text"
                 name="username"
                 placeholder="Username"
-                value={setValues.username}
+                value={values.username}
                 onChange={handleChange} />
             </div>
             <p className="input-error">{errors.username}</p>
@@ -131,7 +135,7 @@ const RegisterPage = () => {
                 type="email"
                 name="email"
                 placeholder="Email"
-                value={setValues.email}
+                value={values.email}
                 onChange={handleChange} />
             </div>
             <p className="input-error">{errors.email}</p>
@@ -141,7 +145,7 @@ const RegisterPage = () => {
                 type="password"
                 name="password"
                 placeholder="Password"
-                value={setValues.password}
+                value={values.password}
                 onChange={handleChange} />
             </div>
             <p className="input-error">{errors.password}</p>
@@ -151,13 +155,13 @@ const RegisterPage = () => {
                 type="password"
                 name="confirmPassword"
                 placeholder="Confirm password"
-                value={setValues.confirmPassword}
+                value={values.confirmPassword}
                 onChange={handleChange} />
             </div>
             <p className="input-error">{errors.confirmPassword}</p>
             <button className="register-button">REGISTER</button>
           </div>
-        </form>
+        </form>}
         <img src={LoginImage} alt="login-img" className="login-image" />
       </div>
     </div>

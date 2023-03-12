@@ -7,9 +7,12 @@ import { Link } from 'react-router-dom';
 
 export default function GroupProfilePage() {
     const { groupId } = useParams();
-    const [isGroupCreator, setIsGroupCreator] = useState(null)
-    const [isGroupMember, setIsGroupMember] = useState(null)
-    const [groupProfileData, setGroupProfileData] = useState(null)
+    const [isGroupCreator, setIsGroupCreator] = useState(true)
+    const [isGroupMember, setIsGroupMember] = useState(true)
+    const [groupData, setGroupData] = useState(null)
+    const [error, setError] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
+    const [membersData, setMembersData] = useState(null)
 
     // TODO : check if current authenticated user is group creator 
     // TODO : check if current authenticated user is group member, 
@@ -17,48 +20,52 @@ export default function GroupProfilePage() {
     // show error if not in group and group is private
     useEffect(() => {
         // TODO : placeholder
-        const userId = "0"
+        // const userId = "0"
 
-        if (userId === "0") {
-            setIsGroupCreator(true)
-            setIsGroupMember(true)
-        } else {
-            setIsGroupCreator(false)
-            setIsGroupMember(false)
-        }
-        fetchGroupProfileData()
+        // if (userId === "0") {
+        //     setIsGroupCreator(true)
+        //     setIsGroupMember(true)
+        // } else {
+        //     setIsGroupCreator(false)
+        //     setIsGroupMember(false)
+        // }
+        fetchGroupData()
+        fetchMembersData()
     }, [isGroupCreator, isGroupMember, groupId])
 
-    // TODO : fetch group data based on group ID
-    const fetchGroupProfileData = () => {
-        // check authenticated user context
-        setGroupProfileData({
-            name: "Wholesome Study Group",
-            studyArea: "Lee Kong Chian Reference Library",
-            subjects: ["Mathematics", "Computer Science"],
-            educationLevels: ["University"],
-            learningStyles: ["Visual"],
-            regions: ["East"],
-            members: [
-                {
-                    userId: "1",
-                    name: "Lao Gan Ma",
-                    organization: "Nanyang Technological University",
-                },
-                {
-                    userId: "2",
-                    name: "Bing Chilling",
-                    organization: "Raffles Institution",
-                }],
-            description: "Lorem ipsum dolor sit amet, conseonsectetur adipiscing elit, sed do eiusmod tempor incidiductetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, conseonsectetur adipiscing elit, sed do eiusmod tempor incidiductetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            code: "69420",
-            privacy: "private",
-            capacity: 20
-        })
+    // fetch group data based on group ID
+    const fetchGroupData = () => {
+        setIsLoading(true)
+        // Send form data to Flask route
+        fetch(`http://localhost:5000/get_group/${groupId}`)
+            .then(response => response.json())
+            .then(data => {
+                setGroupData(data)
+            })
+            .catch(error => {
+                console.error(error)
+                setError("Unable to fetch data")
+            })
+            .finally(() => setIsLoading(false));
     }
 
-    const handleGroupProfileDataChange = (userProfileData) => {
-        setGroupProfileData(userProfileData)
+    // fetch list of members details based on group ID
+    const fetchMembersData = () => {
+        setIsLoading(true)
+        fetch(`http://localhost:5000/get_group_members/${groupId}`)
+            .then(response => response.json())
+            .then(data => {
+                setMembersData(data)
+            })
+            .catch(error => {
+                console.error(error)
+                setError("Unable to fetch data")
+            })
+            .finally(() => setIsLoading(false));
+    }
+
+    const handleGroupDataChange = (userProfileData) => {
+        setGroupData(userProfileData)
     }
 
     // TODO
@@ -71,24 +78,40 @@ export default function GroupProfilePage() {
         console.log("Leave")
     }
 
+    const formatTagType = (text) => {
+        return text
+            // insert a space between each word
+            .replace(/([A-Z])/g, ' $1')
+            // uppercase first character of each word
+            .replace(/^./, (str) => str.toUpperCase())
+    }
+
     return (
         <div className="container-fluid">
             <main className="row">
                 <Navbar />
+                {/* Loading */}
+                {isLoading &&
+                    <div className="col">
+                        <div className="spinner-border text-primary" role="status"></div>
+                    </div>}
+                {/* Error */}
+                {error && <div className="col">{error}</div>}
+
                 { /* Content */}
-                {groupProfileData && <div className="col">
+                {!isLoading && groupData && <div className="col">
                     {/* Header */}
                     <div className="row bg-secondary">
                         <div className="col">
                             <div className="d-flex justify-content-between align-items-center my-4 container">
                                 <div className="d-flex flex-column align-items-start text-light">
-                                    <h5 className="text-uppercase">{groupProfileData.privacy} Group (Code: {groupProfileData.code})</h5>
-                                    <h2><strong>{groupProfileData.name}</strong></h2>
+                                    <h5 className="text-uppercase">{groupData.privacy} Group (Code: {groupData.groupId})</h5>
+                                    <h2><strong>{groupData.name}</strong></h2>
                                 </div>
 
                                 <div className="d-flex gap-3">
                                     {/* Show Edit button if authenticated user is creator of group */}
-                                    {isGroupCreator && <EditGroupProfileModal buttonName="Edit Group" prevGroupProfileData={groupProfileData} onGroupProfileDataChange={handleGroupProfileDataChange} />}
+                                    {isGroupCreator && <EditGroupProfileModal buttonName="Edit Group" prevGroupData={groupData} onGroupDataChange={handleGroupDataChange} />}
 
                                     {/* Show Leave button if authenticated user is group member */}
                                     {isGroupMember &&
@@ -115,71 +138,51 @@ export default function GroupProfilePage() {
                     </div>
 
                     {/* Profile */}
-                    <div className="col">
-                        <div className="container">
-                            <div className="row my-5">
-                                {/* Profile Sidebar */}
-                                <div className="col-lg-4 d-flex flex-column align-items-start gap-3">
-                                    <div>
-                                        <span><strong>Subjects</strong></span>
-                                        <div className="d-flex flex-wrap gap-2">
-                                            {groupProfileData.subjects.map((tag) =>
-                                                <div key={tag}><DisplayTag name={tag} /></div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <span><strong>Education Levels</strong></span>
-                                        <div className="d-flex flex-wrap gap-2">
-                                            {groupProfileData.educationLevels.map((tag) =>
-                                                <div key={tag}><DisplayTag name={tag} /></div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <span><strong>Learning Styles</strong></span>
-                                        <div className="d-flex flex-wrap gap-2">
-                                            {groupProfileData.learningStyles.map((tag) =>
-                                                <div key={tag}><DisplayTag name={tag} /></div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <span><strong>Regions</strong></span>
-                                        <div className="d-flex flex-wrap gap-2">
-                                            {groupProfileData.regions.map((tag) =>
-                                                <div key={tag}><DisplayTag name={tag} /></div>
-                                            )}
-                                        </div>
-                                    </div>
+                    {!isLoading && groupData &&
+                        <div className="col">
+                            <div className="container">
+                                <div className="row my-5">
+                                    {/* Profile Sidebar */}
+                                    <div className="col-lg-4 d-flex flex-column align-items-start gap-3">
+                                        {groupData && Object.entries(groupData.tags).map(([tagType, tags]) => (
+                                            <div key={tagType} className="d-flex flex-column align-items-start">
+                                                <span><strong>{formatTagType(tagType)}</strong></span>
 
-                                    <div className="w-100">
-                                        {/* TODO : indicate group leader */}
-                                        {/* TODO : disable setting capacity below current no. of members */}
-                                        <h5><strong>Members ({groupProfileData.members.length} / {groupProfileData.capacity})</strong></h5>
-                                        <div className="d-flex flex-column gap-4">
-                                            {groupProfileData.members.map((member) =>
-                                                <Link to={`/user/${member.userId}`} className="text-start btn btn-warning">
-                                                    <div key={member.userId} className="d-flex gap-2">
-                                                        <div className="d-flex flex-column w-100">
-                                                            <span><strong>{member.name}</strong></span>
-                                                            <span>{member.organization}</span>
+                                                <div className="d-flex flex-wrap gap-2">
+                                                    {tags.map((tag) =>
+                                                        <div key={tag}><DisplayTag name={tag} /></div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+
+                                        <div className="w-100">
+                                            {/* TODO : indicate group leader */}
+                                            {/* TODO : disable setting capacity below current no. of members */}
+                                            <h5><strong>Members ({groupData.members.length} / {groupData.capacity})</strong></h5>
+                                            <div className="d-flex flex-column gap-4">
+                                                {membersData && membersData.members.map((member) =>
+                                                    <Link to={`/user/${member.username}`} key={member.username} className="text-start btn btn-warning">
+                                                        <div className="d-flex gap-2">
+                                                            <div className="d-flex flex-column w-100">
+                                                                <span><strong>{member.name}</strong></span>
+                                                                <span>{member.organization}</span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </Link>
-                                            )}
+                                                    </Link>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* Profile Body */}
-                                <div className="col d-flex flex-column align-items-start">
-                                    <h5><strong>Description</strong></h5>
-                                    <p>{groupProfileData.description}</p>
+                                    {/* Profile Body */}
+                                    <div className="col d-flex flex-column align-items-start">
+                                        <h5><strong>Description</strong></h5>
+                                        <p>{groupData.description}</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </div>}
                 </div>}
             </main >
         </div >

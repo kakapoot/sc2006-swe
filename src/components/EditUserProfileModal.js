@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from 'react'
-import { SelectableTag } from './Tag'
+import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
 
 // TODO : ensure input fields are not blank
 export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataChange }) {
     // TODO: replace with actual available tags
-    const tagData = {
-        studyInterests: ["Mathematics", "Physics", "Biology", "Chemistry", "English", "Art", "Music", "Geography", "History", "Computer Science", "Business", "Engineering"],
-        educationLevels: ["Secondary", "Polytechnic", "Pre-university / JC", "University", "Post-graduate", "Doctoral"],
-        learningStyles: ["Visual", "Auditory", "Reading / Writing", "Kinesthetic"],
-    }
-
     const [profile, setProfile] = useState(prevUserProfileData)
+    const [tagData, setTagData] = useState({})
+    const [isLoading, setIsLoading] = useState(false)
+
+    // fetch available tags in database
+    useEffect(() => {
+        setIsLoading(true)
+        // Send form data to Flask route
+        fetch('http://localhost:5000/get_tags')
+            .then(response => response.json())
+            .then(data => {
+                setTagData(data)
+            })
+            .catch(error => console.error(error))
+            .finally(() => setIsLoading(false));
+    }, [])
+
 
     useEffect(() => {
         setProfile(prevUserProfileData)
@@ -19,16 +29,6 @@ export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataCha
 
     const handleInputChange = (inputType, inputValue) => {
         setProfile({ ...profile, [inputType]: inputValue })
-    }
-
-    const handleSelectTag = (selectedTagType, selectedTag) => {
-        profile[selectedTagType].some(tag => tag === selectedTag)
-            ? setProfile({ ...profile, [selectedTagType]: profile[selectedTagType].filter(tag => tag !== selectedTag) })
-            : setProfile({ ...profile, [selectedTagType]: [...profile[selectedTagType], selectedTag] })
-    }
-
-    const handleIsSelected = (selectedTagType, selectedTag) => {
-        return profile[selectedTagType].some(tag => tag === selectedTag)
     }
 
     // TODO : update database with new user profile data
@@ -41,15 +41,6 @@ export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataCha
     const handleClose = () => {
         // clear unsaved changes
         setProfile(prevUserProfileData)
-    }
-
-
-    const formatTagType = (text) => {
-        return text
-            // insert a space between each word
-            .replace(/([A-Z])/g, ' $1')
-            // uppercase first character of each word
-            .replace(/^./, (str) => str.toUpperCase())
     }
 
     return (
@@ -95,8 +86,8 @@ export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataCha
                                 <input type="text" value={profile.organization} onChange={(e) => handleInputChange("organization", e.target.value)} className="form-control" id="organisation" placeholder="Enter organisation..." />
                             </div>
                             <div className="form-group d-flex flex-column w-50">
-                                <label htmlFor="aboutMe"><strong>About Me</strong></label>
-                                <textarea value={profile.aboutMe} onChange={(e) => handleInputChange("aboutMe", e.target.value)} rows="4" className="form-control" id="aboutMe" placeholder="Enter a description about yourself..."></textarea>
+                                <label htmlFor="description"><strong>Description</strong></label>
+                                <textarea value={profile.description} onChange={(e) => handleInputChange("description", e.target.value)} rows="4" className="form-control" id="description" placeholder="Enter a description about yourself..."></textarea>
                             </div>
 
 
@@ -107,7 +98,7 @@ export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataCha
 
                                     <div className="d-flex flex-wrap gap-2">
                                         {tags.map((tag) =>
-                                            <div key={tag}><SelectableTag name={tag} onSelectTag={() => { handleSelectTag(tagType, tag) }} isSelected={handleIsSelected(tagType, tag)} /></div>
+                                            <div key={tag}><SelectableTag name={tag} onSelectTag={() => { handleSelectTag(profile, setProfile, tagType, tag) }} isSelected={handleIsSelected(profile, tagType, tag)} /></div>
                                         )}
                                     </div>
                                 </div>

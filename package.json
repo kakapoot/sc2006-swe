@@ -21,7 +21,7 @@
   },
   "scripts": {
     "start": "concurrently \"npm run start-flask\" \"npm run start-react\"",
-    "start-flask": "set FLASK_APP=flask/app.py && set FLASK_ENV=development && flask run",
+    "start-flask": "set FLASK_APP=flask/app.py && set FLASK_DEBUG=1 && flask run",
     "start-react": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

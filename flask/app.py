@@ -35,7 +35,7 @@ db = firestore.client()
 
 userdb = db.collection("userdb")
 groupdb = db.collection("groupdb")
-tagsdb = db.collection("tagsdb")
+tagdb = db.collection("tagdb")
 
 GOOGLE_APPLICATION_CREDENTIALS = dir_path + "/key/application_default_credentials.json"
 os.environ["GCLOUD_PROJECT"] = "sc2006-e3ff1"

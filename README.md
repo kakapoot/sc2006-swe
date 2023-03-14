@@ -18,7 +18,11 @@ npm install
 
 Run web project and view locally hosted app in browser (eg. http://localhost:3000/):
 ```sh
-npm start
+npm run start
+```
+To run backend server only
+```sh
+npm run start-flask
 ```
 ## Create python requirements.txt
 ```sh

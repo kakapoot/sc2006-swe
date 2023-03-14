@@ -51,7 +51,6 @@ from control.LoginMgr import LoginRoutes
 from control.RegisterMgr import RegisterRoutes
 from control.GroupMgr import FindGroupRoutes
 from control.Util import UtilRoutes
-from control.GroupMgr import GroupRoutes
 from control.UserMgr import UserRoutes
 
 app.register_blueprint(RegisterRoutes)

@@ -49,7 +49,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 
 from control.LoginMgr import LoginRoutes
 from control.RegisterMgr import RegisterRoutes
-from control.SearchGroupMgr import FindGroupRoutes
+from control.GroupMgr import FindGroupRoutes
 from control.Util import UtilRoutes
 from control.GroupMgr import GroupRoutes
 from control.UserMgr import UserRoutes

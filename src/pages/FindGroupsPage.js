@@ -45,15 +45,24 @@ export default function FindGroupsPages() {
             },
             body: JSON.stringify(searchText + filterTags)
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data); // Handle response data here
-                if (data.message === 'No such Group') {
-                    // Display no group message to user
-                }
-            })
-            .catch(error => console.error(error))
-            .finally(setIsLoading(false));
+        .then(response => response.json())
+        .then(data => {
+            console.log(data); // Handle response data here
+            if (data.message === 'No such Group') {
+                // Display no group message to user
+            }
+            else if (data.message === 'No such Group - search'){
+                //Display no group message to user
+            }
+            else if (data.message === 'No such Group - search2'){
+                //Display no group message to user
+            }
+            else if (data.message === 'Group found'){
+                //Display no group message to user
+            }
+        })
+        .catch(error => console.error(error))
+        .finally(setIsLoading(false));
 
         setSearchText("")
     }

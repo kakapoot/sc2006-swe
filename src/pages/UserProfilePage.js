@@ -6,29 +6,24 @@ import { EditUserProfileModal } from '../components/EditUserProfileModal';
 import { AuthContext } from '../context/AuthContext';
 
 export default function UserProfilePage() {
-    const { usernameParam } = useParams();
+    const { username } = useParams()
     const [isAuthenticatedUser, setIsAuthenticatedUser] = useState(null)
     const [userProfileData, setUserProfileData] = useState(null)
-    const { username } = useContext(AuthContext)
+    const { currentUsername } = useContext(AuthContext)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
 
     // TODO 
     useEffect(() => {
-        // if (usernameParam === username) {
-        //     setIsAuthenticatedUser(true)
-        // } else {
-        //     setIsAuthenticatedUser(false)
-        // }
+        // if (usernameParam === username) 
         fetchUserProfileData()
-        console.log(isAuthenticatedUser)
     }, [])
 
     // TODO : fetch user data based on user ID
     const fetchUserProfileData = () => {
         setIsLoading(true)
         // Send form data to Flask route
-        fetch(`http://localhost:5000/get_user/${usernameParam}`)
+        fetch(`http://localhost:5000/get_user/${username}`)
             .then(response => response.json())
             .then(data => {
                 setUserProfileData(data)

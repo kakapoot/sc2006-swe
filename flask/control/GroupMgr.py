@@ -9,44 +9,33 @@ FindGroupRoutes = Blueprint("FindGroupRoutes", __name__)
 
 ###################################################################################################################################
 
+
 @FindGroupRoutes.route("/find_groups", methods=["POST"])
 def find_groups():
     if request.method == "POST":
-        received_data = request.get_json()
-        subname = received_data['searchText']
-        filterTags = received_data['filterTags']
+        data = request.get_json()
+        subname = data["searchText"]
+        filterTags = data["filterTags"]
 
-    subname = "Study"  # hardcode first
     if len(subname) > 0:  # user searched something
-        # query = grpdb1_ref.where('name', 'array_contains',subname)
-        # query = grpdb1_ref.orderByChild('name').startAt(subname).endAt(subname+"~")
-        # results1 = query.get()
-
         toSearch = []
         data = groupdb.where("privacy", "==", "public").get()
         for doc in data:
             name = doc.get("name")
-            #priv = doc.get("privacy")
             if subname in name:
                 toSearch.append(name)
 
         if len(toSearch) > 0:
             results1 = groupdb.where("name", "in", toSearch)
-            #return jsonify({'message': 'Group found'})   
-
 
         else:  # toSearch is empty
-            return jsonify({"message": "No such Group - search"})
+            return jsonify({})
 
     else:  # user did not search so retrieve entire databases
         results1 = groupdb.where("privacy", "==", "public")
-        #return jsonify({'message': 'Group found'})
 
-    # Get the filters chosen
-    # filterTags = request.json.get('filterTags')  #array of strings
-    filterTags = []  # hardcode first
+    # filter data
     toSearch = []
-
     data = results1.get()
     for doc in data:
         tags = doc.get("tags")
@@ -62,16 +51,13 @@ def find_groups():
 
     if len(toSearch) > 0:
         query = results1.where("name", "in", toSearch)
-        results2 = query  # results1 = query.get()
-        # return jsonify({'message': 'Group found'})
+        results2 = query
 
     else:  # toSearch is empty
-        return jsonify({"message": "No such Group - search2"})
+        return jsonify({})
 
     if len(results2.get()) > 0:
-        #return jsonify({"message": "Group found"})
-
-        #return json file with filtered groups' data
+        # return json file with filtered groups' data
         filtered = results2.get()
         groups = []
 
@@ -90,9 +76,11 @@ def find_groups():
                     "tags": data["tags"],
                 }
             )
-        return jsonify({"Groups": groups})
+        return jsonify({"groups": groups})
+
 
 ###################################################################################################################################
+
 
 @GroupRoutes.route("/update_group", methods=["GET", "POST"])
 def update_group():
@@ -151,6 +139,7 @@ def get_group(groupId):
             return jsonify(group_doc.to_dict())
 
 
+# gets the username, name and organization of all users in the given group
 @GroupRoutes.route("/get_group_members/<groupId>", methods=["GET"])
 def get_group_members(groupId):
     if request.method == "GET":

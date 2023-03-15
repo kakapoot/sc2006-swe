@@ -4,6 +4,9 @@ import { GroupCard } from '../components/GroupCard'
 import { Searchbar } from '../components/Searchbar'
 
 export default function FindGroupsPages() {
+    const [groups, setGroups] = useState([])
+    const [searchText, setSearchText] = useState("")
+    const [filterTags, setFilterTags] = useState([])
     const [tagData, setTagData] = useState({})
     const [isLoading, setIsLoading] = useState(false)
 
@@ -20,8 +23,7 @@ export default function FindGroupsPages() {
             .finally(() => setIsLoading(false));
     }, [])
 
-    const [searchText, setSearchText] = useState("")
-    const [filterTags, setFilterTags] = useState([])
+
 
     const handleSearchTextChange = (searchText) => {
         setSearchText(searchText)
@@ -31,55 +33,33 @@ export default function FindGroupsPages() {
     const handleFilterTagsChange = (filterTags) => {
         setFilterTags(filterTags)
     }
-    // TODO : handle search with current search string and current filters
-    const handleSearch = () => {
-        console.log("Search text: " + searchText)
-        console.log("Filter tags: " + filterTags)
 
-        ////////////////////////////////////////////////////////////////////////// AGNES
+    // get initial group list
+    useEffect(() => {
+        handleSearch()
+    }, [])
+
+    const handleSearch = () => {
+        console.log(searchText)
+        console.log(filterTags)
+
         setIsLoading(true)
         fetch('http://localhost:5000/find_groups', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(searchText + filterTags)
+            body: JSON.stringify({ 'searchText': searchText, 'filterTags': filterTags })
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data); // Handle response data here
-            if (data.message === 'No such Group') {
-                // Display no group message to user
-            }
-            else if (data.message === 'No such Group - search'){
-                //Display no group message to user
-            }
-            else if (data.message === 'No such Group - search2'){
-                //Display no group message to user
-            }
-            else if (data.message === 'Group found'){
-                //Display no group message to user
-            }
-        })
-        .catch(error => console.error(error))
-        .finally(setIsLoading(false));
-
-        setSearchText("")
+            .then(response => response.json())
+            .then(data => {
+                Object.keys(data).length !== 0 ? setGroups(data.groups) : setGroups([])
+            })
+            .catch(error => console.error(error))
+            .finally(setIsLoading(false));
     }
 
     ////////////////////////////////////////////////////////////////////////
-    const [groups, setGroups] = useState([])
-    useEffect(() => {
-        fetch('http://127.0.0.1:5000/update_group', {
-            'method': 'GET',
-            headers: {
-                'Content-Type': 'applications/json'
-            }
-        })
-            .then(response => response.json())
-            .then(response => setGroups(response))
-            .catch(error => console.log(error))
-    }, [])
     /////////////////////////////////////////////////////////////////////////
 
 
@@ -105,10 +85,8 @@ export default function FindGroupsPages() {
                         {/* Groups */}
                         {!isLoading &&
                             <div className="d-flex flex-column gap-5">
-                                {/* {groups.map((group) => <GroupCard group={group} key={group.groupId} />)} */}
                                 {groups.map((group) => <GroupCard group={group} key={group.name} />)}
                             </div>}
-
                     </div>
                 </div>
             </main>

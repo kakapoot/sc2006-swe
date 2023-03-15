@@ -21,6 +21,7 @@ const RegisterPage = () => {
     confirmPassword: ""
   })
   const [errors, setErrors] = useState({});
+  const [takenErrors, setTakenErrors] = useState({});
   const [isSuccessful, setIsSuccessful] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -45,14 +46,15 @@ const RegisterPage = () => {
         body: JSON.stringify(values)
       })
       const data = await response.json()
-      if (data.message !== "registration successful") {
+      if (data.message !== "Registration successful") {
         console.log(data.message)
+        setTakenErrors(taken(data.message))
       }
       else {
         // Create account in Firebase Auth
+        setIsSuccessful(true);   
         await createUserWithEmailAndPassword(auth, values.email, values.password)
-        await updateProfile(auth.currentUser, { displayName: values.username })
-        setIsSuccessful(true);
+        await updateProfile(auth.currentUser, { displayName: values.username })  
       }
     } catch (error) {
       console.log(error)
@@ -61,7 +63,22 @@ const RegisterPage = () => {
     }
   }
 
+  useEffect(() => {
+    console.log(isLoading)
+    console.log(isSuccessful)
+  })
 
+  const taken = (string) => {
+    const takenErrors = {};
+    if (string === "username is taken") {
+      takenErrors.username = "Username is taken!"
+    }
+    if (string === "email is taken") {
+      takenErrors.email = "Email is taken!"
+    }
+
+    return takenErrors
+  }
 
   /*to add email regex*/
   const validate = (values) => {
@@ -94,7 +111,7 @@ const RegisterPage = () => {
 
   return (
     <div className="register-page">
-      {!isLoading && Object.keys(errors).length === 0 && isSuccessful ? navigate('/create_profile', { state: { username: values.username } }) : null}
+      {!isLoading && isSuccessful ? navigate('/create_profile', { state: { username: values.username } }) : null}
 
       <div className="register-form-container">
         {isLoading &&
@@ -122,7 +139,7 @@ const RegisterPage = () => {
                 value={values.username}
                 onChange={handleChange} />
             </div>
-            <p className="input-error">{errors.username}</p>
+            <p className="input-error">{[errors.username, takenErrors.username]}</p>
             <div className="input-container">
               <label className="register-label">Email</label>
               <input className="input-field"
@@ -132,7 +149,7 @@ const RegisterPage = () => {
                 value={values.email}
                 onChange={handleChange} />
             </div>
-            <p className="input-error">{errors.email}</p>
+            <p className="input-error">{[errors.email, takenErrors.email]}</p>
             <div className="input-container">
               <label className="register-label">Password</label>
               <input className="input-field"

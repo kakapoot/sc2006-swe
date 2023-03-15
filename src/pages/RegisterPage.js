@@ -46,15 +46,15 @@ const RegisterPage = () => {
         body: JSON.stringify(values)
       })
       const data = await response.json()
-      if (data.message !== "Registration successful") {
+      if (data.message !== "registration successful") {
         console.log(data.message)
         setTakenErrors(taken(data.message))
       }
       else {
         // Create account in Firebase Auth
-        setIsSuccessful(true);   
+        setIsSuccessful(true);
         await createUserWithEmailAndPassword(auth, values.email, values.password)
-        await updateProfile(auth.currentUser, { displayName: values.username })  
+        await updateProfile(auth.currentUser, { displayName: values.username })
       }
     } catch (error) {
       console.log(error)
@@ -103,11 +103,15 @@ const RegisterPage = () => {
     return errors;
   };
 
+  useEffect(() => {
+    if (!isLoading && isSuccessful) {
+      navigate('/create_profile', { state: { username: values.username } })
+    }
+  }, [isLoading, isSuccessful])
+
 
   return (
     <div className="register-page">
-      {!isLoading && isSuccessful ? navigate('/create_profile', { state: { username: values.username } }) : null}
-
       <div className="register-form-container">
         {isLoading &&
           <div className="spinner-border text-primary" role="status"></div>}

@@ -181,3 +181,24 @@ def get_group_members(groupId):
                 )
 
         return jsonify({"members": membersData})
+
+@GroupRoutes.route("/get_my_groups/<username>", methods=["GET"])
+def get_groups(username):
+    # Use a query to retrieve documents where the "members" field contains the user's ID
+    query = groupdb.where('members', 'array_contains', username)
+    docs = query.stream()
+    
+    # Create a list to store the details of each group
+    groups = []
+    
+    
+    # Loop through the documents and append their data to the "groups" list
+    for doc in docs:
+        group_data = doc.to_dict()
+        groups.append(group_data)
+    
+    # Return the "groups" list as a JSON response
+    if len(groups) == 0:
+        return jsonify({'message': 'You are not a member of any group.'}), 404
+    else:
+        return jsonify(groups)

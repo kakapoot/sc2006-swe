@@ -7,6 +7,7 @@ import { updateProfile } from 'firebase/auth';
 
 import '../assets/styles.css';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 const RegisterPage = () => {
 
@@ -114,7 +115,7 @@ const RegisterPage = () => {
     <div className="register-page">
       <div className="register-form-container">
         {isLoading &&
-          <div className="spinner-border text-primary" role="status"></div>}
+          <LoadingSpinner />}
 
         {!isLoading && <form onSubmit={handleSubmit}>
           <div className="register-form">

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import { auth } from '../firebase/firebase'
 import { signOut } from 'firebase/auth'
@@ -12,7 +12,8 @@ const currentTab = ({ isActive }) => {
 
 export function Navbar() {
     // TODO : replace with currently authenticated user context
-    const { username } = useContext(AuthContext)
+    const { user, username } = useContext(AuthContext)
+    const navigate = useNavigate()
 
     const logout = async () => {
         try {

@@ -14,6 +14,8 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         if (user) {
             setUsername(user.displayName)
+        } else {
+            setUsername(null)
         }
     }, [user])
 

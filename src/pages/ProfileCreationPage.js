@@ -4,8 +4,12 @@ import { useState, useEffect } from 'react';
 import { SelectableTag, formatTagType, handleIsSelected, handleSelectTag } from '../components/Tag'
 
 import '../assets/styles.css';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 const ProfileCreationPage = () => {
+
+  // TODO : description
+  // TODO : redirect user to this page if they have not created their profile
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -93,7 +97,7 @@ const ProfileCreationPage = () => {
 
       <div className="create-profile-form-container">
         {isLoading &&
-          <div className="spinner-border text-primary" role="status"></div>}
+          <LoadingSpinner />}
 
         {!isLoading && <form onSubmit={handleSubmit}>
           <div className="create-profile-form">

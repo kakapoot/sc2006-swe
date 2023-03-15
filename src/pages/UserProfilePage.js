@@ -4,6 +4,7 @@ import { DisplayTag, formatTagType } from '../components/Tag'
 import { useParams } from 'react-router';
 import { EditUserProfileModal } from '../components/EditUserProfileModal';
 import { AuthContext } from '../context/AuthContext';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 export default function UserProfilePage() {
     const { username } = useParams()
@@ -48,7 +49,7 @@ export default function UserProfilePage() {
                 {/* Loading */}
                 {isLoading &&
                     <div className="col">
-                        <div className="spinner-border text-primary" role="status"></div>
+                        <LoadingSpinner />
                     </div>}
                 {/* Error */}
                 {error && <div className="col">{error}</div>}

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Navbar } from '../components/Navbar'
 import { GroupCard } from '../components/GroupCard'
 import { Searchbar } from '../components/Searchbar'
+import { LoadingSpinner } from '../components/LoadingSpinner'
 
 export default function FindGroupsPages() {
     const [groups, setGroups] = useState([])
@@ -87,7 +88,7 @@ export default function FindGroupsPages() {
                         {/* Groups */}
                         <div className="d-flex flex-column gap-5">
                             {isLoading &&
-                                <div className="spinner-border text-primary" role="status"></div>}
+                                <LoadingSpinner />}
                             {!isLoading && groups.map((group) => <GroupCard group={group} key={group.name} />)}
                         </div>
                     </div>

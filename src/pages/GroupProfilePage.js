@@ -4,6 +4,7 @@ import { DisplayTag } from '../components/Tag'
 import { useParams } from 'react-router';
 import { EditGroupProfileModal } from '../components/EditGroupProfileModal';
 import { Link } from 'react-router-dom';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 export default function GroupProfilePage() {
     const { groupId } = useParams();
@@ -93,7 +94,7 @@ export default function GroupProfilePage() {
                 {/* Loading */}
                 {isLoading &&
                     <div className="col">
-                        <div className="spinner-border text-primary" role="status"></div>
+                        <LoadingSpinner />
                     </div>}
                 {/* Error */}
                 {error && <div className="col">{error}</div>}

@@ -10,34 +10,29 @@ export default function FindGroupsPages() {
     const [tagData, setTagData] = useState({})
     const [isLoading, setIsLoading] = useState(false)
 
-    // fetch available tags in database
     useEffect(() => {
         setIsLoading(true)
-        // Send form data to Flask route
+
+        // get initial group list
+        handleSearch()
+
+        // fetch available tags in database
         fetch('http://localhost:5000/get_tags')
             .then(response => response.json())
             .then(data => {
                 setTagData(data)
             })
             .catch(error => console.error(error))
-            .finally(() => setIsLoading(false));
+            .finally(() => setIsLoading(false))
     }, [])
-
-
 
     const handleSearchTextChange = (searchText) => {
         setSearchText(searchText)
     }
 
-
     const handleFilterTagsChange = (filterTags) => {
         setFilterTags(filterTags)
     }
-
-    // get initial group list
-    useEffect(() => {
-        handleSearch()
-    }, [])
 
     const handleSearch = () => {
         console.log(searchText)
@@ -56,13 +51,8 @@ export default function FindGroupsPages() {
                 Object.keys(data).length !== 0 ? setGroups(data.groups) : setGroups([])
             })
             .catch(error => console.error(error))
-            .finally(setIsLoading(false));
+            .finally(() => setIsLoading(false));
     }
-
-    ////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////
-
-
 
     return (
         <div className="container-fluid">
@@ -80,13 +70,13 @@ export default function FindGroupsPages() {
                             prevFilterTags={filterTags}
                             tagData={tagData} />
 
-                        {isLoading &&
-                            <div className="spinner-border text-primary" role="status"></div>}
+
                         {/* Groups */}
-                        {!isLoading &&
-                            <div className="d-flex flex-column gap-5">
-                                {groups.map((group) => <GroupCard group={group} key={group.name} />)}
-                            </div>}
+                        <div className="d-flex flex-column gap-5">
+                            {isLoading &&
+                                <div className="spinner-border text-primary" role="status"></div>}
+                            {!isLoading && groups.map((group) => <GroupCard group={group} key={group.name} />)}
+                        </div>
                     </div>
                 </div>
             </main>

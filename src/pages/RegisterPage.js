@@ -63,11 +63,6 @@ const RegisterPage = () => {
     }
   }
 
-  useEffect(() => {
-    console.log(isLoading)
-    console.log(isSuccessful)
-  })
-
   const taken = (string) => {
     const takenErrors = {};
     if (string === "username is taken") {

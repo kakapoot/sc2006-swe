@@ -27,16 +27,17 @@ const LoginPage = () => {
     setErrors(validate(values));
 
     try {
-      // Create user in database
       setIsLoading(true)
-      const user = await signInWithEmailAndPassword(auth, values.email, values.password)
-      setIsSuccessful(true);
-      console.log(user)
+      if (values.email.length !== 0 && values.email.length !== 0) {
+        const user = await signInWithEmailAndPassword(auth, values.email, values.password)
+        setIsSuccessful(true);
+        console.log(user)
+      } 
     } catch (error) {
       console.log(error)
     } finally {
       setIsLoading(false)
-    }
+    } 
   }
 
   useEffect(() => {
@@ -45,6 +46,11 @@ const LoginPage = () => {
       console.log(values);
     }
   }, [errors]);
+
+  useEffect(() => {
+    console.log(isLoading)
+    console.log(isSuccessful)
+  }, [])
 
   const validate = (values) => {
     const errors = {};

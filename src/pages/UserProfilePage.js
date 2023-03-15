@@ -1,49 +1,34 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Navbar } from '../components/Navbar'
 import { DisplayTag, formatTagType } from '../components/Tag'
 import { useParams } from 'react-router';
 import { EditUserProfileModal } from '../components/EditUserProfileModal';
+import { AuthContext } from '../context/AuthContext';
 
 export default function UserProfilePage() {
-    const { username } = useParams();
+    const { usernameParam } = useParams();
     const [isAuthenticatedUser, setIsAuthenticatedUser] = useState(null)
     const [userProfileData, setUserProfileData] = useState(null)
-    const [user, setUser] = useState(null)
+    const { username } = useContext(AuthContext)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
 
     // TODO 
     useEffect(() => {
-        /////////////////////////////////////////// get current user
-        fetch('http://localhost:5000/currentuser')
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Failed to fetch user');
-                }
-            })
-            .then(data => {
-                setUser(data.user);
-            })
-            .catch(error => {
-                console.log(error);
-            });
-
-        if (user) {
-            setIsAuthenticatedUser(true)
-        } else {
-            setIsAuthenticatedUser(false)
-        }
+        // if (usernameParam === username) {
+        //     setIsAuthenticatedUser(true)
+        // } else {
+        //     setIsAuthenticatedUser(false)
+        // }
         fetchUserProfileData()
         console.log(isAuthenticatedUser)
-    }, [isAuthenticatedUser, username])
+    }, [])
 
     // TODO : fetch user data based on user ID
     const fetchUserProfileData = () => {
         setIsLoading(true)
         // Send form data to Flask route
-        fetch(`http://localhost:5000/get_user/${username}`)
+        fetch(`http://localhost:5000/get_user/${usernameParam}`)
             .then(response => response.json())
             .then(data => {
                 setUserProfileData(data)

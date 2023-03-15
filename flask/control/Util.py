@@ -9,3 +9,7 @@ def get_tags():
     tags_doc_ref = tagdb.document("tags").get()
     if tags_doc_ref.exists:
         return jsonify(tags_doc_ref.to_dict())
+    
+@UtilRoutes.route("/")
+def main():
+    return "server is running"

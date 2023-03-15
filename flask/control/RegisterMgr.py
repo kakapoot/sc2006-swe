@@ -36,13 +36,13 @@ def register():
                     "password": password,
                     "email": email,
                 }
-                message = "Registration successful"
+                message = "registration successful"
 
                 response = {"message": message, "data": data}
                 # create user
                 doc_ref = userdb.document(username)
 
-                auth.create_user_with_email_and_password(email, password)
+                # auth.create_user_with_email_and_password(email, password)
                 doc_ref.set(
                     {
                         "name": name,
@@ -96,11 +96,3 @@ def create_profile():
 
         print(doc_ref)
         return jsonify({"message": "profile creation sent"})
-
-
-# Your code to create the profile...
-@RegisterRoutes.route("/get_profile/<username>")
-def get_profile(username):
-    user_doc = userdb.document(username).get()
-    if user_doc.exists:
-        return jsonify(user_doc.to_dict())

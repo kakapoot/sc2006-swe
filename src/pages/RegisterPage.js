@@ -2,8 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import LoginImage from '../assets/login_image.png';
+import { auth } from '../firebase/firebase';
+import { updateProfile } from 'firebase/auth';
 
 import '../assets/styles.css';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const RegisterPage = () => {
 
@@ -18,7 +21,7 @@ const RegisterPage = () => {
     confirmPassword: ""
   })
   const [errors, setErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
+  const [isSuccessful, setIsSuccessful] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$/;
@@ -27,44 +30,35 @@ const RegisterPage = () => {
     setValues({ ...values, [e.target.name]: e.target.value });
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors(validate(values));
-    setIsSubmit(true);
-    setIsLoading(true)
 
-    // Send form data to Flask route
-    fetch('http://localhost:5000/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(values)
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data); // Handle response data here
-        if (data.message === 'username is taken') {
-          // Display error message to user
-          console.log(data.message)
-        }
-        else if (data.message === 'email is taken') {
-          // Display error message to user
-          console.log(data.message)
-        }
-        else if (data.message === 'email is invalid') {
-          // Display error message to user
-          console.log(data.message)
-        }
-        else { //data.message = 'Registration Successful'
-          // Display success 
-          // fetch('http://localhost:5000/create_profile?username=' + encodeURIComponent(values.username))
-          //navigate('/create_profile',{state: {username: values.username }});
-        }
-        //navigate('/create_profile',{state: {username: values.username }});
+    try {
+      setIsLoading(true)
+      // Create user in database
+      const response = await fetch('http://localhost:5000/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(values)
       })
-      .catch(error => console.error(error))
-      .finally(() => setIsLoading(false));
+      const data = await response.json()
+      if (data.message !== "registration successful") {
+        console.log(data.message)
+      }
+      else {
+        // Create account in Firebase Auth
+        await createUserWithEmailAndPassword(auth, values.email, values.password)
+        await updateProfile(auth.currentUser, { displayName: values.username })
+        setIsSuccessful(true);
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
 
@@ -100,7 +94,7 @@ const RegisterPage = () => {
 
   return (
     <div className="register-page">
-      {!isLoading && Object.keys(errors).length === 0 && isSubmit ? navigate('/create_profile', { state: { username: values.username } }) : null}
+      {!isLoading && Object.keys(errors).length === 0 && isSuccessful ? navigate('/create_profile', { state: { username: values.username } }) : null}
 
       <div className="register-form-container">
         {isLoading &&

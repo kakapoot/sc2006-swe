@@ -1,63 +1,55 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { auth } from '../firebase/firebase'
 import LoginImage from '../assets/login_image.png';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 import '../assets/styles.css';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  
+
   const [values, setValues] = useState({
-    username: "",
+    email: "",
     password: "",
   })
   const [errors, setErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
+  const [isSuccessful, setIsSuccessful] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
-    setValues({...values, [e.target.name]: e.target.value });
+    setValues({ ...values, [e.target.name]: e.target.value });
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors(validate(values));
-    setIsSubmit(false);
-    // Send form data to Flask route
-    fetch('http://localhost:5000/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(values)
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data); // Handle response data here
-      if (data.message === 'login successful') {
-        setIsSubmit(true);
-        // Display success message to user
-      } else if (data.message === 'username found, wrong password') {
-        // Display error message to user
-        setIsSubmit(true);
-      } else if (data.message === 'username not found') {
-        // Display error message to user
-      }
-    })
-    .catch(error => console.error(error));
+
+    try {
+      // Create user in database
+      setIsLoading(true)
+      const user = await signInWithEmailAndPassword(auth, values.email, values.password)
+      setIsSuccessful(true);
+      console.log(user)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
   }
-  
+
   useEffect(() => {
     console.log(errors);
-    if (Object.keys(errors).length === 0 && isSubmit) {
+    if (Object.keys(errors).length === 0 && isSuccessful) {
       console.log(values);
     }
   }, [errors]);
-  
+
   const validate = (values) => {
     const errors = {};
-    if (!values.username) {
-      errors.username = "Username is required!";
+    if (!values.email) {
+      errors.email = "Email is required!";
     }
     if (!values.password) {
       errors.password = "Password is required!";
@@ -70,7 +62,7 @@ const LoginPage = () => {
     <div className="login-page">
       <div className="login-form-container">
         <form onSubmit={handleSubmit}>
-        {Object.keys(errors).length === 0 && isSubmit ? navigate('my_groups') : null}
+          {Object.keys(errors).length === 0 && isSuccessful ? navigate('my_groups') : null}
           <div className="login-form">
             <div className="logo-container">
               <span className="my-3 mx-5 d-flex align-items-center gap-3 text-primary">
@@ -82,23 +74,23 @@ const LoginPage = () => {
             </div>
             <h1 className="login-heading">Login</h1>
             <div className="input-container">
-              <label className="login-label">Username</label>
+              <label className="login-label">Email</label>
               <input className="input-field"
                 type="text"
-                name="username"
-                placeholder="Username" 
-                value={setValues.username}
-                onChange={handleChange}/>
+                name="email"
+                placeholder="Email"
+                value={setValues.email}
+                onChange={handleChange} />
             </div>
-            <p className="input-error">{errors.username}</p>
+            <p className="input-error">{errors.email}</p>
             <div className="input-container">
               <label className="login-label">Password</label>
               <input className="input-field"
                 type="password"
                 name="password"
-                placeholder="Password" 
+                placeholder="Password"
                 value={setValues.password}
-                onChange={handleChange}/>
+                onChange={handleChange} />
             </div>
             <p className="input-error">{errors.password}</p>
             <button className="login-button">LOGIN</button>

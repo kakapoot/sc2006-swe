@@ -1,51 +1,59 @@
 from flask import request, jsonify, Blueprint
 from app import auth, db, userdb, groupdb
+from firebase_admin import firestore
+import json
 
 GroupRoutes = Blueprint("GroupRoutes", __name__)
 FindGroupRoutes = Blueprint("FindGroupRoutes", __name__)
 
-grpdb1_ref = db.collection("groupdb1")
 
+###################################################################################################################################
 
 @FindGroupRoutes.route("/find_groups", methods=["POST"])
 def find_groups():
-    # subname = request.json.get('searchText')
-    subname = ""  # hardcode first
+    if request.method == "POST":
+        received_data = request.get_json()
+        subname = received_data['searchText']
+        filterTags = received_data['filterTags']
+
+    subname = "Study"  # hardcode first
     if len(subname) > 0:  # user searched something
         # query = grpdb1_ref.where('name', 'array_contains',subname)
         # query = grpdb1_ref.orderByChild('name').startAt(subname).endAt(subname+"~")
         # results1 = query.get()
 
         toSearch = []
-        data = grpdb1_ref.where("privacy", "==", "Public").get()
+        data = groupdb.where("privacy", "==", "public").get()
         for doc in data:
             name = doc.get("name")
-            priv = doc.get("privacy")
+            #priv = doc.get("privacy")
             if subname in name:
                 toSearch.append(name)
 
         if len(toSearch) > 0:
-            results1 = grpdb1_ref.where("name", "in", toSearch)
-            # return jsonify({'message': 'Group found'})
+            results1 = groupdb.where("name", "in", toSearch)
+            #return jsonify({'message': 'Group found'})   
+
 
         else:  # toSearch is empty
             return jsonify({"message": "No such Group - search"})
 
     else:  # user did not search so retrieve entire databases
-        results1 = grpdb1_ref.where("privacy", "==", "Public")
-        # return jsonify({'message': 'Group found'})
+        results1 = groupdb.where("privacy", "==", "public")
+        #return jsonify({'message': 'Group found'})
 
     # Get the filters chosen
     # filterTags = request.json.get('filterTags')  #array of strings
-    filterTags = ["chemistry"]  # hardcode first
+    filterTags = []  # hardcode first
     toSearch = []
 
     data = results1.get()
     for doc in data:
-        subjects = doc.get("subjects")
-        educationLevels = doc.get("education_level")
-        learningStyles = doc.get("learning_style")
-        regions = doc.get("region")
+        tags = doc.get("tags")
+        subjects = tags["subjects"]
+        educationLevels = tags["educationLevels"]
+        learningStyles = tags["learningStyles"]
+        regions = tags["regions"]
 
         allChara = subjects + educationLevels + learningStyles + regions
 
@@ -61,8 +69,30 @@ def find_groups():
         return jsonify({"message": "No such Group - search2"})
 
     if len(results2.get()) > 0:
-        return jsonify({"message": "Group found"})
+        #return jsonify({"message": "Group found"})
 
+        #return json file with filtered groups' data
+        filtered = results2.get()
+        groups = []
+
+        for doc in filtered:
+            data = doc.to_dict()
+            groups.append(
+                {
+                    "capacity": data["capacity"],
+                    "description": data["description"],
+                    "groupId": data["groupId"],
+                    "members": data["members"],
+                    "name": data["name"],
+                    "owner": data["owner"],
+                    "privacy": data["privacy"],
+                    "studyArea": data["studyArea"],
+                    "tags": data["tags"],
+                }
+            )
+        return jsonify({"Groups": groups})
+
+###################################################################################################################################
 
 @GroupRoutes.route("/update_group", methods=["GET", "POST"])
 def update_group():
@@ -82,6 +112,34 @@ def update_group():
         doc_ref.update(data)
 
         return jsonify({"message": "group updated"})
+    
+    
+@GroupRoutes.route("/create_group", methods=["POST"])
+def create_group():
+    data = request.get_json()
+    username = data['username']
+    doc_ref = groupdb.document()
+    doc_ref.set(data)
+    doc_ref.update({
+        'groupId': doc_ref.id,
+        'owner' : username,
+    })
+    doc = doc_ref.get()
+    current_array = doc.to_dict().get('members', [])
+
+    # Append the new value to the array
+    updated_array = current_array + [username]
+
+    # Update the document with the new array value
+    doc_ref.update({
+        'members': updated_array
+    })
+    
+    doc_ref.update({
+    'username': firestore.DELETE_FIELD
+    })
+    
+    return jsonify({"message": "group created"})
 
 
 @GroupRoutes.route("/get_group/<groupId>", methods=["GET"])

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { AuthContext } from '../context/AuthContext'
 import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
 
 // TODO : ensure input fields are not blank
@@ -7,6 +8,7 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
     const [isLoading, setIsLoading] = useState(false)
     const [tagData, setTagData] = useState({})
 
+    const {username} = useContext(AuthContext)
     // fetch available tags in database
     useEffect(() => {
         setIsLoading(true)
@@ -28,6 +30,10 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
         setProfile({ ...profile, [inputType]: inputValue })
     }
 
+    const data = {
+        ...profile,
+        username: username
+      };
 
     // TODO : update database with new group profile data
     const handleApplyChangesSubmit = () => {
@@ -36,6 +42,23 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
             console.log(profile)
             onGroupDataChange(profile)
             setProfile(prevGroupData)
+            /////////////////////////////////////////////////// send to flask
+            setIsLoading(true)
+            fetch('http://localhost:5000/create_group', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); // Handle response data here
+                    console.log(username);
+                })
+                .catch(error => console.error(error))
+                .finally(() => setIsLoading(false));
+            //////////////////////////////////////////////////
         }
 
         else if (buttonName === "Edit Group") {

@@ -1,5 +1,6 @@
 from flask import request, jsonify, Blueprint
 from app import auth, db, userdb, groupdb
+from firebase_admin import firestore
 
 GroupRoutes = Blueprint("GroupRoutes", __name__)
 FindGroupRoutes = Blueprint("FindGroupRoutes", __name__)
@@ -82,6 +83,34 @@ def update_group():
         doc_ref.update(data)
 
         return jsonify({"message": "group updated"})
+    
+    
+@GroupRoutes.route("/create_group", methods=["POST"])
+def create_group():
+    data = request.get_json()
+    username = data['username']
+    doc_ref = groupdb.document()
+    doc_ref.set(data)
+    doc_ref.update({
+        'groupId': doc_ref.id,
+        'owner' : username,
+    })
+    doc = doc_ref.get()
+    current_array = doc.to_dict().get('members', [])
+
+    # Append the new value to the array
+    updated_array = current_array + [username]
+
+    # Update the document with the new array value
+    doc_ref.update({
+        'members': updated_array
+    })
+    
+    doc_ref.update({
+    'username': firestore.DELETE_FIELD
+    })
+    
+    return jsonify({"message": "group created"})
 
 
 @GroupRoutes.route("/get_group/<groupId>", methods=["GET"])

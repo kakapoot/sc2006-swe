@@ -191,3 +191,28 @@ def get_groups(username):
         return jsonify({'message': 'You are not a member of any group.'}), 404
     else:
         return jsonify(groups)
+    
+@GroupRoutes.route("/join_private_group", methods=["POST"])
+def join_private_group():
+    data = request.get_json()
+    username = data['username']
+    code = data['code']
+    group_doc_ref = groupdb.document(code)
+    
+    group_doc_data = group_doc_ref.get().to_dict()
+
+    if not group_doc_data:
+        return jsonify({'message': 'code is invalid'})
+    if len(group_doc_data.get('members', [])) == group_doc_data.get('capacity', 0):
+    # The number of members in the group is equal to its capacity
+        return jsonify({'message': 'group is full'})
+    
+    # The number of members in the group is less than its capacity
+    try:
+        group_doc_ref.update({
+        'members': firestore.ArrayUnion([username])
+        })
+        return jsonify({'message': 'group joined successfully' + str(len(group_doc_data.get('members', []))) + " " + str(group_doc_data.get('capacity', 0))})
+    except Exception as e:
+        return jsonify({'message': 'Error:'+ str(e)})
+ 

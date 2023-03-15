@@ -1,18 +1,53 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { AuthContext } from '../context/AuthContext';
 
 export function JoinPrivateGroupModal() {
     const [code, setCode] = useState("")
-
+    const { username } = useContext(AuthContext)
+    const data = {
+        code: code,
+        username: username
+      };
     // TODO : logic for joining group and updating database
     // TODO : errors on invalid/blank code or full group capacity, navigate to group page if successful
     const handleJoinSubmit = () => {
         console.log(code)
-        setCode("")
+        fetch(`http://127.0.0.1:5000/join_private_group`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          })
+          .then(response => response.json())
+          .then(data =>{
+            console.log(data)
+            if (data.message === 'group joined successfully')
+            {
+                //done
+            }
+            else if (data.message === 'group is full')
+            {
+                //full error 
+            }
+            else if (data.message === 'code is invalid')
+            {
+                //invalid code error
+            }
+            else
+            {
+                //other error, unsuccessful join
+            }
+          })
+          .catch(error => console.log(error));
+          setCode("")
     }
 
     const handleClose = () => {
         setCode("")
     }
+
+
 
     return (
         <div>

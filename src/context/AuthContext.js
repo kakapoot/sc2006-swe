@@ -1,3 +1,4 @@
+import { onAuthStateChanged } from "@firebase/auth";
 import React, { useEffect, useState } from "react";
 import { auth } from '../firebase/firebase'
 
@@ -6,27 +7,37 @@ export const AuthContext = React.createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
     const [username, setUsername] = useState(null)
+    const [authState, setAuthState] = useState({
+        isAuthLoaded: false,
+        listener: null
+    })
 
     useEffect(() => {
-        auth.onAuthStateChanged(setUser)
-    }, []);
-
-    useEffect(() => {
-        if (user) {
-            setUsername(user.displayName)
-        } else {
-            setUsername(null)
+        if (!authState.listener) {
+            setAuthState({
+                ...authState, listener: onAuthStateChanged(auth, (user) => {
+                    setUser(user)
+                    if (user) { setUsername(user.displayName) }
+                    setAuthState(oldState => ({ ...oldState, isAuthLoaded: true }));
+                })
+            });
         }
-    }, [user])
+
+        // unsubscribe
+        return () => {
+            if (authState.listener)
+                authState.listener()
+        }
+    }, [])
+
 
     useEffect(() => {
         // TODO : for debugging purposes 
-        console.log(user)
-        console.log(username)
-    }, [user, username])
+        console.log(authState)
+    }, [authState])
 
 
     return (
-        <AuthContext.Provider value={{ user, username }}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{ user, username, authState }}>{children}</AuthContext.Provider>
     );
 };

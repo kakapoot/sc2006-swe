@@ -11,29 +11,35 @@ import FindGroupsPage from './pages/FindGroupsPage';
 import GroupProfilePage from './pages/GroupProfilePage';
 import './App.css';
 import { AuthContext } from './context/AuthContext';
+import { PrivateRoute, PublicRoute } from './components/Route';
+import { HashRouter } from 'react-router-dom';
+import { LoadingSpinner } from './components/LoadingSpinner';
 
 const App = () => {
-  const { username } = useContext(AuthContext)
-  useEffect(() => {
-    console.log(username)
-  }, [username])
+  const { authState } = useContext(AuthContext)
 
   return (
     <div className="App">
+      {!authState.isAuthLoaded && <LoadingSpinner />}
 
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={username ? <Navigate to="/my_groups" /> : <LoginPage />} />
-          <Route path='/register/' element={username ? <Navigate to="/my_groups" /> : <RegisterPage />} />
-          <Route path='/create_profile' element={username ? <Navigate to="/my_groups" /> : <ProfileCreationPage />} />
-          <Route path='/my_groups' element={username ? <MyGroupsPage /> : <Navigate to="/" />} />
-          <Route path='/find_groups' element={username ? <FindGroupsPage /> : <Navigate to="/" />} />
-          <Route path='/study_areas' element={username ? <StudyAreasPage /> : <Navigate to="/" />} />
-          <Route path='/user/:username' element={username ? <UserProfilePage /> : <Navigate to="/" />} />
-          <Route path='/group/:groupId' element={username ? <GroupProfilePage /> : <Navigate to="/" />} />
-        </Routes>
-      </BrowserRouter>
+      {authState.isAuthLoaded &&
+        <BrowserRouter>
+          <Routes>
+            <Route element={<PrivateRoute />}>
+              <Route path='/my_groups' element={<MyGroupsPage />} />
+              <Route path='/find_groups' element={<FindGroupsPage />} />
+              <Route path='/study_areas' element={<StudyAreasPage />} />
+              <Route path='/user/:username' element={<UserProfilePage />} />
+              <Route path='/group/:groupId' element={<GroupProfilePage />} />
+            </Route>
 
+            <Route element={<PublicRoute />}>
+              <Route path='/' element={<LoginPage />} />
+              <Route path='/register/' element={<RegisterPage />} />
+              <Route path='/create_profile' element={<ProfileCreationPage />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>}
     </div>
   );
 }

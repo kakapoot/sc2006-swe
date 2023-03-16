@@ -4,6 +4,7 @@ import { GroupCard } from '../components/GroupCard'
 import { Searchbar } from '../components/Searchbar'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 
+// TODO : display no groups found
 export default function FindGroupsPages() {
     const [groups, setGroups] = useState([])
     const [searchText, setSearchText] = useState("")
@@ -27,11 +28,6 @@ export default function FindGroupsPages() {
             .catch(error => console.error(error))
             .finally(() => setIsLoading(false))
     }, [])
-
-
-    useEffect(() => {
-        console.log(isLoading)
-    }, [isLoading])
 
 
     const handleSearchTextChange = (searchText) => {
@@ -62,10 +58,6 @@ export default function FindGroupsPages() {
             .catch(error => console.error(error))
             .finally(() => setIsLoading(false));
     }
-
-    ////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////
-
 
 
     return (

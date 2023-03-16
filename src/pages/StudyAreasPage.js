@@ -18,7 +18,7 @@ export default function StudyAreasPage() {
     const handleFilterTagsChange = (filterTags) => {
         setFilterTags(filterTags)
     }
-    // TODO : handle search with current search string and current filters
+
     const handleSearch = () => {
         console.log("Search text: " + searchText)
         console.log("Filter tags: " + filterTags)

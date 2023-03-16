@@ -3,7 +3,6 @@ import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from 
 
 // TODO : ensure input fields are not blank
 export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataChange }) {
-    // TODO: replace with actual available tags
     const [profile, setProfile] = useState(prevUserProfileData)
     const [tagData, setTagData] = useState({})
     const [isLoading, setIsLoading] = useState(false)

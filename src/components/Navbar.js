@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from 'react'
-import { NavLink, Link, useNavigate } from 'react-router-dom'
+import React, { useContext } from 'react'
+import { NavLink, Link } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import { auth } from '../firebase/firebase'
 import { signOut } from 'firebase/auth'
@@ -11,9 +11,7 @@ const currentTab = ({ isActive }) => {
 }
 
 export function Navbar() {
-    // TODO : replace with currently authenticated user context
-    const { user, username } = useContext(AuthContext)
-    const navigate = useNavigate()
+    const { username } = useContext(AuthContext)
 
     const logout = async () => {
         try {
@@ -64,7 +62,6 @@ export function Navbar() {
                         <li className="d-sm-inline d-none">Profile</li></NavLink>
                 </ul>
 
-                {/* TODO : handle log out */}
                 {/* Log Out */}
                 <NavLink to="/" onClick={logout} className="mt-auto mb-sm-5 py-3 btn btn-primary text-danger gap-3 d-flex align-items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-door-closed" viewBox="0 0 16 16">

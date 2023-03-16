@@ -48,7 +48,6 @@ const RegisterPage = () => {
       })
       const data = await response.json()
       if (data.message !== "registration successful") {
-        console.log(data.message)
         setTakenErrors(taken(data.message))
       }
       else {

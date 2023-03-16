@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
-import { useEffect } from 'react'
 
 export function PrivateRoute({ children }) {
     const { user } = useContext(AuthContext)

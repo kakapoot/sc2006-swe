@@ -5,36 +5,23 @@ import { useParams } from 'react-router';
 import { EditUserProfileModal } from '../components/EditUserProfileModal';
 import { AuthContext } from '../context/AuthContext';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import useSWR from 'swr';
+import { fetcher } from '../components/Util';
 
 export default function UserProfilePage() {
     const { username } = useParams()
     const [isAuthenticatedUser, setIsAuthenticatedUser] = useState(null)
     const [userProfileData, setUserProfileData] = useState(null)
     const { currentUsername } = useContext(AuthContext)
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState("")
 
-    // TODO 
+    const { data, error, isLoading } = useSWR(`http://localhost:5000/get_user/${username}`,
+        fetcher, { shouldRetryOnError: false })
+
+    // TODO : show edit button if profile is owned by authenticated user
     useEffect(() => {
         // if (usernameParam === username) 
-        fetchUserProfileData()
-    }, [])
-
-    // TODO : fetch user data based on user ID
-    const fetchUserProfileData = () => {
-        setIsLoading(true)
-        // Send form data to Flask route
-        fetch(`http://localhost:5000/get_user/${username}`)
-            .then(response => response.json())
-            .then(data => {
-                setUserProfileData(data)
-            })
-            .catch(error => {
-                console.error(error)
-                setError("Unable to fetch data")
-            })
-            .finally(() => setIsLoading(false));
-    }
+        setUserProfileData(data)
+    }, [data])
 
     const handleUserProfileDataChange = (userProfileData) => {
         setUserProfileData(userProfileData)
@@ -52,7 +39,7 @@ export default function UserProfilePage() {
                         <LoadingSpinner />
                     </div>}
                 {/* Error */}
-                {error && <div className="col">{error}</div>}
+                {!isLoading && error && <div className="col">{error.message}</div>}
 
                 { /* Content */}
                 {!isLoading && userProfileData && <div className="col">

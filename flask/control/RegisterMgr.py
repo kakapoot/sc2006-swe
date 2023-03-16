@@ -1,12 +1,7 @@
-from flask import Flask, session, render_template, request, redirect, jsonify, Blueprint
-import sys
-import os
-import re
+from flask import request, jsonify, Blueprint
 import dns.resolver
 from app import auth, db, userdb
 
-# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from entity.user import User
 
 RegisterRoutes = Blueprint("RegisterRoutes", __name__)
 
@@ -39,10 +34,9 @@ def register():
                 message = "registration successful"
 
                 response = {"message": message, "data": data}
-                # create user
+                # create user in Firestore database
                 doc_ref = userdb.document(username)
 
-                # auth.create_user_with_email_and_password(email, password)
                 doc_ref.set(
                     {
                         "name": name,
@@ -60,39 +54,32 @@ def register():
             return jsonify({"message": "email is invalid"})
 
 
-@RegisterRoutes.route("/create_profile", methods=["POST", "GET"])
+@RegisterRoutes.route("/create_profile", methods=["POST"])
 def create_profile():
-    if request.method == "GET":
-        session["user"] = request.args.get("username")
-        username = session.get("user")
-        print(username)
-    elif request.method == "POST":
-        data = request.get_json()
-        username = data["username"]
+    data = request.get_json()
+    username = data["username"]
 
-        gender = data["gender"]
-        birthday = data["birthday"]
-        organization = data["organization"]
-        description = data["description"]
-        tags = data["tags"]
-        groups = []
+    gender = data["gender"]
+    birthday = data["birthday"]
+    organization = data["organization"]
+    description = data["description"]
+    tags = data["tags"]
+    groups = []
 
-        # edit their profile
-        doc_ref = userdb.document(username)
+    # edit their profile
+    doc_ref = userdb.document(username)
 
-        doc_ref.set(
-            {
-                "gender": gender,
-                "birthday": birthday,
-                "organization": organization,
-                "description": description,
-                "tags": tags,
-                "groups": groups,
-            },
-            merge=True,
-        )
+    doc_ref.set(
+        {
+            "gender": gender,
+            "birthday": birthday,
+            "organization": organization,
+            "description": description,
+            "tags": tags,
+            "groups": groups,
+        },
+        merge=True,
+    )
 
-        # print(username)
-
-        print(doc_ref)
-        return jsonify({"message": "profile creation sent"})
+    print(doc_ref)
+    return jsonify({"message": "profile creation sent"})

@@ -1,22 +1,16 @@
-from firebase_admin import credentials, firestore, initialize_app
+from firebase_admin import credentials, firestore
 import firebase_admin
 import os
+import pyrebase
+from flask import Flask
+from flask_cors import CORS
+
 
 dir_path = os.path.abspath(os.path.dirname(__file__))
 parent_path = os.path.abspath(os.path.join(dir_path, os.pardir))
 cred = credentials.Certificate(dir_path + "/key/key.json")
+
 firebase_admin.initialize_app(cred)
-
-from entity import *
-
-import pyrebase
-from flask import Flask, session, render_template, request, redirect, jsonify
-from flask_cors import CORS
-
-# from flask_session import Session
-
-
-dir_path = os.path.abspath(os.path.dirname(__file__))
 
 db = firestore.client()
 config = {
@@ -48,12 +42,12 @@ app.secret_key = "secret"
 app.config["SESSION_TYPE"] = "filesystem"
 
 from control.RegisterMgr import RegisterRoutes
-from control.GroupMgr import FindGroupRoutes, GroupRoutes
+from control.GroupMgr import GroupRoutes
 from control.Util import UtilRoutes
 from control.UserMgr import UserRoutes
 
+# TODO : return errors for API
 app.register_blueprint(RegisterRoutes)
-app.register_blueprint(FindGroupRoutes)
 app.register_blueprint(UtilRoutes)
 app.register_blueprint(GroupRoutes)
 app.register_blueprint(UserRoutes)

@@ -4,6 +4,7 @@ from app import auth, db, userdb, groupdb
 UserRoutes = Blueprint("UserRoutes", __name__)
 
 
+# TODO : not return entire user data
 @UserRoutes.route("/get_user/<username>", methods=["GET"])
 def get_user(username):
     if request.method == "GET":

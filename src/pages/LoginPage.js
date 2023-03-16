@@ -30,28 +30,16 @@ const LoginPage = () => {
     try {
       setIsLoading(true)
       if (values.email.length !== 0 && values.email.length !== 0) {
-        const user = await signInWithEmailAndPassword(auth, values.email, values.password)
+        await signInWithEmailAndPassword(auth, values.email, values.password)
         setIsSuccessful(true);
-        console.log(user)
-      } 
+      }
     } catch (error) {
       console.log(error)
     } finally {
       setIsLoading(false)
-    } 
+    }
   }
 
-  useEffect(() => {
-    console.log(errors);
-    if (Object.keys(errors).length === 0 && isSuccessful) {
-      console.log(values);
-    }
-  }, [errors]);
-
-  useEffect(() => {
-    console.log(isLoading)
-    console.log(isSuccessful)
-  }, [])
 
   const validate = (values) => {
     const errors = {};

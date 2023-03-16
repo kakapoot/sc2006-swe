@@ -1,16 +1,11 @@
 from flask import request, jsonify, Blueprint
 from app import auth, db, userdb, groupdb
 from firebase_admin import firestore
-import json
 
 GroupRoutes = Blueprint("GroupRoutes", __name__)
-FindGroupRoutes = Blueprint("FindGroupRoutes", __name__)
 
 
-###################################################################################################################################
-
-
-@FindGroupRoutes.route("/find_groups", methods=["POST"])
+@GroupRoutes.route("/find_groups", methods=["POST"])
 def find_groups():
     if request.method == "POST":
         data = request.get_json()
@@ -82,51 +77,40 @@ def find_groups():
 ###################################################################################################################################
 
 
-@GroupRoutes.route("/update_group", methods=["GET", "POST"])
+@GroupRoutes.route("/update_group", methods=["POST"])
 def update_group():
-    if request.method == "GET":
-        data = []
-        docs = groupdb.stream()
-        for doc in docs:
-            data.append(doc.to_dict())
-        print(data)
-        return jsonify(data)
+    data = request.get_json()
+    groupId = data["groupId"]
 
-    elif request.method == "POST":
-        data = request.get_json()
-        groupId = data["groupId"]
+    doc_ref = groupdb.document(groupId)
+    doc_ref.update(data)
 
-        doc_ref = groupdb.document(groupId)
-        doc_ref.update(data)
+    return jsonify({"message": "group updated"})
 
-        return jsonify({"message": "group updated"})
-    
-    
+
 @GroupRoutes.route("/create_group", methods=["POST"])
 def create_group():
     data = request.get_json()
-    username = data['username']
+    username = data["username"]
     doc_ref = groupdb.document()
     doc_ref.set(data)
-    doc_ref.update({
-        'groupId': doc_ref.id,
-        'owner' : username,
-    })
+    doc_ref.update(
+        {
+            "groupId": doc_ref.id,
+            "owner": username,
+        }
+    )
     doc = doc_ref.get()
-    current_array = doc.to_dict().get('members', [])
+    current_array = doc.to_dict().get("members", [])
 
     # Append the new value to the array
     updated_array = current_array + [username]
 
     # Update the document with the new array value
-    doc_ref.update({
-        'members': updated_array
-    })
-    
-    doc_ref.update({
-    'username': firestore.DELETE_FIELD
-    })
-    
+    doc_ref.update({"members": updated_array})
+
+    doc_ref.update({"username": firestore.DELETE_FIELD})
+
     return jsonify({"message": "group created"})
 
 
@@ -171,48 +155,53 @@ def get_group_members(groupId):
 
         return jsonify({"members": membersData})
 
+
 @GroupRoutes.route("/get_my_groups/<username>", methods=["GET"])
 def get_groups(username):
     # Use a query to retrieve documents where the "members" field contains the user's ID
-    query = groupdb.where('members', 'array_contains', username)
+    query = groupdb.where("members", "array_contains", username)
     docs = query.stream()
-    
+
     # Create a list to store the details of each group
     groups = []
-    
-    
+
     # Loop through the documents and append their data to the "groups" list
     for doc in docs:
         group_data = doc.to_dict()
         groups.append(group_data)
-    
+
     # Return the "groups" list as a JSON response
     if len(groups) == 0:
-        return jsonify({'message': 'You are not a member of any group.'}), 404
+        return jsonify({"message": "You are not a member of any group."}), 404
     else:
         return jsonify(groups)
-    
+
+
 @GroupRoutes.route("/join_private_group", methods=["POST"])
 def join_private_group():
     data = request.get_json()
-    username = data['username']
-    code = data['code']
+    username = data["username"]
+    code = data["code"]
     group_doc_ref = groupdb.document(code)
-    
+
     group_doc_data = group_doc_ref.get().to_dict()
 
     if not group_doc_data:
-        return jsonify({'message': 'code is invalid'})
-    if len(group_doc_data.get('members', [])) == group_doc_data.get('capacity', 0):
-    # The number of members in the group is equal to its capacity
-        return jsonify({'message': 'group is full'})
-    
+        return jsonify({"message": "code is invalid"})
+    if len(group_doc_data.get("members", [])) == group_doc_data.get("capacity", 0):
+        # The number of members in the group is equal to its capacity
+        return jsonify({"message": "group is full"})
+
     # The number of members in the group is less than its capacity
     try:
-        group_doc_ref.update({
-        'members': firestore.ArrayUnion([username])
-        })
-        return jsonify({'message': 'group joined successfully' + str(len(group_doc_data.get('members', []))) + " " + str(group_doc_data.get('capacity', 0))})
+        group_doc_ref.update({"members": firestore.ArrayUnion([username])})
+        return jsonify(
+            {
+                "message": "group joined successfully"
+                + str(len(group_doc_data.get("members", [])))
+                + " "
+                + str(group_doc_data.get("capacity", 0))
+            }
+        )
     except Exception as e:
-        return jsonify({'message': 'Error:'+ str(e)})
- 
+        return jsonify({"message": "Error:" + str(e)})

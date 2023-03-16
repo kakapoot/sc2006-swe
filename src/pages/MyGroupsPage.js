@@ -54,7 +54,6 @@ export default function MyGroupsPage() {
                         <div className="my-5 d-flex justify-content-between align-items-center">
                             <h2><strong>My Groups</strong></h2>
 
-                            {/* TODO: create group modal */}
                             <div className="d-flex gap-3">
                                 <EditGroupProfileModal buttonName="Create New Group" prevGroupData={emptyGroupProfileData} onGroupDataChange={handleGroupProfileDataChange} />
 

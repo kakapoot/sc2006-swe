@@ -188,7 +188,7 @@ def join_private_group():
 
     if not group_doc_data:
         return jsonify({"message": "code is invalid"})
-    if len(group_doc_data.get("members", [])) == group_doc_data.get("capacity", 0):
+    if len(group_doc_data.get("members", [])) == int(group_doc_data.get("capacity", 0)):
         # The number of members in the group is equal to its capacity
         return jsonify({"message": "group is full"})
 
@@ -205,3 +205,48 @@ def join_private_group():
         )
     except Exception as e:
         return jsonify({"message": "Error:" + str(e)})
+    
+@GroupRoutes.route("/get_user_rights/<username>", methods=["GET"])
+def get_rights(username):
+    groupId = request.args.get('groupId')
+    group_doc_ref = groupdb.document(groupId)
+    group_data = group_doc_ref.get().to_dict()
+    owner = group_data.get('owner')
+    if (owner == username):
+        return jsonify({'message': 'user is an owner'})
+    elif group_data and username in group_data.get('members', []):
+        return jsonify({'message': 'user is a member'})
+    else:
+        return jsonify({'message': 'user is not owner or member'}) #+ ' ' + str(owner)+ ' ' +str(username)})
+
+@GroupRoutes.route("/leave_group/<username>", methods=["GET"])
+def leave_group(username):
+    groupId = request.args.get('groupId')
+    group_doc_ref = groupdb.document(groupId)
+    try:
+        group_doc_ref.update({"members": firestore.ArrayRemove([username])})
+        return jsonify({'message': 'left group successfully'})
+    except Exception as e:
+        return jsonify({'message': 'Error removing member from group.'})
+
+@GroupRoutes.route("/join_public_group/<username>", methods=["GET"])
+def join_group(username):
+    groupId = request.args.get('groupId')
+    group_doc_ref = groupdb.document(groupId)
+    group_doc_data = group_doc_ref.get().to_dict()
+    
+    if len(group_doc_data.get("members", [])) == int(group_doc_data.get("capacity", 0)):
+        # The number of members in the group is equal to its capacity
+        return jsonify({"message": "group is full"})
+    try:
+        group_doc_ref.update({"members": firestore.ArrayUnion([username])})
+        return jsonify({'message': 'joined group successfully'})
+    except Exception as e:
+        return jsonify({'message': 'Error removing member from group.'})    
+
+    
+
+
+
+
+

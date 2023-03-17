@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Navbar } from '../components/Navbar'
 import { DisplayTag } from '../components/Tag'
 import { useParams } from 'react-router';
 import { EditGroupProfileModal } from '../components/EditGroupProfileModal';
 import { Link } from 'react-router-dom';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { AuthContext } from '../context/AuthContext';
 
 export default function GroupProfilePage() {
     const { groupId } = useParams();
@@ -14,7 +15,7 @@ export default function GroupProfilePage() {
     const [error, setError] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [membersData, setMembersData] = useState(null)
-
+    const { username } = useContext(AuthContext)
     // TODO : check if current authenticated user is group creator 
     // TODO : check if current authenticated user is group member, 
     // should be able to leave if in group, join if not in group, 
@@ -22,7 +23,6 @@ export default function GroupProfilePage() {
     useEffect(() => {
         // TODO : placeholder
         // const userId = "0"
-
         // if (userId === "0") {
         //     setIsGroupCreator(true)
         //     setIsGroupMember(true)
@@ -30,9 +30,40 @@ export default function GroupProfilePage() {
         //     setIsGroupCreator(false)
         //     setIsGroupMember(false)
         // }
+        fetchUserRights()
         fetchGroupData()
         fetchMembersData()
     }, [isGroupCreator, isGroupMember, groupId])
+
+    // fetch user rights based on Username
+    const fetchUserRights = () => {
+        setIsLoading(true)
+        // Send form data to Flask route
+        fetch(`http://localhost:5000/get_user_rights/${username}?groupId=${groupId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.message === 'user is an owner') {
+                    setIsGroupCreator(true);
+                    setIsGroupMember(true);
+                }
+                else if (data.message === 'user is a member') {
+                    setIsGroupCreator(false);
+                    setIsGroupMember(true);
+                }
+                else if (data.message === 'user is not owner or member'){
+                    setIsGroupCreator(false);
+                    setIsGroupMember(false);
+                }
+
+            })
+            .catch(error => {
+                console.error(error)
+                setError("Unable to fetch data")
+            })
+            .finally(() => setIsLoading(false));
+
+    }
 
     // fetch group data based on group ID
     const fetchGroupData = () => {
@@ -72,11 +103,44 @@ export default function GroupProfilePage() {
     // TODO
     const handleJoinSubmit = () => {
         console.log("Join")
+        fetch(`http://localhost:5000/join_public_group/${username}?groupId=${groupId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.message === 'joined group successfully') {
+                    // refresh page
+                }
+                else if (data.message === 'group is full'){
+                    //group full error
+                }
+                else {
+                    //error ? 
+                }
+            })
+            .catch(error => {
+                console.error(error)
+                setError("Unable to fetch data")
+            })
     }
 
     // TODO
     const handleLeaveSubmit = () => {
         console.log("Leave")
+        fetch(`http://localhost:5000/leave_group/${username}?groupId=${groupId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.message === 'left group successfully') {
+                    // redirect back/ refresh page
+                }
+                else {
+                    //error ? 
+                }
+            })
+            .catch(error => {
+                console.error(error)
+                setError("Unable to fetch data")
+            })
     }
 
     const formatTagType = (text) => {

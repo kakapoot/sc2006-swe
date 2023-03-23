@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
-import $ from 'jquery'
 
-// TODO : ensure input fields are not blank
+// TODO : fix isSuccessful toggle
 export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataChange }) {
     const [profile, setProfile] = useState(prevGroupData)
     const [isLoading, setIsLoading] = useState(false)
+    const [isSuccessful, setIsSuccessful] = useState(false);
+    const btnRef = useRef(null)
     const [tagData, setTagData] = useState({})
     const [errors, setErrors] = useState({})
 
@@ -35,7 +36,7 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
 
 
     // TODO : update database with new group profile data
-    const handleApplyChangesSubmit = (e) => {
+    const handleApplyChangesSubmit = () => {
         if (buttonName === "Create New Group") {
             // TODO : if creating a new group, create unique groupId, set authenticated user as member and owner of group
             const data = {
@@ -43,13 +44,15 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
                 username: username
             };
             console.log(data)
-            e.preventDefault()
             setErrors(validate(profile))
             // reset create group form
             setProfile(prevGroupData)
 
             /////////////////////////////////////////////////// send to flask
             setIsLoading(true)
+            if(Object.keys(errors).length === 0) {
+              setIsSuccessful(true)
+            }  
             fetch('http://localhost:5000/create_group', {
                 method: 'POST',
                 headers: {
@@ -64,15 +67,23 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
                 .catch(error => console.error(error))
                 .finally(() => setIsLoading(false));
             ////////////////////////////////////////////////
+
+            if (isSuccessful) {
+              btnRef.current.click()
+            }
         }
 
         else if (buttonName === "Edit Group") {
             console.log(profile)
             onGroupDataChange(profile)
+            setErrors(validate(profile))
             setProfile(prevGroupData)
 
             /////////////////////////////////////////////////// send to flask
             setIsLoading(true)
+            if(Object.keys(errors).length === 0) {
+              setIsSuccessful(true)
+            } 
             fetch('http://localhost:5000/update_group', {
                 method: 'POST',
                 headers: {
@@ -88,14 +99,12 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
                 .catch(error => console.error(error))
                 .finally(() => setIsLoading(false));
             //////////////////////////////////////////////////
+
+            if (isSuccessful) {
+              btnRef.current.click()
+            }
         }
     }
-
-    $('#editGroupProfileModal').on('hide', function(e) {
-      if (errors.length !== 0) {
-        e.preventDefault();
-      } 
-    });
 
     const handleClose = () => {
         // clear unsaved changes
@@ -141,7 +150,7 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
                         {/* Modal Header */}
                         <div className="modal-header">
                             <h3 className="modal-title" id="editGroupProfileModalLabel"><strong>{buttonName}</strong></h3>
-                            <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button ref={btnRef} onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
                         {/* Modal Body */}
@@ -193,7 +202,7 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
                         {/* Modal Footer */}
                         <div className="modal-footer d-flex flex-column align-items-start">
                             <div className="mt-5 d-flex gap-3">
-                                <button onClick={handleApplyChangesSubmit} type="button" className="btn p-3 btn-primary text-uppercase" data-bs-dismiss="modal">Apply Changes</button>
+                                <button onClick={handleApplyChangesSubmit} type="button" className="btn p-3 btn-primary text-uppercase">Apply Changes</button>
                             </div>
                         </div>
                     </div>

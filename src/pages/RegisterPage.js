@@ -75,7 +75,6 @@ const RegisterPage = () => {
     return takenErrors
   }
 
-  /*to add email regex*/
   const validate = (values) => {
     const errors = {};
     if (!values.name) {

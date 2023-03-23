@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
+import $ from 'jquery'
 
 // TODO : ensure input fields are not blank
 export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataChange }) {
     const [profile, setProfile] = useState(prevGroupData)
     const [isLoading, setIsLoading] = useState(false)
     const [tagData, setTagData] = useState({})
+    const [errors, setErrors] = useState({})
 
     const { username } = useContext(AuthContext)
     // fetch available tags in database
@@ -33,7 +35,7 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
 
 
     // TODO : update database with new group profile data
-    const handleApplyChangesSubmit = () => {
+    const handleApplyChangesSubmit = (e) => {
         if (buttonName === "Create New Group") {
             // TODO : if creating a new group, create unique groupId, set authenticated user as member and owner of group
             const data = {
@@ -41,7 +43,8 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
                 username: username
             };
             console.log(data)
-
+            e.preventDefault()
+            setErrors(validate(profile))
             // reset create group form
             setProfile(prevGroupData)
 
@@ -88,10 +91,37 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
         }
     }
 
+    $('#editGroupProfileModal').on('hide', function(e) {
+      if (errors.length !== 0) {
+        e.preventDefault();
+      } 
+    });
+
     const handleClose = () => {
         // clear unsaved changes
         setProfile(prevGroupData)
+        setErrors(resetErrors())
     }
+
+    const validate = (profileValues) => {
+      const errors = {};
+      if (!profileValues.name) {
+        errors.name = "Name should not be blank!";
+      }
+      if (profileValues.capacity <= 0) {
+        errors.capacity = "Capacity should be a positive number!"
+      }
+      if (!profileValues.studyArea) {
+        errors.studyArea = "Study area should not be blank!"
+      }
+  
+      return errors;
+    };
+
+    const resetErrors = () => {
+      const errors = {};
+      return errors;
+    };
 
     return (
         <div>
@@ -120,6 +150,7 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="name"><strong>Name</strong></label>
                                 <input type="text" value={profile.name} onChange={(e) => handleInputChange("name", e.target.value)} className="form-control" id="name" placeholder="Enter name..." />
+                                <p className="modal-input-error">{errors.name}</p>
                             </div>
                             <div className="form-group d-flex flex-column">
                                 <label htmlFor="privacy"><strong>Privacy</strong></label>
@@ -131,11 +162,13 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="capacity"><strong>Capacity</strong></label>
                                 <input type="number" value={profile.capacity} onChange={(e) => handleInputChange("capacity", e.target.value)} className="form-control" id="capacity" placeholder="Enter capacity..." />
+                                <p className="modal-input-error">{errors.capacity}</p>
                             </div>
                             {/* TODO : select from all available study areas in database */}
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="studyArea"><strong>Study Area</strong></label>
                                 <input type="text" value={profile.studyArea} onChange={(e) => handleInputChange("studyArea", e.target.value)} className="form-control" id="studyArea" placeholder="Enter study area..." />
+                                <p className="modal-input-error">{errors.studyArea}</p>
                             </div>
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="description"><strong>Description</strong></label>
@@ -152,6 +185,7 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
                                             <div key={tag}><SelectableTag name={tag} onSelectTag={() => { handleSelectTag(profile, setProfile, tagType, tag) }} isSelected={handleIsSelected(profile, tagType, tag)} /></div>
                                         )}
                                     </div>
+
                                 </div>
                             ))}
                         </div>

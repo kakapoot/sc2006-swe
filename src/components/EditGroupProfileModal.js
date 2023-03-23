@@ -8,7 +8,7 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
     const [isLoading, setIsLoading] = useState(false)
     const [tagData, setTagData] = useState({})
 
-    const {username} = useContext(AuthContext)
+    const { username } = useContext(AuthContext)
     // fetch available tags in database
     useEffect(() => {
         setIsLoading(true)
@@ -30,18 +30,21 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
         setProfile({ ...profile, [inputType]: inputValue })
     }
 
-    const data = {
-        ...profile,
-        username: username
-      };
+
 
     // TODO : update database with new group profile data
     const handleApplyChangesSubmit = () => {
         if (buttonName === "Create New Group") {
             // TODO : if creating a new group, create unique groupId, set authenticated user as member and owner of group
-            console.log(profile)
-            onGroupDataChange(profile)
+            const data = {
+                ...profile,
+                username: username
+            };
+            console.log(data)
+
+            // reset create group form
             setProfile(prevGroupData)
+
             /////////////////////////////////////////////////// send to flask
             setIsLoading(true)
             fetch('http://localhost:5000/create_group', {
@@ -54,11 +57,10 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
                 .then(response => response.json())
                 .then(data => {
                     console.log(data); // Handle response data here
-                    console.log(username);
                 })
                 .catch(error => console.error(error))
                 .finally(() => setIsLoading(false));
-            //////////////////////////////////////////////////
+            ////////////////////////////////////////////////
         }
 
         else if (buttonName === "Edit Group") {

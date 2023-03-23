@@ -24,7 +24,7 @@ export default function MyGroupsPage() {
     const emptyGroupProfileData = {
         groupId: "",
         name: "",
-        privacy: "",
+        privacy: "private",
         capacity: 10,
         studyArea: "",
         description: "",

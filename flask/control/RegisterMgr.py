@@ -64,7 +64,6 @@ def create_profile():
     organization = data["organization"]
     description = data["description"]
     tags = data["tags"]
-    groups = []
 
     # edit their profile
     doc_ref = userdb.document(username)
@@ -76,7 +75,6 @@ def create_profile():
             "organization": organization,
             "description": description,
             "tags": tags,
-            "groups": groups,
         },
         merge=True,
     )

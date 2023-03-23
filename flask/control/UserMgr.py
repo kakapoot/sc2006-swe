@@ -7,6 +7,11 @@ UserRoutes = Blueprint("UserRoutes", __name__)
 # TODO : not return entire user data
 @UserRoutes.route("/get_user/<username>", methods=["GET"])
 def get_user(username):
+    """
+    This function returns the details
+    of a user based on the unique username 
+    given
+    """
     if request.method == "GET":
         user_doc_ref = userdb.document(username).get()
         if user_doc_ref.exists:

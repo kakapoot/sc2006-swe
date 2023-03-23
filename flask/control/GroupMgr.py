@@ -7,6 +7,10 @@ GroupRoutes = Blueprint("GroupRoutes", __name__)
 
 @GroupRoutes.route("/find_groups", methods=["POST"])
 def find_groups():
+    """
+    This function returns groups 
+    that match the search text and filter tags
+    """
     if request.method == "POST":
         data = request.get_json()
         subname = data["searchText"]
@@ -74,11 +78,13 @@ def find_groups():
         return jsonify({"groups": groups})
 
 
-###################################################################################################################################
-
 
 @GroupRoutes.route("/update_group", methods=["POST"])
 def update_group():
+    """
+    This function updates group details in firestore
+    based on the parameters provided in the form given
+    """
     data = request.get_json()
     groupId = data["groupId"]
 
@@ -90,6 +96,10 @@ def update_group():
 
 @GroupRoutes.route("/create_group", methods=["POST"])
 def create_group():
+    """
+    This function creates a group document in firestore
+    based on the parameters provided in the form given
+    """
     data = request.get_json()
     username = data["username"]
     doc_ref = groupdb.document()
@@ -116,6 +126,11 @@ def create_group():
 
 @GroupRoutes.route("/get_group/<groupId>", methods=["GET"])
 def get_group(groupId):
+    """
+    This function returns the details of 
+    a group document stored in firestore based on
+    the unique groupId given
+    """
     if request.method == "GET":
         group_doc_ref = groupdb.document(groupId)
         group_doc = group_doc_ref.get()
@@ -123,9 +138,14 @@ def get_group(groupId):
             return jsonify(group_doc.to_dict())
 
 
-# gets the username, name and organization of all users in the given group
+
 @GroupRoutes.route("/get_group_members/<groupId>", methods=["GET"])
 def get_group_members(groupId):
+    """
+    This function returns the username, name 
+    and organization of all users in a group
+    based on the unique groupId given
+    """
     if request.method == "GET":
         group_doc_ref = groupdb.document(groupId)
         group_doc = group_doc_ref.get()
@@ -158,6 +178,10 @@ def get_group_members(groupId):
 
 @GroupRoutes.route("/get_my_groups/<username>", methods=["GET"])
 def get_groups(username):
+    """
+    This function returns the groups of a
+    user based on the given unique username
+    """
     # Use a query to retrieve documents where the "members" field contains the user's ID
     query = groupdb.where("members", "array_contains", username)
     docs = query.stream()
@@ -179,6 +203,11 @@ def get_groups(username):
 
 @GroupRoutes.route("/join_private_group", methods=["POST"])
 def join_private_group():
+    """
+    This function adds the current user
+    to a private group based on the 
+    groupId given through the form
+    """
     data = request.get_json()
     username = data["username"]
     code = data["code"]
@@ -208,6 +237,11 @@ def join_private_group():
     
 @GroupRoutes.route("/get_user_rights/<username>", methods=["GET"])
 def get_rights(username):
+    """
+    This function returns the role of a
+    user in a group through the unique 
+    username 
+    """
     groupId = request.args.get('groupId')
     group_doc_ref = groupdb.document(groupId)
     group_data = group_doc_ref.get().to_dict()
@@ -221,6 +255,11 @@ def get_rights(username):
 
 @GroupRoutes.route("/leave_group/<username>", methods=["GET"])
 def leave_group(username):
+    """
+    This function removes the unique username
+    given from the list of members in the 
+    groupId given
+    """
     groupId = request.args.get('groupId')
     group_doc_ref = groupdb.document(groupId)
     try:
@@ -231,6 +270,11 @@ def leave_group(username):
 
 @GroupRoutes.route("/join_public_group/<username>", methods=["GET"])
 def join_group(username):
+    """
+    This function adds the unique username 
+    given to the list of members in the
+    groupId given
+    """
     groupId = request.args.get('groupId')
     group_doc_ref = groupdb.document(groupId)
     group_doc_data = group_doc_ref.get().to_dict()

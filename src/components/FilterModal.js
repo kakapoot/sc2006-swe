@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
+import { useTags } from './Tag'
+import { LoadingSpinner } from './LoadingSpinner'
 import { SelectableTag, DisplayTag, formatTagType } from './Tag'
 
-export function FilterModal({ onFilterTagsChange, prevFilterTags, tagData }) {
+export function FilterModal({ onFilterTagsChange, prevFilterTags }) {
     const [selectedTags, setSelectedTags] = useState([])
+    const { data: tagData, error, isLoading: tagDataIsLoading } = useTags()
 
     const handleSelectTag = (tag) => {
         selectedTags.some(selectedTag => selectedTag === tag)
@@ -47,7 +50,8 @@ export function FilterModal({ onFilterTagsChange, prevFilterTags, tagData }) {
 
                         {/* Modal Body */}
                         <div className="modal-body d-flex flex-column align-items-start gap-4">
-                            {Object.entries(tagData).map(([tagType, tags]) => (
+                            {tagDataIsLoading && <LoadingSpinner />}
+                            {tagData && Object.entries(tagData).map(([tagType, tags]) => (
                                 <div key={tagType} className="d-flex flex-column align-items-start">
                                     <span><strong>{formatTagType(tagType)}</strong></span>
 

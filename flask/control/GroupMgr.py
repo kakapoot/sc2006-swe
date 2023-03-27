@@ -8,7 +8,7 @@ GroupRoutes = Blueprint("GroupRoutes", __name__)
 @GroupRoutes.route("/find_groups", methods=["POST"])
 def find_groups():
     """
-    This function returns groups 
+    This function returns groups
     that match the search text and filter tags
     """
     if request.method == "POST":
@@ -78,7 +78,6 @@ def find_groups():
         return jsonify({"groups": groups})
 
 
-
 @GroupRoutes.route("/update_group", methods=["POST"])
 def update_group():
     """
@@ -127,7 +126,7 @@ def create_group():
 @GroupRoutes.route("/get_group/<groupId>", methods=["GET"])
 def get_group(groupId):
     """
-    This function returns the details of 
+    This function returns the details of
     a group document stored in firestore based on
     the unique groupId given
     """
@@ -138,11 +137,10 @@ def get_group(groupId):
             return jsonify(group_doc.to_dict())
 
 
-
 @GroupRoutes.route("/get_group_members/<groupId>", methods=["GET"])
 def get_group_members(groupId):
     """
-    This function returns the username, name 
+    This function returns the username, name
     and organization of all users in a group
     based on the unique groupId given
     """
@@ -198,14 +196,14 @@ def get_groups(username):
     if len(groups) == 0:
         return jsonify({"message": "You are not a member of any group."}), 404
     else:
-        return jsonify(groups)
+        return jsonify({"groups": groups}), 200
 
 
 @GroupRoutes.route("/join_private_group", methods=["POST"])
 def join_private_group():
     """
     This function adds the current user
-    to a private group based on the 
+    to a private group based on the
     groupId given through the form
     """
     data = request.get_json()
@@ -234,63 +232,68 @@ def join_private_group():
         )
     except Exception as e:
         return jsonify({"message": "Error:" + str(e)})
-    
+
+
 @GroupRoutes.route("/get_user_rights/<username>", methods=["GET"])
 def get_rights(username):
     """
     This function returns the role of a
-    user in a group through the unique 
-    username 
+    user in a group through the unique
+    username
     """
-    groupId = request.args.get('groupId')
+    groupId = request.args.get("groupId")
     group_doc_ref = groupdb.document(groupId)
     group_data = group_doc_ref.get().to_dict()
-    owner = group_data.get('owner')
-    if (owner == username):
-        return jsonify({'message': 'user is an owner'})
-    elif group_data and username in group_data.get('members', []):
-        return jsonify({'message': 'user is a member'})
+    owner = group_data.get("owner")
+    if owner == username:
+        return jsonify({"message": "user is an owner"})
+    elif group_data and username in group_data.get("members", []):
+        return jsonify({"message": "user is a member"})
     else:
-        return jsonify({'message': 'user is not owner or member'}) #+ ' ' + str(owner)+ ' ' +str(username)})
+        return jsonify(
+            {"message": "user is not owner or member"}
+        )  # + ' ' + str(owner)+ ' ' +str(username)})
+
 
 @GroupRoutes.route("/leave_group/<username>", methods=["GET"])
 def leave_group(username):
     """
     This function removes the unique username
-    given from the list of members in the 
+    given from the list of members in the
     groupId given
     """
-    groupId = request.args.get('groupId')
+    groupId = request.args.get("groupId")
     group_doc_ref = groupdb.document(groupId)
+
+    group_data = group_doc_ref.get().to_dict()
+    owner = group_data.get("owner")
+
     try:
         group_doc_ref.update({"members": firestore.ArrayRemove([username])})
-        return jsonify({'message': 'left group successfully'})
+        # TODO : new group owner??
+        if owner == username:
+            group_doc_ref.update({"owner": ""})
+        return jsonify({"message": "left group successfully"})
     except Exception as e:
-        return jsonify({'message': 'Error removing member from group.'})
+        return jsonify({"message": "Error removing member from group."})
+
 
 @GroupRoutes.route("/join_public_group/<username>", methods=["GET"])
 def join_group(username):
     """
-    This function adds the unique username 
+    This function adds the unique username
     given to the list of members in the
     groupId given
     """
-    groupId = request.args.get('groupId')
+    groupId = request.args.get("groupId")
     group_doc_ref = groupdb.document(groupId)
     group_doc_data = group_doc_ref.get().to_dict()
-    
+
     if len(group_doc_data.get("members", [])) == int(group_doc_data.get("capacity", 0)):
         # The number of members in the group is equal to its capacity
         return jsonify({"message": "group is full"})
     try:
         group_doc_ref.update({"members": firestore.ArrayUnion([username])})
-        return jsonify({'message': 'joined group successfully'})
+        return jsonify({"message": "joined group successfully"})
     except Exception as e:
-        return jsonify({'message': 'Error removing member from group.'})    
-
-    
-
-
-
-
-
+        return jsonify({"message": "Error removing member from group."})

@@ -14,6 +14,7 @@ import { AuthContext } from './context/AuthContext';
 import { PrivateRoute, PublicRoute } from './components/Route';
 import { HashRouter } from 'react-router-dom';
 import { LoadingSpinner } from './components/LoadingSpinner';
+import { SWRConfig } from 'swr';
 
 const App = () => {
   const { authState } = useContext(AuthContext)
@@ -23,23 +24,25 @@ const App = () => {
       {!authState.isAuthLoaded && <LoadingSpinner />}
 
       {authState.isAuthLoaded &&
-        <BrowserRouter>
-          <Routes>
-            <Route element={<PrivateRoute />}>
-              <Route path='/my_groups' element={<MyGroupsPage />} />
-              <Route path='/find_groups' element={<FindGroupsPage />} />
-              <Route path='/study_areas' element={<StudyAreasPage />} />
-              <Route path='/user/:username' element={<UserProfilePage />} />
-              <Route path='/group/:groupId' element={<GroupProfilePage />} />
-            </Route>
+        <SWRConfig value={{ shouldRetryOnError: false }}>
+          <BrowserRouter>
+            <Routes>
+              <Route element={<PrivateRoute />}>
+                <Route path='/my_groups' element={<MyGroupsPage />} />
+                <Route path='/find_groups' element={<FindGroupsPage />} />
+                <Route path='/study_areas' element={<StudyAreasPage />} />
+                <Route path='/user/:username' element={<UserProfilePage />} />
+                <Route path='/group/:groupId' element={<GroupProfilePage />} />
+              </Route>
 
-            <Route element={<PublicRoute />}>
-              <Route path='/' element={<LoginPage />} />
-              <Route path='/register/' element={<RegisterPage />} />
-              <Route path='/create_profile' element={<ProfileCreationPage />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>}
+              <Route element={<PublicRoute />}>
+                <Route path='/' element={<LoginPage />} />
+                <Route path='/register/' element={<RegisterPage />} />
+                <Route path='/create_profile' element={<ProfileCreationPage />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </SWRConfig>}
     </div>
   );
 }

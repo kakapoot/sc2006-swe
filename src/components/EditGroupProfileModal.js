@@ -1,29 +1,20 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
 import { AuthContext } from '../context/AuthContext'
+import { LoadingSpinner } from './LoadingSpinner'
 import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
+import { useTags } from './Tag'
 
 // TODO : fix isSuccessful toggle
-export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataChange }) {
+export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) {
     const [profile, setProfile] = useState(prevGroupData)
     const [isLoading, setIsLoading] = useState(false)
     const [isSuccessful, setIsSuccessful] = useState(false);
     const btnRef = useRef(null)
-    const [tagData, setTagData] = useState({})
     const [errors, setErrors] = useState({})
 
+    const { data: tagData, error, isLoading: tagDataIsLoading } = useTags()
+
     const { username } = useContext(AuthContext)
-    // fetch available tags in database
-    useEffect(() => {
-        setIsLoading(true)
-        // Send form data to Flask route
-        fetch('http://localhost:5000/get_tags')
-            .then(response => response.json())
-            .then(data => {
-                setTagData(data)
-            })
-            .catch(error => console.error(error))
-            .finally(() => setIsLoading(false));
-    }, [])
 
     useEffect(() => {
         setProfile(prevGroupData)
@@ -34,25 +25,35 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
     }
 
 
+    useEffect(() => {
+        if (isSuccessful && !isLoading) {
+            // Close modal
+            btnRef.current.click()
+            handleClose()
+        }
+    }, [isSuccessful, isLoading])
 
-    // TODO : update database with new group profile data
+
+    // Update database with new group profile data
     const handleApplyChangesSubmit = () => {
-        if (buttonName === "Create New Group") {
-            // TODO : if creating a new group, create unique groupId, set authenticated user as member and owner of group
+        setErrors(validate(profile))
+        if (Object.keys(errors).length === 0) {
+            console.log(errors)
+            setIsSuccessful(true)
+        }
+
+        // TODO : only send request with valid form
+
+        // Create new group
+        if (isCreateGroup) {
             const data = {
                 ...profile,
                 username: username
             };
             console.log(data)
-            setErrors(validate(profile))
-            // reset create group form
-            setProfile(prevGroupData)
 
-            /////////////////////////////////////////////////// send to flask
+            // Create new group in database
             setIsLoading(true)
-            if(Object.keys(errors).length === 0) {
-              setIsSuccessful(true)
-            }  
             fetch('http://localhost:5000/create_group', {
                 method: 'POST',
                 headers: {
@@ -62,28 +63,20 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data); // Handle response data here
+                    console.log(data);
+                    // Re-fetch groups data to update My Groups page UI
+                    mutate()
                 })
                 .catch(error => console.error(error))
                 .finally(() => setIsLoading(false));
-            ////////////////////////////////////////////////
-
-            if (isSuccessful) {
-              btnRef.current.click()
-            }
         }
 
-        else if (buttonName === "Edit Group") {
+        // Edit group profile
+        else {
             console.log(profile)
-            onGroupDataChange(profile)
-            setErrors(validate(profile))
-            setProfile(prevGroupData)
 
-            /////////////////////////////////////////////////// send to flask
+            // Update group data in database
             setIsLoading(true)
-            if(Object.keys(errors).length === 0) {
-              setIsSuccessful(true)
-            } 
             fetch('http://localhost:5000/update_group', {
                 method: 'POST',
                 headers: {
@@ -93,16 +86,12 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data); // Handle response data here
-                    //returns group updated, cant check if creating or updating
+                    console.log(data);
+                    // Re-fetch group profile data to update Group Profile page UI
+                    mutate()
                 })
                 .catch(error => console.error(error))
                 .finally(() => setIsLoading(false));
-            //////////////////////////////////////////////////
-
-            if (isSuccessful) {
-              btnRef.current.click()
-            }
         }
     }
 
@@ -110,26 +99,27 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
         // clear unsaved changes
         setProfile(prevGroupData)
         setErrors(resetErrors())
+
     }
 
     const validate = (profileValues) => {
-      const errors = {};
-      if (!profileValues.name) {
-        errors.name = "Name should not be blank!";
-      }
-      if (profileValues.capacity <= 0) {
-        errors.capacity = "Capacity should be a positive number!"
-      }
-      if (!profileValues.studyArea) {
-        errors.studyArea = "Study area should not be blank!"
-      }
-  
-      return errors;
+        const errors = {};
+        if (!profileValues.name) {
+            errors.name = "Name should not be blank!";
+        }
+        if (profileValues.capacity <= 0) {
+            errors.capacity = "Capacity should be a positive number!"
+        }
+        if (!profileValues.studyArea) {
+            errors.studyArea = "Study area should not be blank!"
+        }
+
+        return errors;
     };
 
     const resetErrors = () => {
-      const errors = {};
-      return errors;
+        const errors = {};
+        return errors;
     };
 
     return (
@@ -140,16 +130,20 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16">
                     <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                 </svg>
-                <span>{buttonName}</span>
+                <span>{isCreateGroup ? "Create New Group" : "Edit Group"}</span>
             </button>
 
             {/* Modal */}
             <div className="modal fade" id="editGroupProfileModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="modalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-xl modal-dialog-scrollable">
+
+
                     <div className="p-4 modal-content">
                         {/* Modal Header */}
                         <div className="modal-header">
-                            <h3 className="modal-title" id="editGroupProfileModalLabel"><strong>{buttonName}</strong></h3>
+                            <h3 className="modal-title" id="editGroupProfileModalLabel"><strong>
+                                {isCreateGroup ? "Create New Group" : "Edit Group"}
+                            </strong></h3>
                             <button ref={btnRef} onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
@@ -185,7 +179,8 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
                             </div>
 
                             {/* Tags */}
-                            {Object.entries(tagData).map(([tagType, tags]) => (
+                            {tagDataIsLoading && <LoadingSpinner />}
+                            {tagData && Object.entries(tagData).map(([tagType, tags]) => (
                                 <div key={tagType} className="d-flex flex-column align-items-start">
                                     <span><strong>{formatTagType(tagType)}</strong></span>
 
@@ -202,7 +197,10 @@ export function EditGroupProfileModal({ buttonName, prevGroupData, onGroupDataCh
                         {/* Modal Footer */}
                         <div className="modal-footer d-flex flex-column align-items-start">
                             <div className="mt-5 d-flex gap-3">
-                                <button onClick={handleApplyChangesSubmit} type="button" className="btn p-3 btn-primary text-uppercase">Apply Changes</button>
+                                {isLoading && <LoadingSpinner />}
+                                {!isLoading && <button onClick={handleApplyChangesSubmit} type="button" className="btn p-3 btn-primary text-uppercase">
+                                    {isCreateGroup ? "Create Group" : "Apply Changes"}
+                                </button>}
                             </div>
                         </div>
                     </div>

@@ -1,26 +1,27 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Navbar } from '../components/Navbar'
 import { GroupCard } from '../components/GroupCard'
 import { JoinPrivateGroupModal } from '../components/JoinPrivateGroupModal'
 import { EditGroupProfileModal } from '../components/EditGroupProfileModal'
 import { AuthContext } from '../context/AuthContext'
+import useSWR from 'swr';
+import { fetcher } from "../components/Util";
+import { LoadingSpinner } from '../components/LoadingSpinner'
 
 export default function MyGroupsPage() {
-    // TODO : fetch data from firebase based on currently authenticated user
     const [groups, setGroups] = useState([])
     const { username } = useContext(AuthContext)
 
-    fetch(`http://localhost:5000/get_my_groups/${username}`, {
-        'method': 'GET',
-        headers: {
-            'Content-Type': 'applications/json'
+    // fetch groups data from firebase based on currently authenticated user
+    const { data, error, isLoading, mutate } = useSWR(`http://localhost:5000/get_my_groups/${username}`, fetcher)
+
+    useEffect(() => {
+        if (data) {
+            Object.keys(data).length !== 0 ? setGroups(data.groups) : setGroups([])
         }
-    })
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.log(error))
+    }, [data])
 
-
+    // initialize empty data for creating new group
     const emptyGroupProfileData = {
         groupId: "",
         name: "",
@@ -38,11 +39,6 @@ export default function MyGroupsPage() {
         owner: "",
     }
 
-    // TODO : add created group to database
-    const handleGroupProfileDataChange = (userProfileData) => {
-
-    }
-
     return (
         <div className="container-fluid">
             <main className="row">
@@ -55,7 +51,9 @@ export default function MyGroupsPage() {
                             <h2><strong>My Groups</strong></h2>
 
                             <div className="d-flex gap-3">
-                                <EditGroupProfileModal buttonName="Create New Group" prevGroupData={emptyGroupProfileData} onGroupDataChange={handleGroupProfileDataChange} />
+                                <EditGroupProfileModal isCreateGroup={true}
+                                    prevGroupData={emptyGroupProfileData}
+                                    mutate={mutate} />
 
                                 <JoinPrivateGroupModal />
                             </div>
@@ -63,7 +61,13 @@ export default function MyGroupsPage() {
 
                         {/* Groups */}
                         <div className="d-flex flex-column gap-5">
-                            {groups && groups.map((group) => <GroupCard group={group} key={group.groupId} />)}
+                            {/* Loading */}
+                            {isLoading && <LoadingSpinner />}
+
+                            {/* Error */}
+                            {!isLoading && error && error.message}
+
+                            {!isLoading && groups && groups.map((group) => <GroupCard group={group} key={group.groupId} />)}
                         </div>
                     </div>
                 </div>

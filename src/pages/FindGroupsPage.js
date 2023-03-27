@@ -9,7 +9,6 @@ export default function FindGroupsPages() {
     const [groups, setGroups] = useState([])
     const [searchText, setSearchText] = useState("")
     const [filterTags, setFilterTags] = useState([])
-    const [tagData, setTagData] = useState({})
     const [isLoading, setIsLoading] = useState(false)
 
 
@@ -18,15 +17,6 @@ export default function FindGroupsPages() {
 
         // get initial group list
         handleSearch()
-
-        // fetch available tags in database
-        fetch('http://localhost:5000/get_tags')
-            .then(response => response.json())
-            .then(data => {
-                setTagData(data)
-            })
-            .catch(error => console.error(error))
-            .finally(() => setIsLoading(false))
     }, [])
 
 
@@ -73,8 +63,7 @@ export default function FindGroupsPages() {
                             onSearchTextChange={handleSearchTextChange}
                             onSearch={handleSearch}
                             onFilterTagsChange={handleFilterTagsChange}
-                            prevFilterTags={filterTags}
-                            tagData={tagData} />
+                            prevFilterTags={filterTags} />
 
 
                         {/* Groups */}

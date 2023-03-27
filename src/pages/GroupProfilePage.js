@@ -1,116 +1,74 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Navbar } from '../components/Navbar'
-import { DisplayTag } from '../components/Tag'
+import { DisplayTag, formatTagType } from '../components/Tag'
 import { useParams } from 'react-router';
 import { EditGroupProfileModal } from '../components/EditGroupProfileModal';
 import { Link } from 'react-router-dom';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { AuthContext } from '../context/AuthContext';
+import useSWR from 'swr';
+import { fetcher } from "../components/Util";
+import { LeaveGroupModal } from '../components/LeaveGroupModal';
 
+// TODO : add study area
 export default function GroupProfilePage() {
     const { groupId } = useParams();
     const [isGroupCreator, setIsGroupCreator] = useState(true)
     const [isGroupMember, setIsGroupMember] = useState(true)
-    const [groupData, setGroupData] = useState(null)
     const [error, setError] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
-    const [membersData, setMembersData] = useState(null)
+
     const { username } = useContext(AuthContext)
     // TODO : check if current authenticated user is group creator 
     // TODO : check if current authenticated user is group member, 
     // should be able to leave if in group, join if not in group, 
     // show error if not in group and group is private
-    useEffect(() => {
-        // TODO : placeholder
-        // const userId = "0"
-        // if (userId === "0") {
-        //     setIsGroupCreator(true)
-        //     setIsGroupMember(true)
-        // } else {
-        //     setIsGroupCreator(false)
-        //     setIsGroupMember(false)
-        // }
-        fetchUserRights()
-        fetchGroupData()
-        fetchMembersData()
-    }, [isGroupCreator, isGroupMember, groupId])
-
     // fetch user rights based on Username
-    const fetchUserRights = () => {
-        setIsLoading(true)
-        // Send form data to Flask route
-        fetch(`http://localhost:5000/get_user_rights/${username}?groupId=${groupId}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                if (data.message === 'user is an owner') {
-                    setIsGroupCreator(true);
-                    setIsGroupMember(true);
-                }
-                else if (data.message === 'user is a member') {
-                    setIsGroupCreator(false);
-                    setIsGroupMember(true);
-                }
-                else if (data.message === 'user is not owner or member'){
-                    setIsGroupCreator(false);
-                    setIsGroupMember(false);
-                }
+    const { data: userRightsData, error: userRightsError, isLoading: userRightsIsLoading, mutate: userRightsMutate }
+        = useSWR(`http://localhost:5000/get_user_rights/${username}?groupId=${groupId}`, fetcher)
+    useEffect(() => {
+        if (!userRightsData) {
+            return
+        }
 
-            })
-            .catch(error => {
-                console.error(error)
-                setError("Unable to fetch data")
-            })
-            .finally(() => setIsLoading(false));
+        if (userRightsData.message === 'user is an owner') {
+            setIsGroupCreator(true);
+            setIsGroupMember(true);
+        }
+        else if (userRightsData.message === 'user is a member') {
+            setIsGroupCreator(false);
+            setIsGroupMember(true);
+        }
+        else if (userRightsData.message === 'user is not owner or member') {
+            setIsGroupCreator(false);
+            setIsGroupMember(false);
+        }
+    }, [userRightsData])
 
-    }
+
 
     // fetch group data based on group ID
-    const fetchGroupData = () => {
-        setIsLoading(true)
-        // Send form data to Flask route
-        fetch(`http://localhost:5000/get_group/${groupId}`)
-            .then(response => response.json())
-            .then(data => {
-                setGroupData(data)
-            })
-            .catch(error => {
-                console.error(error)
-                setError("Unable to fetch data")
-            })
-            .finally(() => setIsLoading(false));
-    }
-
+    const { data: groupData, error: groupError, isLoading: groupIsLoading, mutate: groupMutate }
+        = useSWR(`http://localhost:5000/get_group/${groupId}`, fetcher)
     // fetch list of members details based on group ID
-    const fetchMembersData = () => {
-        setIsLoading(true)
-        fetch(`http://localhost:5000/get_group_members/${groupId}`)
-            .then(response => response.json())
-            .then(data => {
-                setMembersData(data)
-            })
-            .catch(error => {
-                console.error(error)
-                setError("Unable to fetch data")
-            })
-            .finally(() => setIsLoading(false));
-    }
+    const { data: membersData, error: membersError, isLoading: membersIsLoading, mutate: membersMutate }
+        = useSWR(`http://localhost:5000/get_group_members/${groupId}`, fetcher)
 
-    const handleGroupDataChange = (userProfileData) => {
-        setGroupData(userProfileData)
-    }
 
     // TODO
     const handleJoinSubmit = () => {
-        console.log("Join")
         fetch(`http://localhost:5000/join_public_group/${username}?groupId=${groupId}`)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
                 if (data.message === 'joined group successfully') {
                     // refresh page
+
+                    // re-fetch group members list to update UI
+                    membersMutate()
+                    // re-fetch user rights to update UI
+                    userRightsMutate()
                 }
-                else if (data.message === 'group is full'){
+                else if (data.message === 'group is full') {
                     //group full error
                 }
                 else {
@@ -125,13 +83,17 @@ export default function GroupProfilePage() {
 
     // TODO
     const handleLeaveSubmit = () => {
-        console.log("Leave")
         fetch(`http://localhost:5000/leave_group/${username}?groupId=${groupId}`)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
                 if (data.message === 'left group successfully') {
                     // redirect back/ refresh page
+
+                    // re-fetch group members list to update UI
+                    membersMutate()
+                    // re-fetch user rights to update UI
+                    userRightsMutate()
                 }
                 else {
                     //error ? 
@@ -143,20 +105,12 @@ export default function GroupProfilePage() {
             })
     }
 
-    const formatTagType = (text) => {
-        return text
-            // insert a space between each word
-            .replace(/([A-Z])/g, ' $1')
-            // uppercase first character of each word
-            .replace(/^./, (str) => str.toUpperCase())
-    }
-
     return (
         <div className="container-fluid">
             <main className="row">
                 <Navbar />
                 {/* Loading */}
-                {isLoading &&
+                {groupIsLoading &&
                     <div className="col">
                         <LoadingSpinner />
                     </div>}
@@ -164,7 +118,7 @@ export default function GroupProfilePage() {
                 {error && <div className="col">{error}</div>}
 
                 { /* Content */}
-                {!isLoading && groupData && <div className="col">
+                {!groupIsLoading && groupData && <div className="col">
                     {/* Header */}
                     <div className="row bg-secondary">
                         <div className="col">
@@ -176,17 +130,21 @@ export default function GroupProfilePage() {
 
                                 <div className="d-flex gap-3">
                                     {/* Show Edit button if authenticated user is creator of group */}
-                                    {isGroupCreator && <EditGroupProfileModal buttonName="Edit Group" prevGroupData={groupData} onGroupDataChange={handleGroupDataChange} />}
+                                    {isGroupCreator && <EditGroupProfileModal isCreateGroup={false}
+                                        prevGroupData={groupData}
+                                        mutate={groupMutate} />}
 
                                     {/* Show Leave button if authenticated user is group member */}
-                                    {isGroupMember &&
+                                    {/* {isGroupMember &&
                                         <button onClick={handleLeaveSubmit} className="btn btn-primary p-3 d-flex align-items-center gap-3 text-uppercase">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-box-arrow-left" viewBox="0 0 16 16">
                                                 <path fillRule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z" />
                                                 <path fillRule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
                                             </svg>
                                             <span className="text-uppercase">Leave</span>
-                                        </button>}
+                                        </button>} */}
+
+                                    {isGroupMember && <LeaveGroupModal onLeaveSubmit={handleLeaveSubmit} />}
 
                                     {/* Show Join button if authenticated user is not group member */}
                                     {!isGroupMember &&
@@ -203,7 +161,7 @@ export default function GroupProfilePage() {
                     </div>
 
                     {/* Profile */}
-                    {!isLoading && groupData &&
+                    {!groupIsLoading && groupData &&
                         <div className="col">
                             <div className="container">
                                 <div className="row my-5">
@@ -224,7 +182,7 @@ export default function GroupProfilePage() {
                                         <div className="w-100">
                                             {/* TODO : indicate group leader */}
                                             {/* TODO : disable setting capacity below current no. of members */}
-                                            <h5><strong>Members ({groupData.members.length} / {groupData.capacity})</strong></h5>
+                                            {membersData && <h5><strong>Members ({membersData.members.length} / {groupData.capacity})</strong></h5>}
                                             <div className="d-flex flex-column gap-4">
                                                 {membersData && membersData.members.map((member) =>
                                                     <Link to={`/user/${member.username}`} key={member.username} className="text-start btn btn-warning">
@@ -241,9 +199,13 @@ export default function GroupProfilePage() {
                                     </div>
 
                                     {/* Profile Body */}
-                                    <div className="col d-flex flex-column align-items-start">
-                                        <h5><strong>Description</strong></h5>
-                                        <p>{groupData.description}</p>
+
+                                    <div className="col d-flex flex-column align-items-start gap-3">
+                                        <h5><strong>Study Area: </strong>{groupData.studyArea}</h5>
+                                        <div>
+                                            <h5><strong>Description</strong></h5>
+                                            <p>{groupData.description}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

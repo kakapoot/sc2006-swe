@@ -1,25 +1,14 @@
 import React, { useEffect, useState } from 'react'
+import { LoadingSpinner } from './LoadingSpinner'
 import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
+import { useTags } from './Tag'
 
 // TODO : ensure input fields are not blank
 export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataChange }) {
     const [profile, setProfile] = useState(prevUserProfileData)
-    const [tagData, setTagData] = useState({})
     const [isLoading, setIsLoading] = useState(false)
 
-    // fetch available tags in database
-    useEffect(() => {
-        setIsLoading(true)
-        // Send form data to Flask route
-        fetch('http://localhost:5000/get_tags')
-            .then(response => response.json())
-            .then(data => {
-                setTagData(data)
-            })
-            .catch(error => console.error(error))
-            .finally(() => setIsLoading(false));
-    }, [])
-
+    const { data: tagData, error, isLoading: tagDataIsLoading } = useTags()
 
     useEffect(() => {
         setProfile(prevUserProfileData)
@@ -91,7 +80,8 @@ export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataCha
 
 
                             {/* Tags */}
-                            {Object.entries(tagData).map(([tagType, tags]) => (
+                            {tagDataIsLoading && <LoadingSpinner />}
+                            {tagData && Object.entries(tagData).map(([tagType, tags]) => (
                                 <div key={tagType} className="d-flex flex-column align-items-start">
                                     <span><strong>{formatTagType(tagType)}</strong></span>
 

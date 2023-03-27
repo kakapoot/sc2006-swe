@@ -1,7 +1,7 @@
 import React from 'react'
 import { FilterModal } from './FilterModal'
 
-export function Searchbar({ searchText, onSearchTextChange, onSearch, onFilterTagsChange, prevFilterTags, tagData }) {
+export function Searchbar({ searchText, onSearchTextChange, onSearch, onFilterTagsChange, prevFilterTags }) {
     const handleSearchSubmit = (e) => {
         e.preventDefault()
         onSearch()
@@ -21,8 +21,7 @@ export function Searchbar({ searchText, onSearchTextChange, onSearch, onFilterTa
             </form>
 
             <FilterModal onFilterTagsChange={onFilterTagsChange}
-                prevFilterTags={prevFilterTags}
-                tagData={tagData} />
+                prevFilterTags={prevFilterTags} />
         </div>
     )
 }

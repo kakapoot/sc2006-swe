@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { SelectableTag, formatTagType, handleIsSelected, handleSelectTag } from '../components/Tag'
+import { useTags } from '../components/Tag';
 
 import '../assets/styles.css';
 import { LoadingSpinner } from '../components/LoadingSpinner';
@@ -32,20 +33,7 @@ const ProfileCreationPage = () => {
   const [isSubmit, setIsSubmit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [tagData, setTagData] = useState({})
-
-  // fetch available tags in database
-  useEffect(() => {
-    setIsLoading(true)
-    // Send form data to Flask route
-    fetch('http://localhost:5000/get_tags')
-      .then(response => response.json())
-      .then(data => {
-        setTagData(data)
-      })
-      .catch(error => console.error(error))
-      .finally(() => setIsLoading(false));
-  }, [])
+  const { data: tagData, error, isLoading: tagDataIsLoading } = useTags()
 
 
   const handleChange = (e) => {
@@ -143,6 +131,7 @@ const ProfileCreationPage = () => {
             </div>
             <div className="create-profile-input-container">
 
+              {tagDataIsLoading && <LoadingSpinner />}
               {tagData && Object.entries(tagData).map(([tagType, tags]) => (
                 <div key={tagType} className="create-profile-label">
                   <span><strong>{formatTagType(tagType)}</strong></span>

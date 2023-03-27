@@ -14,8 +14,7 @@ export default function UserProfilePage() {
     const [userProfileData, setUserProfileData] = useState(null)
     const { currentUsername } = useContext(AuthContext)
 
-    const { data, error, isLoading } = useSWR(`http://localhost:5000/get_user/${username}`,
-        fetcher, { shouldRetryOnError: false })
+    const { data, error, isLoading } = useSWR(`http://localhost:5000/get_user/${username}`, fetcher)
 
     // TODO : show edit button if profile is owned by authenticated user
     useEffect(() => {

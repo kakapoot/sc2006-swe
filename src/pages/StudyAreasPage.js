@@ -36,11 +36,12 @@ export default function StudyAreasPage() {
                         <h2 className="my-5 d-flex"><strong>Study Areas</strong></h2>
                         <div className="App">
 
-                          <GoogleMap />
+                            <GoogleMap />
 
-                      </div>
+                        </div>
                     </div>
                 </div>
             </main>
         </div>
     )
+}

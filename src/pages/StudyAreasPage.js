@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Navbar } from '../components/Navbar'
-import { Searchbar } from '../components/Searchbar'
+import GoogleMap from '../components/GoogleMap'
 
 export default function StudyAreasPage() {
     const tagData = {
@@ -34,17 +34,13 @@ export default function StudyAreasPage() {
                     <div className="container">
                         {/* Header */}
                         <h2 className="my-5 d-flex"><strong>Study Areas</strong></h2>
-                        <Searchbar searchText={searchText}
-                            onSearchTextChange={handleSearchTextChange}
-                            onSearch={handleSearch}
-                            onFilterTagsChange={handleFilterTagsChange}
-                            prevFilterTags={filterTags}
-                            tagData={tagData} />
+                        <div className="App">
 
-                        <div>Map</div>
+                          <GoogleMap />
+
+                      </div>
                     </div>
                 </div>
             </main>
         </div>
     )
-}

@@ -64,9 +64,6 @@ export default function MyGroupsPage() {
                             {/* Loading */}
                             {isLoading && <LoadingSpinner />}
 
-                            {/* Error */}
-                            {!isLoading && error && error.message}
-
                             {!isLoading && groups && groups.map((group) => <GroupCard group={group} key={group.groupId} />)}
                         </div>
                     </div>

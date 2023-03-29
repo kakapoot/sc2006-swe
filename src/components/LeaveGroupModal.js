@@ -1,7 +1,41 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-export function LeaveGroupModal({ onLeaveSubmit }) {
+export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading, setToastMessages, setToastCount }) {
     const handleClose = () => {
+    }
+
+    // TODO
+    const handleLeaveSubmit = () => {
+        const data = {
+            username: username,
+            groupId: groupId
+        }
+
+        setIsLoading(true)
+        fetch('http://localhost:5000/leave_group', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                if (data.message === 'left group successfully') {
+                    // redirect back/ refresh page
+
+                    onLeaveSubmit()
+                    setToastMessages((prevState) =>
+                        [...prevState, "Left group successfully"]
+                    )
+                    setToastCount((prevState) => prevState + 1)
+                }
+                else {
+                    //error ? 
+                }
+            })
+            .catch(error => console.error(error))
     }
 
     return (
@@ -37,7 +71,7 @@ export function LeaveGroupModal({ onLeaveSubmit }) {
                         {/* Modal Footer */}
                         <div className="modal-footer d-flex flex-column align-items-start">
                             <div className="mt-5 d-flex gap-3">
-                                <button onClick={onLeaveSubmit} type="button" className="btn p-3 btn-primary text-uppercase" data-bs-dismiss="modal">Leave Group</button>
+                                <button onClick={handleLeaveSubmit} type="button" className="btn p-3 btn-primary text-uppercase" data-bs-dismiss="modal">Leave Group</button>
                             </div>
                         </div>
                     </div>

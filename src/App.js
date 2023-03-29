@@ -12,7 +12,6 @@ import GroupProfilePage from './pages/GroupProfilePage';
 import './App.css';
 import { AuthContext } from './context/AuthContext';
 import { PrivateRoute, PublicRoute } from './components/Route';
-import { HashRouter } from 'react-router-dom';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { SWRConfig } from 'swr';
 

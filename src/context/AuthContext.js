@@ -33,8 +33,8 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         // TODO : for debugging purposes 
-        console.log(authState)
-    }, [authState])
+        console.log(user)
+    }, [user])
 
 
     return (

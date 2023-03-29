@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useRef, createRef } from 'react'
 import { Navbar } from '../components/Navbar'
 import { DisplayTag, formatTagType } from '../components/Tag'
 import { useParams } from 'react-router';
@@ -9,21 +9,41 @@ import { AuthContext } from '../context/AuthContext';
 import useSWR from 'swr';
 import { fetcher } from "../components/Util";
 import { LeaveGroupModal } from '../components/LeaveGroupModal';
+import { ToastNotification } from '../components/ToastNotification';
 
 // TODO : add study area
 export default function GroupProfilePage() {
     const { groupId } = useParams();
-    const [isGroupCreator, setIsGroupCreator] = useState(true)
-    const [isGroupMember, setIsGroupMember] = useState(true)
-    const [error, setError] = useState("")
 
     const { username } = useContext(AuthContext)
+    const [isGroupCreator, setIsGroupCreator] = useState(true)
+    const [isGroupMember, setIsGroupMember] = useState(true)
+
+    const [isLoading, setIsLoading] = useState(false)
+
+
+
+    const [toastMessages, setToastMessages] = useState([])
+    const [toastCount, setToastCount] = useState(0)
+
+    const onCloseShowToast = () => {
+        setToastCount((prevState) => prevState - 1)
+    }
+
+    useEffect(() => {
+        // clear toast messages list if no more toast notifications on screen currently
+        if (toastCount === 0) {
+            setToastMessages([])
+        }
+    }, [toastCount])
+
+
     // TODO : check if current authenticated user is group creator 
     // TODO : check if current authenticated user is group member, 
     // should be able to leave if in group, join if not in group, 
     // show error if not in group and group is private
     // fetch user rights based on Username
-    const { data: userRightsData, error: userRightsError, isLoading: userRightsIsLoading, mutate: userRightsMutate }
+    const { data: userRightsData, error: userRightsError, isLoading: userRightsIsLoading, mutate: userRightsMutate, isMutating: userRightsIsMutating }
         = useSWR(`http://localhost:5000/get_user_rights/${username}?groupId=${groupId}`, fetcher)
     useEffect(() => {
         if (!userRightsData) {
@@ -56,17 +76,28 @@ export default function GroupProfilePage() {
 
     // TODO
     const handleJoinSubmit = () => {
-        fetch(`http://localhost:5000/join_public_group/${username}?groupId=${groupId}`)
+        const data = {
+            username: username,
+            groupId: groupId
+        }
+
+        setIsLoading(true)
+        fetch('http://localhost:5000/join_public_group', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
+                console.log(data)
                 if (data.message === 'joined group successfully') {
                     // refresh page
 
-                    // re-fetch group members list to update UI
-                    membersMutate()
-                    // re-fetch user rights to update UI
-                    userRightsMutate()
+                    onMembershipChange()
+                    setToastMessages((prevState) => [...prevState, "Joined group successfully"])
+                    setToastCount((prevState) => prevState + 1)
                 }
                 else if (data.message === 'group is full') {
                     //group full error
@@ -75,50 +106,50 @@ export default function GroupProfilePage() {
                     //error ? 
                 }
             })
-            .catch(error => {
-                console.error(error)
-                setError("Unable to fetch data")
-            })
+            .catch(error => console.error(error))
     }
 
     // TODO
-    const handleLeaveSubmit = () => {
-        fetch(`http://localhost:5000/leave_group/${username}?groupId=${groupId}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                if (data.message === 'left group successfully') {
-                    // redirect back/ refresh page
+    const onMembershipChange = () => {
+        // prevent join/leave button from showing up too early
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 500)
 
-                    // re-fetch group members list to update UI
-                    membersMutate()
-                    // re-fetch user rights to update UI
-                    userRightsMutate()
-                }
-                else {
-                    //error ? 
-                }
-            })
-            .catch(error => {
-                console.error(error)
-                setError("Unable to fetch data")
-            })
+        // re-fetch group members list to update UI
+        membersMutate()
+        // re-fetch user rights to update UI
+        userRightsMutate()
     }
 
     return (
         <div className="container-fluid">
             <main className="row">
                 <Navbar />
+
                 {/* Loading */}
                 {groupIsLoading &&
                     <div className="col">
                         <LoadingSpinner />
                     </div>}
                 {/* Error */}
-                {error && <div className="col">{error}</div>}
+                {groupError && <div className="col">{groupError.message}</div>}
 
                 { /* Content */}
                 {!groupIsLoading && groupData && <div className="col">
+                    {/* Toast Notifications */}
+                    <div className="toast-container position-fixed p-3 bottom-0 end-0">
+                        {toastMessages.map((toastMessage, index) => {
+                            return (
+                                <ToastNotification
+                                    key={index}
+                                    message={toastMessage}
+                                    onCloseShowToast={onCloseShowToast} />
+                            )
+                        })}
+                    </div>
+
+
                     {/* Header */}
                     <div className="row bg-secondary">
                         <div className="col">
@@ -134,20 +165,21 @@ export default function GroupProfilePage() {
                                         prevGroupData={groupData}
                                         mutate={groupMutate} />}
 
-                                    {/* Show Leave button if authenticated user is group member */}
-                                    {/* {isGroupMember &&
-                                        <button onClick={handleLeaveSubmit} className="btn btn-primary p-3 d-flex align-items-center gap-3 text-uppercase">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-box-arrow-left" viewBox="0 0 16 16">
-                                                <path fillRule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z" />
-                                                <path fillRule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
-                                            </svg>
-                                            <span className="text-uppercase">Leave</span>
-                                        </button>} */}
+                                    {/* Loading Leave/Join */}
+                                    {isLoading && <LoadingSpinner />}
 
-                                    {isGroupMember && <LeaveGroupModal onLeaveSubmit={handleLeaveSubmit} />}
+                                    {/* Show Leave button if authenticated user is group member */}
+                                    {!isLoading && isGroupMember &&
+                                        <LeaveGroupModal
+                                            username={username}
+                                            groupId={groupId}
+                                            onLeaveSubmit={onMembershipChange}
+                                            setIsLoading={setIsLoading}
+                                            setToastMessages={setToastMessages}
+                                            setToastCount={setToastCount} />}
 
                                     {/* Show Join button if authenticated user is not group member */}
-                                    {!isGroupMember &&
+                                    {!isLoading && !isGroupMember &&
                                         <button onClick={handleJoinSubmit} className="btn btn-primary p-3 d-flex align-items-center gap-3 text-uppercase">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
                                                 <path fillRule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z" />
@@ -199,7 +231,6 @@ export default function GroupProfilePage() {
                                     </div>
 
                                     {/* Profile Body */}
-
                                     <div className="col d-flex flex-column align-items-start gap-3">
                                         <h5><strong>Study Area: </strong>{groupData.studyArea}</h5>
                                         <div>

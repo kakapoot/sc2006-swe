@@ -255,14 +255,17 @@ def get_rights(username):
         )  # + ' ' + str(owner)+ ' ' +str(username)})
 
 
-@GroupRoutes.route("/leave_group/<username>", methods=["GET"])
-def leave_group(username):
+@GroupRoutes.route("/leave_group", methods=["POST"])
+def leave_group():
     """
     This function removes the unique username
     given from the list of members in the
     groupId given
     """
-    groupId = request.args.get("groupId")
+    data = request.get_json()
+    username = data["username"]
+    groupId = data["groupId"]
+
     group_doc_ref = groupdb.document(groupId)
 
     group_data = group_doc_ref.get().to_dict()
@@ -278,14 +281,17 @@ def leave_group(username):
         return jsonify({"message": "Error removing member from group."})
 
 
-@GroupRoutes.route("/join_public_group/<username>", methods=["GET"])
-def join_group(username):
+@GroupRoutes.route("/join_public_group", methods=["POST"])
+def join_group():
     """
     This function adds the unique username
     given to the list of members in the
     groupId given
     """
-    groupId = request.args.get("groupId")
+    data = request.get_json()
+    username = data["username"]
+    groupId = data["groupId"]
+
     group_doc_ref = groupdb.document(groupId)
     group_doc_data = group_doc_ref.get().to_dict()
 

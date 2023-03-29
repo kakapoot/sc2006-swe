@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { LoadingSpinner } from './LoadingSpinner'
 import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
 import { useTags } from './Tag'
 
 // TODO : ensure input fields are not blank
-export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataChange }) {
+export function EditUserProfileModal({ prevUserProfileData, mutate }) {
     const [profile, setProfile] = useState(prevUserProfileData)
     const [isLoading, setIsLoading] = useState(false)
+
+    const btnRef = useRef(null)
 
     const { data: tagData, error, isLoading: tagDataIsLoading } = useTags()
 
@@ -22,8 +24,28 @@ export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataCha
     // TODO : update database with new user profile data
     const handleApplyChangesSubmit = () => {
         console.log(profile)
-        onUserProfileDataChange(profile)
-        setProfile(prevUserProfileData)
+
+        // Update user data in database
+        setIsLoading(true)
+        fetch('http://localhost:5000/update_user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ...profile })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                // Re-fetch user profile data to update User Profile page UI
+                mutate()
+
+                // Close modal
+                btnRef.current.click()
+                handleClose()
+            })
+            .catch(error => console.error(error))
+            .finally(() => setIsLoading(false));
     }
 
     const handleClose = () => {
@@ -49,7 +71,7 @@ export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataCha
                         {/* Modal Header */}
                         <div className="modal-header">
                             <h3 className="modal-title" id="editUserProfileModalLabel"><strong>Edit Profile</strong></h3>
-                            <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button ref={btnRef} onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
                         {/* Modal Body */}
@@ -97,7 +119,8 @@ export function EditUserProfileModal({ prevUserProfileData, onUserProfileDataCha
                         {/* Modal Footer */}
                         <div className="modal-footer d-flex flex-column align-items-start">
                             <div className="mt-5 d-flex gap-3">
-                                <button onClick={handleApplyChangesSubmit} type="button" className="btn p-3 btn-primary text-uppercase" data-bs-dismiss="modal">Apply Changes</button>
+                                {isLoading && <LoadingSpinner />}
+                                {!isLoading && <button onClick={handleApplyChangesSubmit} type="button" className="btn p-3 btn-primary text-uppercase">Apply Changes</button>}
                             </div>
                         </div>
                     </div>

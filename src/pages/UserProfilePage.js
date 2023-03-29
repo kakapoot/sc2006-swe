@@ -9,21 +9,14 @@ import { fetcher } from '../components/Util';
 
 export default function UserProfilePage() {
     const { username } = useParams()
-    const [isAuthenticatedUser, setIsAuthenticatedUser] = useState(null)
     const [userProfileData, setUserProfileData] = useState(null)
-    const { currentUsername } = useContext(AuthContext)
+    const { username: authenticatedUser } = useContext(AuthContext)
 
-    const { data, error, isLoading } = useSWR(`http://localhost:5000/get_user/${username}`, fetcher)
+    const { data, error, isLoading, mutate } = useSWR(`http://localhost:5000/get_user/${username}`, fetcher)
 
-    // TODO : show edit button if profile is owned by authenticated user
     useEffect(() => {
-        // if (usernameParam === username) 
         setUserProfileData(data)
     }, [data])
-
-    const handleUserProfileDataChange = (userProfileData) => {
-        setUserProfileData(userProfileData)
-    }
 
     const getAge = (birthday) => Math.floor((new Date() - new Date(birthday).getTime()) / 3.15576e+10)
 
@@ -49,7 +42,11 @@ export default function UserProfilePage() {
                             </div>
 
                             {/* Show Edit button if profile belongs to authenticated user */}
-                            {isAuthenticatedUser && <EditUserProfileModal prevUserProfileData={userProfileData} onUserProfileDataChange={handleUserProfileDataChange} />}
+                            {username === authenticatedUser ?
+                                <EditUserProfileModal
+                                    prevUserProfileData={userProfileData}
+                                    mutate={mutate} />
+                                : null}
                         </div>
                     </div>
                 </div>

@@ -12,12 +12,15 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap/dist/js/bootstrap.bundle.min";
 // Import Bootstrap custom Sass
 import './assets/styles.scss';
+import { ToastProvider } from './context/ToastContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <App />
+      <ToastProvider>
+        <App />
+      </ToastProvider>
     </AuthProvider>
   </React.StrictMode>
 );

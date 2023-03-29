@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { ToastContext } from '../context/ToastContext'
 
-export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading, setToastMessages, setToastCount }) {
+export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading }) {
+    const { setToastCount, setToastMessages } = useContext(ToastContext)
+
     const handleClose = () => {
     }
 

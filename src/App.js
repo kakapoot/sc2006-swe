@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from 'react';
-import { Route, BrowserRouter, Routes, Navigate } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Route, BrowserRouter, Routes } from 'react-router-dom';
 
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -14,6 +14,7 @@ import { AuthContext } from './context/AuthContext';
 import { PrivateRoute, PublicRoute } from './components/Route';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { SWRConfig } from 'swr';
+import { ToastContainer } from './components/Toast';
 
 const App = () => {
   const { authState } = useContext(AuthContext)

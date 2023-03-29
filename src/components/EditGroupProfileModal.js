@@ -21,6 +21,14 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
     }, [prevGroupData])
 
     const handleInputChange = (inputType, inputValue) => {
+        // prevent editing group capacity to below possible limit
+        if (inputType === "capacity") {
+            const minCapacity = getMinCapacity()
+            if (inputValue < minCapacity) {
+                inputValue = minCapacity
+            }
+        }
+
         setProfile({ ...profile, [inputType]: inputValue })
     }
 
@@ -107,9 +115,6 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
         if (!profileValues.name) {
             errors.name = "Name should not be blank!";
         }
-        if (profileValues.capacity <= 0) {
-            errors.capacity = "Capacity should be a positive number!"
-        }
         if (!profileValues.studyArea) {
             errors.studyArea = "Study area should not be blank!"
         }
@@ -121,6 +126,12 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
         const errors = {};
         return errors;
     };
+
+    const getMinCapacity = () => {
+        const memberCount = prevGroupData.members.length
+        // set minimum capacity to current member count or 1 (current user counts for 1 capacity)
+        return memberCount > 0 ? memberCount : 1
+    }
 
     return (
         <div>
@@ -165,7 +176,6 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="capacity"><strong>Capacity</strong></label>
                                 <input type="number" value={profile.capacity} onChange={(e) => handleInputChange("capacity", e.target.value)} className="form-control" id="capacity" placeholder="Enter capacity..." />
-                                <p className="modal-input-error">{errors.capacity}</p>
                             </div>
                             {/* TODO : select from all available study areas in database */}
                             <div className="form-group d-flex flex-column w-50">

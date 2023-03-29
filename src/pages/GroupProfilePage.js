@@ -9,42 +9,32 @@ import { AuthContext } from '../context/AuthContext';
 import useSWR from 'swr';
 import { fetcher } from "../components/Util";
 import { LeaveGroupModal } from '../components/LeaveGroupModal';
-import { ToastNotification } from '../components/ToastNotification';
+import { ToastContext } from '../context/ToastContext';
+import { ToastContainer } from '../components/Toast';
 
-// TODO : add study area
 export default function GroupProfilePage() {
     const { groupId } = useParams();
 
     const { username } = useContext(AuthContext)
+    // fetch user rights based on currently authenticated user
+    const { data: userRightsData, error: userRightsError, isLoading: userRightsIsLoading, mutate: userRightsMutate, isMutating: userRightsIsMutating }
+        = useSWR(`http://localhost:5000/get_user_rights/${username}?groupId=${groupId}`, fetcher)
     const [isGroupCreator, setIsGroupCreator] = useState(true)
     const [isGroupMember, setIsGroupMember] = useState(true)
 
     const [isLoading, setIsLoading] = useState(false)
 
+    // toast notifications
+    const { setToastMessages, setToastCount } = useContext(ToastContext)
 
+    // fetch group data based on group ID
+    const { data: groupData, error: groupError, isLoading: groupIsLoading, mutate: groupMutate }
+        = useSWR(`http://localhost:5000/get_group/${groupId}`, fetcher)
+    // fetch list of members details based on group ID
+    const { data: membersData, error: membersError, isLoading: membersIsLoading, mutate: membersMutate }
+        = useSWR(`http://localhost:5000/get_group_members/${groupId}`, fetcher)
 
-    const [toastMessages, setToastMessages] = useState([])
-    const [toastCount, setToastCount] = useState(0)
-
-    const onCloseShowToast = () => {
-        setToastCount((prevState) => prevState - 1)
-    }
-
-    useEffect(() => {
-        // clear toast messages list if no more toast notifications on screen currently
-        if (toastCount === 0) {
-            setToastMessages([])
-        }
-    }, [toastCount])
-
-
-    // TODO : check if current authenticated user is group creator 
-    // TODO : check if current authenticated user is group member, 
-    // should be able to leave if in group, join if not in group, 
-    // show error if not in group and group is private
-    // fetch user rights based on Username
-    const { data: userRightsData, error: userRightsError, isLoading: userRightsIsLoading, mutate: userRightsMutate, isMutating: userRightsIsMutating }
-        = useSWR(`http://localhost:5000/get_user_rights/${username}?groupId=${groupId}`, fetcher)
+    // set view based on user rights
     useEffect(() => {
         if (!userRightsData) {
             return
@@ -63,16 +53,6 @@ export default function GroupProfilePage() {
             setIsGroupMember(false);
         }
     }, [userRightsData])
-
-
-
-    // fetch group data based on group ID
-    const { data: groupData, error: groupError, isLoading: groupIsLoading, mutate: groupMutate }
-        = useSWR(`http://localhost:5000/get_group/${groupId}`, fetcher)
-    // fetch list of members details based on group ID
-    const { data: membersData, error: membersError, isLoading: membersIsLoading, mutate: membersMutate }
-        = useSWR(`http://localhost:5000/get_group_members/${groupId}`, fetcher)
-
 
     // TODO
     const handleJoinSubmit = () => {
@@ -93,14 +73,15 @@ export default function GroupProfilePage() {
             .then(data => {
                 console.log(data)
                 if (data.message === 'joined group successfully') {
-                    // refresh page
-
                     onMembershipChange()
+
                     setToastMessages((prevState) => [...prevState, "Joined group successfully"])
                     setToastCount((prevState) => prevState + 1)
                 }
                 else if (data.message === 'group is full') {
                     //group full error
+                    setToastMessages((prevState) => [...prevState, "Group is full, unable to join"])
+                    setToastCount((prevState) => prevState + 1)
                 }
                 else {
                     //error ? 
@@ -122,9 +103,16 @@ export default function GroupProfilePage() {
         userRightsMutate()
     }
 
+    useEffect(() => {
+        console.log(membersData)
+        console.log(groupData)
+    }, [membersData, groupData])
+
+
     return (
         <div className="container-fluid">
             <main className="row">
+                <ToastContainer />
                 <Navbar />
 
                 {/* Loading */}
@@ -137,19 +125,6 @@ export default function GroupProfilePage() {
 
                 { /* Content */}
                 {!groupIsLoading && groupData && <div className="col">
-                    {/* Toast Notifications */}
-                    <div className="toast-container position-fixed p-3 bottom-0 end-0">
-                        {toastMessages.map((toastMessage, index) => {
-                            return (
-                                <ToastNotification
-                                    key={index}
-                                    message={toastMessage}
-                                    onCloseShowToast={onCloseShowToast} />
-                            )
-                        })}
-                    </div>
-
-
                     {/* Header */}
                     <div className="row bg-secondary">
                         <div className="col">
@@ -160,13 +135,13 @@ export default function GroupProfilePage() {
                                 </div>
 
                                 <div className="d-flex gap-3">
+                                    {/* Loading header buttons */}
+                                    {isLoading && <LoadingSpinner />}
+
                                     {/* Show Edit button if authenticated user is creator of group */}
-                                    {isGroupCreator && <EditGroupProfileModal isCreateGroup={false}
+                                    {!isLoading && isGroupCreator && <EditGroupProfileModal isCreateGroup={false}
                                         prevGroupData={groupData}
                                         mutate={groupMutate} />}
-
-                                    {/* Loading Leave/Join */}
-                                    {isLoading && <LoadingSpinner />}
 
                                     {/* Show Leave button if authenticated user is group member */}
                                     {!isLoading && isGroupMember &&
@@ -174,9 +149,7 @@ export default function GroupProfilePage() {
                                             username={username}
                                             groupId={groupId}
                                             onLeaveSubmit={onMembershipChange}
-                                            setIsLoading={setIsLoading}
-                                            setToastMessages={setToastMessages}
-                                            setToastCount={setToastCount} />}
+                                            setIsLoading={setIsLoading} />}
 
                                     {/* Show Join button if authenticated user is not group member */}
                                     {!isLoading && !isGroupMember &&
@@ -211,16 +184,18 @@ export default function GroupProfilePage() {
                                             </div>
                                         ))}
 
+                                        {/* List of Group Members */}
                                         <div className="w-100">
-                                            {/* TODO : indicate group leader */}
-                                            {/* TODO : disable setting capacity below current no. of members */}
                                             {membersData && <h5><strong>Members ({membersData.members.length} / {groupData.capacity})</strong></h5>}
                                             <div className="d-flex flex-column gap-4">
                                                 {membersData && membersData.members.map((member) =>
                                                     <Link to={`/user/${member.username}`} key={member.username} className="text-start btn btn-warning">
                                                         <div className="d-flex gap-2">
                                                             <div className="d-flex flex-column w-100">
-                                                                <span><strong>{member.name}</strong></span>
+                                                                {/* Indicate group owner */}
+                                                                {member.username === groupData.owner ? <span class="text-danger"><strong>★ Owner</strong></span> : null}
+
+                                                                <span><strong>{member.name}</strong> @{member.username}</span>
                                                                 <span>{member.organization}</span>
                                                             </div>
                                                         </div>

@@ -27,21 +27,23 @@ const App = () => {
         <SWRConfig value={{ shouldRetryOnError: false }}>
           <BrowserRouter>
             <Routes>
-              <Route element={<PrivateRoute />}>
-                <Route element={<PrivatePageLayout />}>
-                  <Route path='/my_groups' element={<MyGroupsPage />} />
-                  <Route path='/find_groups' element={<FindGroupsPage />} />
-                  <Route path='/study_areas' element={<StudyAreasPage />} />
-                  <Route path='/user/:username' element={<UserProfilePage />} />
-                  <Route path='/group/:groupId' element={<GroupProfilePage />} />
-                </Route>
+              {/* TODO: automatic routing temporarily disabled until redirects are fixed */}
+              {/* TODO: issue is that registering user is automatically logged in and redirected to private page without creating profile */}
+              {/* <Route element={<PrivateRoute />}> */}
+              <Route element={<PrivatePageLayout />}>
+                <Route path='/my_groups' element={<MyGroupsPage />} />
+                <Route path='/find_groups' element={<FindGroupsPage />} />
+                <Route path='/study_areas' element={<StudyAreasPage />} />
+                <Route path='/user/:username' element={<UserProfilePage />} />
+                <Route path='/group/:groupId' element={<GroupProfilePage />} />
               </Route>
+              {/* </Route> */}
 
-              <Route element={<PublicRoute />}>
-                <Route path='/' element={<LoginPage />} />
-                <Route path='/register/' element={<RegisterPage />} />
-                <Route path='/create_profile' element={<ProfileCreationPage />} />
-              </Route>
+              {/* <Route element={<PublicRoute />}> */}
+              <Route path='/' element={<LoginPage />} />
+              <Route path='/register/' element={<RegisterPage />} />
+              <Route path='/create_profile' element={<ProfileCreationPage />} />
+              {/* </Route> */}
             </Routes>
           </BrowserRouter>
         </SWRConfig>}

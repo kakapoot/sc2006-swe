@@ -32,6 +32,9 @@ const LoginPage = () => {
       if (values.email.length !== 0 && values.email.length !== 0) {
         await signInWithEmailAndPassword(auth, values.email, values.password)
         setIsSuccessful(true);
+
+        // TODO : remove after fixing redirects
+        navigate("/my_groups")
       }
     } catch (error) {
       console.log(error)

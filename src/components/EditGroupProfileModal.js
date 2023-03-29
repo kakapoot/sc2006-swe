@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import { LoadingSpinner } from './LoadingSpinner'
 import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
@@ -15,6 +16,8 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
     const { data: tagData, error, isLoading: tagDataIsLoading } = useTags()
 
     const { username } = useContext(AuthContext)
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         setProfile(prevGroupData)
@@ -33,15 +36,6 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
     }
 
 
-    useEffect(() => {
-        if (isSuccessful && !isLoading) {
-            // Close modal
-            btnRef.current.click()
-            handleClose()
-        }
-    }, [isSuccessful, isLoading])
-
-
     // Update database with new group profile data
     const handleApplyChangesSubmit = () => {
         setErrors(validate(profile))
@@ -50,7 +44,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
             setIsSuccessful(true)
         }
 
-        // TODO : only send request with valid form
+        // TODO : only send request with valid form (isSuccessful)
 
         // Create new group
         if (isCreateGroup) {
@@ -72,8 +66,12 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
-                    // Re-fetch groups data to update My Groups page UI
-                    mutate()
+                    // TODO redirect to group
+                    navigate(`/group/${data.groupId}`)
+
+                    // Close modal
+                    btnRef.current.click()
+                    handleClose()
                 })
                 .catch(error => console.error(error))
                 .finally(() => setIsLoading(false));
@@ -97,6 +95,10 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                     console.log(data);
                     // Re-fetch group profile data to update Group Profile page UI
                     mutate()
+
+                    // Close modal
+                    btnRef.current.click()
+                    handleClose()
                 })
                 .catch(error => console.error(error))
                 .finally(() => setIsLoading(false));

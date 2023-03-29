@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Navbar } from '../components/Navbar'
 import GoogleMap from '../components/GoogleMap'
 
 export default function StudyAreasPage() {
@@ -26,22 +25,19 @@ export default function StudyAreasPage() {
     }
 
     return (
-        <div className="container-fluid">
-            <main className="row">
-                <Navbar />
-                { /* Content */}
-                <div className="col">
-                    <div className="container">
-                        {/* Header */}
-                        <h2 className="my-5 d-flex"><strong>Study Areas</strong></h2>
-                        <div className="App">
+        <>
+            { /* Content */}
+            <div className="col">
+                <div className="container">
+                    {/* Header */}
+                    <h2 className="my-5 d-flex"><strong>Study Areas</strong></h2>
+                    <div className="App">
 
-                            <GoogleMap />
+                        <GoogleMap />
 
-                        </div>
                     </div>
                 </div>
-            </main>
-        </div>
+            </div>
+        </>
     )
 }

@@ -1,17 +1,29 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ToastContext } from '../context/ToastContext'
+import { SelectableUserCard } from './UserCard'
 
-export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading }) {
+export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading, membersData, groupData, userRights }) {
     const { setToastCount, setToastMessages } = useContext(ToastContext)
+    const navigate = useNavigate()
 
-    const handleClose = () => {
-    }
+    // Get remaining members which are not the current group owner
+    const remainingMembersData = membersData.members.filter(member => member.username !== groupData.owner)
+
+    const [newOwner, setNewOwner] = useState(null)
+
+    useEffect(() => {
+        if (remainingMembersData.length > 0) {
+            setNewOwner(remainingMembersData[0].username)
+        }
+    }, [])
 
     // TODO
     const handleLeaveSubmit = () => {
         const data = {
             username: username,
-            groupId: groupId
+            groupId: groupId,
+            newOwner: newOwner
         }
 
         setIsLoading(true)
@@ -31,6 +43,16 @@ export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading
                     onLeaveSubmit()
                     setToastMessages((prevState) =>
                         [...prevState, "Left group successfully"]
+                    )
+                    setToastCount((prevState) => prevState + 1)
+                }
+                else if (data.message === 'group deleted') {
+                    // redirect back to My Groups page
+                    navigate("/my_groups")
+
+                    onLeaveSubmit()
+                    setToastMessages((prevState) =>
+                        [...prevState, "Left group successfully, group deleted"]
                     )
                     setToastCount((prevState) => prevState + 1)
                 }
@@ -60,15 +82,31 @@ export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading
                         {/* Modal Header */}
                         <div className="modal-header">
                             <h3 className="modal-title" id="leaveGroupModalLabel"><strong>Leave Group</strong></h3>
-                            <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
-                        {/* TODO */}
                         {/* Modal Body */}
-                        <div className="modal-body d-flex flex-column align-items-start gap-4">
-                            Are you sure you want to leave the group?
-                            <p>if is group leader and is only member of group, display warning message "group will be deleted after you leave"</p>
-                            <p>if is group leader and there are other members of group, display selection of group members to pass leadership to</p>
+                        <div className="modal-body d-flex flex-column align-items-start gap-2">
+                            {/* Display warnings */}
+                            <p>Are you sure you want to leave this group?</p>
+
+                            {/* User is group owner and the only remaining member */}
+                            {userRights.isGroupOwner && groupData.members.length <= 1 &&
+                                <p><strong>This group will be deleted after you leave!</strong></p>}
+
+                            {/* User is group owner and there are other remaining group members */}
+                            {userRights.isGroupOwner && groupData.members.length > 1 &&
+                                <div className="w-100">
+                                    <h5><strong>Select a new Group Owner</strong></h5>
+                                    <div className="d-flex flex-column gap-4">
+                                        {remainingMembersData.map((member) =>
+                                            <SelectableUserCard
+                                                onSelectUserCard={() => { setNewOwner(member.username) }}
+                                                newOwner={newOwner}
+                                                key={member.username} name={member.name} username={member.username} organization={member.organization} />
+                                        )}
+                                    </div>
+                                </div>}
                         </div>
 
                         {/* Modal Footer */}
@@ -80,7 +118,7 @@ export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
 
     )
 }

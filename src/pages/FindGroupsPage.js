@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Navbar } from '../components/Navbar'
 import { GroupCard } from '../components/GroupCard'
 import { Searchbar } from '../components/Searchbar'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 
-// TODO : display no groups found
 export default function FindGroupsPages() {
     const [groups, setGroups] = useState([])
     const [searchText, setSearchText] = useState("")
@@ -51,30 +49,28 @@ export default function FindGroupsPages() {
 
 
     return (
-        <div className="container-fluid">
-            <main className="row">
-                <Navbar />
-                { /* Content */}
-                <div className="col">
-                    <div className="container">
-                        {/* Header */}
-                        <h2 className="my-5 d-flex"><strong>Public Groups</strong></h2>
-                        <Searchbar searchText={searchText}
-                            onSearchTextChange={handleSearchTextChange}
-                            onSearch={handleSearch}
-                            onFilterTagsChange={handleFilterTagsChange}
-                            prevFilterTags={filterTags} />
+        <>
+            { /* Content */}
+            <div className="col">
+                <div className="container">
+                    {/* Header */}
+                    <h2 className="my-5 d-flex"><strong>Public Groups</strong></h2>
+                    <Searchbar searchText={searchText}
+                        onSearchTextChange={handleSearchTextChange}
+                        onSearch={handleSearch}
+                        onFilterTagsChange={handleFilterTagsChange}
+                        prevFilterTags={filterTags} />
 
 
-                        {/* Groups */}
-                        <div className="d-flex flex-column gap-5">
-                            {isLoading &&
-                                <LoadingSpinner />}
-                            {!isLoading && groups.map((group) => <GroupCard group={group} key={group.name} />)}
-                        </div>
+                    {/* Groups */}
+                    <div className="d-flex flex-column gap-5">
+                        {isLoading &&
+                            <LoadingSpinner />}
+                        {!isLoading && groups.map((group) => <GroupCard group={group} key={group.name} />)}
+                        {!isLoading && groups.length === 0 ? "No matching groups found" : null}
                     </div>
                 </div>
-            </main>
-        </div>
+            </div>
+        </>
     )
 }

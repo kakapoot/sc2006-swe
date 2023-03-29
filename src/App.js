@@ -14,7 +14,7 @@ import { AuthContext } from './context/AuthContext';
 import { PrivateRoute, PublicRoute } from './components/Route';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { SWRConfig } from 'swr';
-import { ToastContainer } from './components/Toast';
+import PrivatePageLayout from './pages/PrivatePageLayout';
 
 const App = () => {
   const { authState } = useContext(AuthContext)
@@ -28,11 +28,13 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               <Route element={<PrivateRoute />}>
-                <Route path='/my_groups' element={<MyGroupsPage />} />
-                <Route path='/find_groups' element={<FindGroupsPage />} />
-                <Route path='/study_areas' element={<StudyAreasPage />} />
-                <Route path='/user/:username' element={<UserProfilePage />} />
-                <Route path='/group/:groupId' element={<GroupProfilePage />} />
+                <Route element={<PrivatePageLayout />}>
+                  <Route path='/my_groups' element={<MyGroupsPage />} />
+                  <Route path='/find_groups' element={<FindGroupsPage />} />
+                  <Route path='/study_areas' element={<StudyAreasPage />} />
+                  <Route path='/user/:username' element={<UserProfilePage />} />
+                  <Route path='/group/:groupId' element={<GroupProfilePage />} />
+                </Route>
               </Route>
 
               <Route element={<PublicRoute />}>
@@ -43,7 +45,7 @@ const App = () => {
             </Routes>
           </BrowserRouter>
         </SWRConfig>}
-    </div>
+    </div >
   );
 }
 

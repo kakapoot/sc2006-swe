@@ -120,7 +120,7 @@ def create_group():
 
     doc_ref.update({"username": firestore.DELETE_FIELD})
 
-    return jsonify({"message": "group created"})
+    return jsonify({"message": "group created", "groupId": doc_ref.id})
 
 
 @GroupRoutes.route("/get_group/<groupId>", methods=["GET"])
@@ -265,6 +265,7 @@ def leave_group():
     data = request.get_json()
     username = data["username"]
     groupId = data["groupId"]
+    newOwner = data["newOwner"]
 
     group_doc_ref = groupdb.document(groupId)
 
@@ -273,9 +274,16 @@ def leave_group():
 
     try:
         group_doc_ref.update({"members": firestore.ArrayRemove([username])})
-        # TODO : new group owner??
+
         if owner == username:
-            group_doc_ref.update({"owner": ""})
+            # new group owner was selected, change group ownership
+            if newOwner:
+                group_doc_ref.update({"owner": newOwner})
+            # no remaining members, delete group
+            else:
+                group_doc_ref.delete()
+                return jsonify({"message": "group deleted"})
+
         return jsonify({"message": "left group successfully"})
     except Exception as e:
         return jsonify({"message": "Error removing member from group."})

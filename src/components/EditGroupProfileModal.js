@@ -9,7 +9,6 @@ import { useTags } from './Tag'
 export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) {
     const [profile, setProfile] = useState(prevGroupData)
     const [isLoading, setIsLoading] = useState(false)
-    const [isSuccessful, setIsSuccessful] = useState(false);
     const btnRef = useRef(null)
     const [errors, setErrors] = useState({})
 
@@ -38,71 +37,71 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
 
     // Update database with new group profile data
     const handleApplyChangesSubmit = () => {
-        setIsSuccessful(false)
         setErrors(validate(profile))
-        console.log(errors)
-        if (Object.keys(errors).length === 0) {
-            setIsSuccessful(true)
-        }
+        const errorArray = validate(profile)
+        
+        if (Object.keys(errorArray).length === 0) {
 
-        // TODO : only send request with valid form (isSuccessful)
-
-        // Create new group
-        if (isCreateGroup && isSuccessful === true) {
-            const data = {
-                ...profile,
-                username: username
-            };
-            console.log(data)
-
-            // Create new group in database
-            setIsLoading(true)
-            fetch('http://localhost:5000/create_group', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    // TODO redirect to group
-                    navigate(`/group/${data.groupId}`)
-
-                    // Close modal
-                    btnRef.current.click()
-                    handleClose()
+            if (isCreateGroup) {
+                const data = {
+                    ...profile,
+                    username: username
+                };
+                console.log(data)
+    
+                // Create new group in database
+                setIsLoading(true)
+                fetch('http://localhost:5000/create_group', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
                 })
-                .catch(error => console.error(error))
-                .finally(() => setIsLoading(false));
-        }
-
-        // Edit group profile
-        else if (!isCreateGroup && isSuccessful === true) {
-            console.log(profile)
-
-            // Update group data in database
-            setIsLoading(true)
-            fetch('http://localhost:5000/update_group', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ ...profile })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    // Re-fetch group profile data to update Group Profile page UI
-                    mutate()
-
-                    // Close modal
-                    btnRef.current.click()
-                    handleClose()
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        // TODO redirect to group
+                        navigate(`/group/${data.groupId}`)
+    
+                        // Close modal
+                        btnRef.current.click()
+                        handleClose()
+                    })
+                    .catch(error => console.error(error))
+                    .finally(() => setIsLoading(false));
+            }
+    
+            // Edit group profile
+            else if (!isCreateGroup) {
+                console.log(profile)
+    
+                // Update group data in database
+                setIsLoading(true)
+                fetch('http://localhost:5000/update_group', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ...profile })
                 })
-                .catch(error => console.error(error))
-                .finally(() => setIsLoading(false));
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        // Re-fetch group profile data to update Group Profile page UI
+                        mutate()
+    
+                        // Close modal
+                        btnRef.current.click()
+                        handleClose()
+                    })
+                    .catch(error => console.error(error))
+                    .finally(() => setIsLoading(false));
+            }
+    
+            else {
+                console.log("Failed")
+            }
         }
     }
 
@@ -128,7 +127,6 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
     const resetErrors = () => {
         const errors = {};
         return errors;
-
     };
 
     const getMinCapacity = () => {

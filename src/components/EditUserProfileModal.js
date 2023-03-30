@@ -7,7 +7,6 @@ import { useTags } from './Tag'
 export function EditUserProfileModal({ prevUserProfileData, mutate }) {
     const [profile, setProfile] = useState(prevUserProfileData)
     const [isLoading, setIsLoading] = useState(false)
-    const [isSuccessful, setIsSuccessful] = useState(false);
     const btnRef = useRef(null)
     const [errors, setErrors] = useState({})
 
@@ -25,33 +24,33 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
     // TODO : update database with new user profile data
     const handleApplyChangesSubmit = () => {
         setErrors(validate(profile))
-        console.log(errors)
-        if (Object.keys(errors).length === 0) {
-            setIsSuccessful(true)
-        }
-        console.log(profile)
+        const errorArray = validate(profile)
+
+        if (Object.keys(errorArray).length === 0) {
+            console.log(profile)
 
         // Update user data in database
-        setIsLoading(true)
-        fetch('http://localhost:5000/update_user', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ ...profile })
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                // Re-fetch user profile data to update User Profile page UI
-                mutate()
-
-                // Close modal
-                btnRef.current.click()
-                handleClose()
+            setIsLoading(true)
+            fetch('http://localhost:5000/update_user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ...profile })
             })
-            .catch(error => console.error(error))
-            .finally(() => setIsLoading(false));
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    // Re-fetch user profile data to update User Profile page UI
+                    mutate()
+
+                    // Close modal
+                    btnRef.current.click()
+                    handleClose()
+                })
+                .catch(error => console.error(error))
+                .finally(() => setIsLoading(false));
+        }        
     }
 
     const handleClose = () => {

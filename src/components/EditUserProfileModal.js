@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useContext } from 'react'
+import { ToastContext } from '../context/ToastContext'
 import { LoadingSpinner } from './LoadingSpinner'
 import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
 import { useTags } from './Tag'
@@ -10,6 +11,8 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
     const btnRef = useRef(null)
     const [errors, setErrors] = useState({})
 
+    const { queueToast } = useContext(ToastContext)
+
     const { data: tagData, error, isLoading: tagDataIsLoading } = useTags()
 
     useEffect(() => {
@@ -18,20 +21,19 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
 
 
     const handleInputChange = (e) => {
-        const inputType = e.target.name
-        const inputValue = e.target.value
+        let inputType = e.target.name
+        let inputValue = e.target.value
 
         setProfile({ ...profile, [inputType]: inputValue })
     }
 
     // TODO : update database with new user profile data
     const handleApplyChangesSubmit = () => {
-        setErrors(validate(profile))
-        const errorArray = validate(profile)
+        const errorResults = validate(profile)
+        setErrors(errorResults)
 
-        if (Object.keys(errorArray).length === 0) {
-            console.log(profile)
-
+        // Send request with form data to server if form is valid
+        if (Object.keys(errorResults).length === 0) {
             // Update user data in database
             setIsLoading(true)
             fetch('http://localhost:5000/update_user', {
@@ -50,9 +52,15 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
                     // Close modal
                     btnRef.current.click()
                     handleClose()
+
+                    queueToast("Profile updated successfully")
                 })
                 .catch(error => console.error(error))
                 .finally(() => setIsLoading(false));
+        }
+        // Invalid form
+        else {
+            queueToast("Please check all input details")
         }
     }
 
@@ -67,7 +75,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
         if (!profileValues.name) {
             errors.name = "Name should not be blank!";
         }
-        if (!profileValues.studyArea) {
+        if (!profileValues.organization) {
             errors.organization = "Organization should not be blank!"
         }
 
@@ -120,7 +128,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
                             </div>
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="organization"><strong>Organization</strong></label>
-                                <input type="text" value={profile.organization} onChange={handleInputChange} className="form-control" name="organization" placeholder="Enter organisation..." />
+                                <input type="text" value={profile.organization} onChange={handleInputChange} className="form-control" name="organization" placeholder="Enter organization..." />
                                 <p className="modal-input-error">{errors.organization}</p>
                             </div>
                             <div className="form-group d-flex flex-column w-50">

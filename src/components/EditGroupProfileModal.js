@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
+import { ToastContext } from '../context/ToastContext'
 import { LoadingSpinner } from './LoadingSpinner'
 import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
 import { useTags } from './Tag'
 
-// TODO : fix isSuccessful toggle
 export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) {
     const [profile, setProfile] = useState(prevGroupData)
     const [isLoading, setIsLoading] = useState(false)
@@ -13,6 +13,8 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
     const [errors, setErrors] = useState({})
 
     const { data: tagData, error, isLoading: tagDataIsLoading } = useTags()
+
+    const { queueToast } = useContext(ToastContext)
 
     const { username } = useContext(AuthContext)
 
@@ -23,8 +25,8 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
     }, [prevGroupData])
 
     const handleInputChange = (e) => {
-        const inputType = e.target.name
-        const inputValue = e.target.value
+        let inputType = e.target.name
+        let inputValue = e.target.value
 
         // prevent editing group capacity to below possible limit
         if (inputType === "capacity") {
@@ -40,11 +42,11 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
 
     // Update database with new group profile data
     const handleApplyChangesSubmit = () => {
-        setErrors(validate(profile))
-        const errorArray = validate(profile)
+        const errorResults = validate(profile)
+        setErrors(errorResults)
 
-        if (Object.keys(errorArray).length === 0) {
-
+        // Send request with form data to server if form is valid
+        if (Object.keys(errorResults).length === 0) {
             if (isCreateGroup) {
                 const data = {
                     ...profile,
@@ -70,6 +72,8 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                         // Close modal
                         btnRef.current.click()
                         handleClose()
+
+                        queueToast("Group created successfully")
                     })
                     .catch(error => console.error(error))
                     .finally(() => setIsLoading(false));
@@ -97,14 +101,16 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                         // Close modal
                         btnRef.current.click()
                         handleClose()
+
+                        queueToast("Group profile updated successfully")
                     })
                     .catch(error => console.error(error))
                     .finally(() => setIsLoading(false));
             }
-
-            else {
-                console.log("Failed")
-            }
+        }
+        // Invalid form
+        else {
+            queueToast("Please check all input details")
         }
     }
 

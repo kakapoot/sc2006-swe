@@ -33,18 +33,10 @@ export const AuthProvider = ({ children }) => {
         }
     }, [])
 
+    // TODO : for debug purposes
     useEffect(() => {
-        console.log("----")
-        console.log("username: " + username)
-        console.log("auth state: " + authState.isAuthLoaded)
-        if (user) {
-            console.log("user: " + user.displayName)
-        } else {
-            console.log("user: not init")
-        }
-
-        console.log("----")
-    }, [authState, user, username])
+        console.log(user)
+    }, [user])
 
 
     return (

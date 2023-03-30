@@ -60,7 +60,7 @@ const RegisterPage = () => {
         const data = await response.json()
         if (data.message !== "registration successful") {
           setTakenErrors(taken(data.message))
-          queueToast("Error creating account, please check your input details")
+          queueToast("Error creating account, please check all input details")
         }
         else {
           setTakenErrors({})
@@ -85,7 +85,7 @@ const RegisterPage = () => {
         setIsLoading(false)
       }
     } else {
-      queueToast("Error creating account, please check your input details")
+      queueToast("Error creating account, please check all input details")
     }
   }
 

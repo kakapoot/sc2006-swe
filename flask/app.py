@@ -41,13 +41,11 @@ CORS(app)
 app.secret_key = "secret"
 app.config["SESSION_TYPE"] = "filesystem"
 
-from control.RegisterMgr import RegisterRoutes
 from control.GroupMgr import GroupRoutes
 from control.Util import UtilRoutes
 from control.UserMgr import UserRoutes
 
 # TODO : return errors for API
-app.register_blueprint(RegisterRoutes)
 app.register_blueprint(UtilRoutes)
 app.register_blueprint(GroupRoutes)
 app.register_blueprint(UserRoutes)

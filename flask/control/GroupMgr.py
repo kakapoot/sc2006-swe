@@ -1,5 +1,5 @@
 from flask import request, jsonify, Blueprint
-from app import auth, db, userdb, groupdb
+from app import userdb, groupdb
 from firebase_admin import firestore
 
 GroupRoutes = Blueprint("GroupRoutes", __name__)
@@ -193,10 +193,7 @@ def get_groups(username):
         groups.append(group_data)
 
     # Return the "groups" list as a JSON response
-    if len(groups) == 0:
-        return jsonify({"message": "You are not a member of any group."}), 404
-    else:
-        return jsonify({"groups": groups}), 200
+    return jsonify({"groups": groups}), 200
 
 
 @GroupRoutes.route("/join_private_group", methods=["POST"])

@@ -61,6 +61,7 @@ export default function MyGroupsPage() {
                         {isLoading && <LoadingSpinner />}
 
                         {!isLoading && groups && groups.map((group) => <GroupCard group={group} key={group.groupId} />)}
+                        {!isLoading && groups.length === 0 ? "You are not currently in any groups" : null}
                     </div>
                 </div>
             </div>

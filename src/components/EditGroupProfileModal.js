@@ -38,16 +38,17 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
 
     // Update database with new group profile data
     const handleApplyChangesSubmit = () => {
+        setIsSuccessful(false)
         setErrors(validate(profile))
+        console.log(errors)
         if (Object.keys(errors).length === 0) {
-            console.log(errors)
             setIsSuccessful(true)
         }
 
         // TODO : only send request with valid form (isSuccessful)
 
         // Create new group
-        if (isCreateGroup) {
+        if (isCreateGroup && isSuccessful === true) {
             const data = {
                 ...profile,
                 username: username
@@ -78,7 +79,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
         }
 
         // Edit group profile
-        else {
+        else if (!isCreateGroup && isSuccessful === true) {
             console.log(profile)
 
             // Update group data in database
@@ -127,6 +128,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
     const resetErrors = () => {
         const errors = {};
         return errors;
+
     };
 
     const getMinCapacity = () => {

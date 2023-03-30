@@ -7,8 +7,9 @@ import { useTags } from './Tag'
 export function EditUserProfileModal({ prevUserProfileData, mutate }) {
     const [profile, setProfile] = useState(prevUserProfileData)
     const [isLoading, setIsLoading] = useState(false)
-
+    const [isSuccessful, setIsSuccessful] = useState(false);
     const btnRef = useRef(null)
+    const [errors, setErrors] = useState({})
 
     const { data: tagData, error, isLoading: tagDataIsLoading } = useTags()
 
@@ -23,6 +24,11 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
 
     // TODO : update database with new user profile data
     const handleApplyChangesSubmit = () => {
+        setErrors(validate(profile))
+        console.log(errors)
+        if (Object.keys(errors).length === 0) {
+            setIsSuccessful(true)
+        }
         console.log(profile)
 
         // Update user data in database
@@ -51,7 +57,25 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
     const handleClose = () => {
         // clear unsaved changes
         setProfile(prevUserProfileData)
+        setErrors(resetErrors)
     }
+
+    const validate = (profileValues) => {
+        const errors = {};
+        if (!profileValues.name) {
+            errors.name = "Name should not be blank!";
+        }
+        if (!profileValues.studyArea) {
+            errors.organization = "Organization should not be blank!"
+        }
+
+        return errors;
+    };
+
+    const resetErrors = () => {
+        const errors = {};
+        return errors;
+    };
 
     return (
         <div>
@@ -79,6 +103,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="name"><strong>Name</strong></label>
                                 <input type="text" value={profile.name} onChange={(e) => handleInputChange("name", e.target.value)} className="form-control" id="name" placeholder="Enter name..." />
+                                <p className="modal-input-error">{errors.name}</p>
                             </div>
                             <div className="form-group d-flex flex-column">
                                 <label htmlFor="gender"><strong>Gender</strong></label>
@@ -94,6 +119,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="organisation"><strong>Organization</strong></label>
                                 <input type="text" value={profile.organization} onChange={(e) => handleInputChange("organization", e.target.value)} className="form-control" id="organisation" placeholder="Enter organisation..." />
+                                <p className="modal-input-error">{errors.organization}</p>
                             </div>
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="description"><strong>Description</strong></label>

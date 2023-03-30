@@ -17,7 +17,10 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
     }, [prevUserProfileData])
 
 
-    const handleInputChange = (inputType, inputValue) => {
+    const handleInputChange = (e) => {
+        const inputType = e.target.name
+        const inputValue = e.target.value
+
         setProfile({ ...profile, [inputType]: inputValue })
     }
 
@@ -29,7 +32,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
         if (Object.keys(errorArray).length === 0) {
             console.log(profile)
 
-        // Update user data in database
+            // Update user data in database
             setIsLoading(true)
             fetch('http://localhost:5000/update_user', {
                 method: 'POST',
@@ -50,7 +53,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
                 })
                 .catch(error => console.error(error))
                 .finally(() => setIsLoading(false));
-        }        
+        }
     }
 
     const handleClose = () => {
@@ -101,28 +104,28 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
                         <div className="modal-body d-flex flex-column align-items-start gap-4">
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="name"><strong>Name</strong></label>
-                                <input type="text" value={profile.name} onChange={(e) => handleInputChange("name", e.target.value)} className="form-control" id="name" placeholder="Enter name..." />
+                                <input type="text" value={profile.name} onChange={handleInputChange} className="form-control" name="name" placeholder="Enter name..." />
                                 <p className="modal-input-error">{errors.name}</p>
                             </div>
                             <div className="form-group d-flex flex-column">
                                 <label htmlFor="gender"><strong>Gender</strong></label>
-                                <select value={profile.gender} onChange={(e) => handleInputChange("gender", e.target.value)} className="form-select" id="gender">
+                                <select value={profile.gender} onChange={handleInputChange} className="form-select" name="gender">
                                     <option value="female">Female</option>
                                     <option value="male">Male</option>
                                 </select>
                             </div>
                             <div className="form-group d-flex flex-column">
                                 <label htmlFor="birthday"><strong>Birthday</strong></label>
-                                <input type="date" value={profile.birthday} onChange={(e) => handleInputChange("birthday", e.target.value)} id="birthday" />
+                                <input type="date" value={profile.birthday} onChange={handleInputChange} name="birthday" />
                             </div>
                             <div className="form-group d-flex flex-column w-50">
-                                <label htmlFor="organisation"><strong>Organization</strong></label>
-                                <input type="text" value={profile.organization} onChange={(e) => handleInputChange("organization", e.target.value)} className="form-control" id="organisation" placeholder="Enter organisation..." />
+                                <label htmlFor="organization"><strong>Organization</strong></label>
+                                <input type="text" value={profile.organization} onChange={handleInputChange} className="form-control" name="organization" placeholder="Enter organisation..." />
                                 <p className="modal-input-error">{errors.organization}</p>
                             </div>
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="description"><strong>Description</strong></label>
-                                <textarea value={profile.description} onChange={(e) => handleInputChange("description", e.target.value)} rows="4" className="form-control" id="description" placeholder="Enter a description about yourself..."></textarea>
+                                <textarea value={profile.description} onChange={handleInputChange} rows="4" className="form-control" name="description" placeholder="Enter a description about yourself..."></textarea>
                             </div>
 
 

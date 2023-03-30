@@ -22,7 +22,10 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
         setProfile(prevGroupData)
     }, [prevGroupData])
 
-    const handleInputChange = (inputType, inputValue) => {
+    const handleInputChange = (e) => {
+        const inputType = e.target.name
+        const inputValue = e.target.value
+
         // prevent editing group capacity to below possible limit
         if (inputType === "capacity") {
             const minCapacity = getMinCapacity()
@@ -39,7 +42,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
     const handleApplyChangesSubmit = () => {
         setErrors(validate(profile))
         const errorArray = validate(profile)
-        
+
         if (Object.keys(errorArray).length === 0) {
 
             if (isCreateGroup) {
@@ -48,7 +51,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                     username: username
                 };
                 console.log(data)
-    
+
                 // Create new group in database
                 setIsLoading(true)
                 fetch('http://localhost:5000/create_group', {
@@ -63,7 +66,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                         console.log(data);
                         // TODO redirect to group
                         navigate(`/group/${data.groupId}`)
-    
+
                         // Close modal
                         btnRef.current.click()
                         handleClose()
@@ -71,11 +74,11 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                     .catch(error => console.error(error))
                     .finally(() => setIsLoading(false));
             }
-    
+
             // Edit group profile
             else if (!isCreateGroup) {
                 console.log(profile)
-    
+
                 // Update group data in database
                 setIsLoading(true)
                 fetch('http://localhost:5000/update_group', {
@@ -90,7 +93,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                         console.log(data);
                         // Re-fetch group profile data to update Group Profile page UI
                         mutate()
-    
+
                         // Close modal
                         btnRef.current.click()
                         handleClose()
@@ -98,7 +101,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                     .catch(error => console.error(error))
                     .finally(() => setIsLoading(false));
             }
-    
+
             else {
                 console.log("Failed")
             }
@@ -165,29 +168,29 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
 
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="name"><strong>Name</strong></label>
-                                <input type="text" value={profile.name} onChange={(e) => handleInputChange("name", e.target.value)} className="form-control" id="name" placeholder="Enter name..." />
+                                <input type="text" value={profile.name} onChange={handleInputChange} className="form-control" name="name" placeholder="Enter name..." />
                                 <p className="modal-input-error">{errors.name}</p>
                             </div>
                             <div className="form-group d-flex flex-column">
                                 <label htmlFor="privacy"><strong>Privacy</strong></label>
-                                <select value={profile.privacy} onChange={(e) => handleInputChange("privacy", e.target.value)} className="form-select" id="privacy">
+                                <select value={profile.privacy} onChange={handleInputChange} className="form-select" name="privacy">
                                     <option value="private">Private</option>
                                     <option value="public">Public</option>
                                 </select>
                             </div>
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="capacity"><strong>Capacity</strong></label>
-                                <input type="number" value={profile.capacity} onChange={(e) => handleInputChange("capacity", e.target.value)} className="form-control" id="capacity" placeholder="Enter capacity..." />
+                                <input type="number" value={profile.capacity} onChange={handleInputChange} className="form-control" name="capacity" placeholder="Enter capacity..." />
                             </div>
                             {/* TODO : select from all available study areas in database */}
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="studyArea"><strong>Study Area</strong></label>
-                                <input type="text" value={profile.studyArea} onChange={(e) => handleInputChange("studyArea", e.target.value)} className="form-control" id="studyArea" placeholder="Enter study area..." />
+                                <input type="text" value={profile.studyArea} onChange={handleInputChange} className="form-control" name="studyArea" placeholder="Enter study area..." />
                                 <p className="modal-input-error">{errors.studyArea}</p>
                             </div>
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="description"><strong>Description</strong></label>
-                                <textarea value={profile.description} onChange={(e) => handleInputChange("description", e.target.value)} rows="4" className="form-control" id="description" placeholder="Enter a description about the group..."></textarea>
+                                <textarea value={profile.description} onChange={handleInputChange} rows="4" className="form-control" name="description" placeholder="Enter a description about the group..."></textarea>
                             </div>
 
                             {/* Tags */}

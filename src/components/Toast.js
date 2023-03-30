@@ -21,6 +21,7 @@ export function ToastNotification({ message }) {
     const { setToastCount } = useContext(ToastContext)
 
     const [showToast, setShowToast] = useState(true);
+    // Automatically close toast and decrement counter of toast popups shown on screen after delay
     const closeShowToast = () => {
         setShowToast(false)
         setToastCount((prevState) => prevState - 1)

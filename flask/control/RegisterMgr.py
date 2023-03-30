@@ -1,6 +1,6 @@
 from flask import request, jsonify, Blueprint
 import dns.resolver
-from app import auth, db, userdb
+from app import userdb
 
 
 RegisterRoutes = Blueprint("RegisterRoutes", __name__)
@@ -8,10 +8,16 @@ RegisterRoutes = Blueprint("RegisterRoutes", __name__)
 
 @RegisterRoutes.route("/register", methods=["POST"])
 def register():
-    name = request.json.get("name")
-    username = request.json.get("username")
-    password = request.json.get("password")
-    email = request.json.get("email")
+    data = request.get_json()
+    username = data["username"]
+    password = data["password"]
+    email = data["email"]
+    name = data["name"]
+    gender = data["gender"]
+    birthday = data["birthday"]
+    organization = data["organization"]
+    description = data["description"]
+    tags = data["tags"]
 
     # check for duplicate username/email, then check if email is valid
 
@@ -26,58 +32,27 @@ def register():
                 dns.resolver.query(domain, "MX")
 
                 data = {
-                    "name": name,
                     "username": username,
                     "password": password,
                     "email": email,
+                    "name": name,
+                    "gender": gender,
+                    "birthday": birthday,
+                    "organization": organization,
+                    "description": description,
+                    "tags": tags,
                 }
-                message = "registration successful"
 
-                response = {"message": message, "data": data}
                 # create user in Firestore database
                 doc_ref = userdb.document(username)
 
                 doc_ref.set(
-                    {
-                        "name": name,
-                        "username": username,
-                        "password": password,
-                        "email": email,
-                    },
+                    data,
                     merge=True,
                 )
-                return jsonify(response)
+                return jsonify({"message": "registration successful"})
             else:
                 return jsonify({"message": "email is invalid"})
 
         except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
             return jsonify({"message": "email is invalid"})
-
-
-@RegisterRoutes.route("/create_profile", methods=["POST"])
-def create_profile():
-    data = request.get_json()
-    username = data["username"]
-
-    gender = data["gender"]
-    birthday = data["birthday"]
-    organization = data["organization"]
-    description = data["description"]
-    tags = data["tags"]
-
-    # edit their profile
-    doc_ref = userdb.document(username)
-
-    doc_ref.set(
-        {
-            "gender": gender,
-            "birthday": birthday,
-            "organization": organization,
-            "description": description,
-            "tags": tags,
-        },
-        merge=True,
-    )
-
-    print(doc_ref)
-    return jsonify({"message": "profile creation sent"})

@@ -3,7 +3,6 @@ import { Route, BrowserRouter, Routes } from 'react-router-dom';
 
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import ProfileCreationPage from './pages/ProfileCreationPage';
 import MyGroupsPage from './pages/MyGroupsPage';
 import StudyAreasPage from './pages/StudyAreasPage';
 import UserProfilePage from './pages/UserProfilePage';
@@ -15,6 +14,7 @@ import { PrivateRoute, PublicRoute } from './components/Route';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { SWRConfig } from 'swr';
 import PrivatePageLayout from './pages/PrivatePageLayout';
+import PublicPageLayout from './pages/PublicPageLayout';
 
 const App = () => {
   const { authState } = useContext(AuthContext)
@@ -27,23 +27,22 @@ const App = () => {
         <SWRConfig value={{ shouldRetryOnError: false }}>
           <BrowserRouter>
             <Routes>
-              {/* TODO: automatic routing temporarily disabled until redirects are fixed */}
-              {/* TODO: issue is that registering user is automatically logged in and redirected to private page without creating profile */}
-              {/* <Route element={<PrivateRoute />}> */}
-              <Route element={<PrivatePageLayout />}>
-                <Route path='/my_groups' element={<MyGroupsPage />} />
-                <Route path='/find_groups' element={<FindGroupsPage />} />
-                <Route path='/study_areas' element={<StudyAreasPage />} />
-                <Route path='/user/:username' element={<UserProfilePage />} />
-                <Route path='/group/:groupId' element={<GroupProfilePage />} />
+              <Route element={<PrivateRoute />}>
+                <Route element={<PrivatePageLayout />}>
+                  <Route path='/my_groups' element={<MyGroupsPage />} />
+                  <Route path='/find_groups' element={<FindGroupsPage />} />
+                  <Route path='/study_areas' element={<StudyAreasPage />} />
+                  <Route path='/user/:username' element={<UserProfilePage />} />
+                  <Route path='/group/:groupId' element={<GroupProfilePage />} />
+                </Route>
               </Route>
-              {/* </Route> */}
 
-              {/* <Route element={<PublicRoute />}> */}
-              <Route path='/' element={<LoginPage />} />
-              <Route path='/register/' element={<RegisterPage />} />
-              <Route path='/create_profile' element={<ProfileCreationPage />} />
-              {/* </Route> */}
+              <Route element={<PublicPageLayout />}>
+                <Route element={<PublicRoute />}>
+                  <Route path='/' element={<LoginPage />} />
+                  <Route path='/register' element={<RegisterPage />} />
+                </Route>
+              </Route>
             </Routes>
           </BrowserRouter>
         </SWRConfig>}

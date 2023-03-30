@@ -1,65 +1,91 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import LoginImage from '../assets/login_image.png';
+import React, { useContext } from 'react';
+import { useState } from 'react';
 import { auth } from '../firebase/firebase';
-import { updateProfile } from 'firebase/auth';
-
-import '../assets/styles.css';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { updateProfile, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { SelectableTag, formatTagType, handleIsSelected, handleSelectTag, useTags } from '../components/Tag'
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { useNavigate } from 'react-router-dom';
+import { ToastContext } from '../context/ToastContext';
 
 const RegisterPage = () => {
-
-  const navigate = useNavigate();
-  /*navigator to shift to an email validator in final build*/
-
   const [values, setValues] = useState({
-    name: "",
     username: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    name: "",
+    gender: "female",
+    birthday: "",
+    organization: "",
+    description: "",
+    tags: {
+      subjects: [],
+      educationLevels: [],
+      learningStyles: [],
+      regions: [],
+    }
   })
   const [errors, setErrors] = useState({});
   const [takenErrors, setTakenErrors] = useState({});
-  const [isSuccessful, setIsSuccessful] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { queueToast } = useContext(ToastContext)
+
+  const navigate = useNavigate()
+
+  const { data: tagData, error, isLoading: tagDataIsLoading } = useTags()
 
   const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$/;
 
-  const handleChange = (e) => {
+  const handleInputChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrors(validate(values));
+  const handleRegisterSubmit = async () => {
+    const errorResults = validate(values)
+    setErrors(errorResults);
 
-    try {
-      setIsLoading(true)
-      // Create user in database
-      const response = await fetch('http://localhost:5000/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(values)
-      })
-      const data = await response.json()
-      if (data.message !== "registration successful") {
-        setTakenErrors(taken(data.message))
+    // Send request with form data to server if form is valid
+    if (Object.keys(errorResults).length === 0) {
+      try {
+        setIsLoading(true)
+        // Create user in database
+        const response = await fetch('http://localhost:5000/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(values)
+        })
+        const data = await response.json()
+        if (data.message !== "registration successful") {
+          setTakenErrors(taken(data.message))
+          queueToast("Error creating account, please check your input details")
+        }
+        else {
+          setTakenErrors({})
+
+          // Create account in Firebase Auth
+          await createUserWithEmailAndPassword(auth, values.email, values.password)
+
+          // Updating profile does not trigger onAuthStateChanged
+          // But we want to update the auth state, so sign user out
+          const user = auth.currentUser
+          await signOut(auth)
+          await updateProfile(user, { displayName: values.username })
+
+          queueToast("Created account successfully")
+
+          // Redirect to login page
+          navigate("/")
+        }
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setIsLoading(false)
       }
-      else {
-        // Create account in Firebase Auth
-        setIsSuccessful(true);
-        await createUserWithEmailAndPassword(auth, values.email, values.password)
-        await updateProfile(auth.currentUser, { displayName: values.username })
-      }
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setIsLoading(false)
+    } else {
+      queueToast("Error creating account, please check your input details")
     }
   }
 
@@ -88,92 +114,120 @@ const RegisterPage = () => {
     }
     if (!values.password) {
       errors.password = "Password is required!";
-    } else if (values.password.length < 8) {
-      errors.password = "Password must contain 8 or more characters!";
-    } else if (!passwordRegex.test(values.password)) {
-      errors.password = "Password must contain at least one uppercase letter, one number, and one symbol.";
+    } else if (values.password.length < 8 || !passwordRegex.test(values.password)) {
+      errors.password = "Password must contain 8 or more characters, at least one uppercase letter, one number, and one symbol!";
     }
     if (!values.confirmPassword) {
       errors.confirmPassword = "Please confirm your password!";
     } else if (values.confirmPassword !== values.password) {
       errors.confirmPassword = "Password does not match!";
     }
+    if (!values.birthday) {
+      errors.birthday = "Birthday is required!";
+    }
+    if (!values.organization) {
+      errors.organization = "Organization is required!";
+    }
 
     return errors;
   };
 
-  useEffect(() => {
-    if (!isLoading && isSuccessful) {
-      navigate('/create_profile', { state: { username: values.username } })
-    }
-  }, [isLoading, isSuccessful])
-
 
   return (
-    <div className="register-page">
-      <div className="register-form-container">
-        {isLoading &&
-          <LoadingSpinner />}
+    <>
+      {/* Content */}
+      <div className="col p-5 m-5 d-flex flex-column">
+        <div className="container">
+          <div className="d-flex flex-column gap-5">
+            {/* Header */}
+            <h2><strong>Create your StudyKakis account</strong></h2>
 
-        {!isLoading && <form onSubmit={handleSubmit}>
-          <div className="register-form">
-            <h1 className="register-heading">Create your Account</h1>
-            <div className="input-container">
-              <label className="register-label">Name</label>
-              <input className="input-field"
-                type="text"
-                name="name"
-                placeholder="Name"
-                value={values.name}
-                onChange={handleChange} />
-            </div>
-            <p className="input-error">{errors.name}</p>
-            <div className="input-container">
-              <label className="register-label">Username</label>
-              <input className="input-field"
-                type="text"
-                name="username"
-                placeholder="Username"
-                value={values.username}
-                onChange={handleChange} />
-            </div>
-            <p className="input-error">{[errors.username, takenErrors.username]}</p>
-            <div className="input-container">
-              <label className="register-label">Email</label>
-              <input className="input-field"
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={values.email}
-                onChange={handleChange} />
-            </div>
-            <p className="input-error">{[errors.email, takenErrors.email]}</p>
-            <div className="input-container">
-              <label className="register-label">Password</label>
-              <input className="input-field"
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={values.password}
-                onChange={handleChange} />
-            </div>
-            <p className="input-error">{errors.password}</p>
-            <div className="input-container">
-              <label className="register-label">Confirm Password</label>
-              <input className="input-field"
-                type="password"
-                name="confirmPassword"
-                placeholder="Confirm password"
-                value={values.confirmPassword}
-                onChange={handleChange} />
-            </div>
-            <p className="input-error">{errors.confirmPassword}</p>
-            <button className="register-button">REGISTER</button>
+            {/* Form */}
+            {/* Account Login Details */}
+            <form className="d-flex flex-column gap-3">
+              <div className="form-group d-flex flex-column w-100">
+                <label htmlFor="username"><strong>Username</strong></label>
+                <input type="text" value={values.username} onChange={handleInputChange} className="form-control" name="username" placeholder="Username" />
+                <p className="text-danger"><small>{[errors.username, takenErrors.username]}</small></p>
+              </div>
+
+              <div className="form-group d-flex flex-column w-100">
+                <label htmlFor="email"><strong>Email</strong></label>
+                <input type="text" value={values.email} onChange={handleInputChange} className="form-control" name="email" placeholder="Email" />
+                <p className="text-danger"><small>{[errors.email, takenErrors.email]}</small></p>
+              </div>
+
+              <div className="form-group d-flex flex-column w-100">
+                <label htmlFor="password"><strong>Password</strong></label>
+                <input type="password" value={values.password} onChange={handleInputChange} className="form-control" name="password" placeholder="Password" />
+                <p className="text-danger"><small>{errors.password}</small></p>
+              </div>
+
+              <div className="form-group d-flex flex-column w-100">
+                <label htmlFor="confirmPassword"><strong>Confirm password</strong></label>
+                <input type="password" value={values.confirmPassword} onChange={handleInputChange} className="form-control" name="confirmPassword" placeholder="Confirm password" />
+                <p className="text-danger"><small>{errors.confirmPassword}</small></p>
+              </div>
+
+              {/* Profile Details */}
+              <div className="form-group d-flex flex-column w-100">
+                <label htmlFor="name"><strong>Name</strong></label>
+                <input type="text" value={values.name} onChange={handleInputChange} className="form-control" name="name" placeholder="Name" />
+                <p className="text-danger"><small>{errors.name}</small></p>
+              </div>
+
+              <div className="form-group d-flex flex-column w-100">
+                <label htmlFor="gender"><strong>Gender</strong></label>
+                <select value={values.gender} onChange={handleInputChange} className="form-select" name="gender">
+                  <option value="female">Female</option>
+                  <option value="male">Male</option>
+                </select>
+              </div>
+
+              <div className="form-group d-flex flex-column w-100">
+                <label htmlFor="birthday"><strong>Birthday</strong></label>
+                <input type="date" value={values.birthday} onChange={handleInputChange} min="1980-01-01" max="2020-12-31" name="birthday" />
+                <p className="text-danger"><small>{errors.birthday}</small></p>
+              </div>
+
+              <div className="form-group d-flex flex-column w-100">
+                <label htmlFor="organization"><strong>Organization</strong></label>
+                <input type="text" value={values.organization} onChange={handleInputChange} className="form-control" name="organization" placeholder="Organization" />
+                <p className="text-danger"><small>{errors.organization}</small></p>
+              </div>
+
+              <div className="form-group d-flex flex-column w-100">
+                <label htmlFor="description"><strong>Description</strong></label>
+                <textarea value={values.description} onChange={handleInputChange} rows="4" className="form-control" name="description" placeholder="Enter a description about yourself..."></textarea>
+              </div>
+
+              {/* Tags */}
+              {tagDataIsLoading && <LoadingSpinner />}
+              {tagData && Object.entries(tagData).map(([tagType, tags]) => (
+                <div key={tagType} className="d-flex flex-column align-items-start">
+                  <span><strong>{formatTagType(tagType)}</strong></span>
+
+                  <div className="d-flex flex-wrap gap-2">
+                    {tags.map((tag) =>
+                      <div key={tag}><SelectableTag name={tag} onSelectTag={() => { handleSelectTag(values, setValues, tagType, tag) }} isSelected={handleIsSelected(values, tagType, tag)} /></div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </form>
+
+            {/* Register button */}
+            {isLoading && <LoadingSpinner />}
+
+            {!isLoading && <div className="d-flex flex-column gap-4">
+              <button onClick={handleRegisterSubmit} className="btn btn-primary text-light p-3 text-uppercase">
+                <span>Register</span>
+              </button>
+            </div>}
           </div>
-        </form>}
-        <img src={LoginImage} alt="login-img" className="login-image" />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

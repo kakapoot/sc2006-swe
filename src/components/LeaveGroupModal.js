@@ -4,7 +4,7 @@ import { ToastContext } from '../context/ToastContext'
 import { SelectableUserCard } from './UserCard'
 
 export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading, membersData, groupData, userRights }) {
-    const { setToastCount, setToastMessages } = useContext(ToastContext)
+    const { queueToast } = useContext(ToastContext)
     const navigate = useNavigate()
 
     // Get remaining members which are not the current group owner
@@ -41,20 +41,14 @@ export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading
                     // redirect back/ refresh page
 
                     onLeaveSubmit()
-                    setToastMessages((prevState) =>
-                        [...prevState, "Left group successfully"]
-                    )
-                    setToastCount((prevState) => prevState + 1)
+                    queueToast("Left group successfully")
                 }
                 else if (data.message === 'group deleted') {
                     // redirect back to My Groups page
                     navigate("/my_groups")
 
                     onLeaveSubmit()
-                    setToastMessages((prevState) =>
-                        [...prevState, "Left group successfully, group deleted"]
-                    )
-                    setToastCount((prevState) => prevState + 1)
+                    queueToast("Left group successfully, group deleted")
                 }
                 else {
                     //error ? 

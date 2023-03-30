@@ -4,7 +4,6 @@ from app import auth, db, userdb, groupdb
 UserRoutes = Blueprint("UserRoutes", __name__)
 
 
-# TODO : not return entire user data
 @UserRoutes.route("/get_user/<username>", methods=["GET"])
 def get_user(username):
     """
@@ -14,8 +13,15 @@ def get_user(username):
     """
     if request.method == "GET":
         user_doc_ref = userdb.document(username).get()
+        user_doc_data = user_doc_ref.to_dict()
+        data = {**user_doc_data}
+
+        # remove sensitive data
+        del data["password"]
+        del data["email"]
+
         if user_doc_ref.exists:
-            return jsonify(user_doc_ref.to_dict()), 200
+            return jsonify(data), 200
         else:
             return jsonify({"message": "user does not exist"}), 404
 

@@ -1,0 +1,20 @@
+import React from 'react'
+import { Outlet } from 'react-router-dom'
+import { ToastContainer } from '../components/Toast'
+
+export default function PublicPageLayout({ children }) {
+    return (
+        <div className="container-fluid">
+            <main className="row">
+                <ToastContainer />
+
+                <Outlet />
+
+                {/* Sidebar image */}
+                <div className="col p-0">
+                    <img src="/login_image.png" className="w-100 vh-100 sticky-top" style={{ objectFit: "cover", objectPosition: "left" }} />
+                </div>
+            </main>
+        </div>
+    )
+}

@@ -7,6 +7,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
     const [username, setUsername] = useState(null)
+
     const [authState, setAuthState] = useState({
         isAuthLoaded: false,
         listener: null
@@ -17,10 +18,12 @@ export const AuthProvider = ({ children }) => {
             setAuthState({
                 ...authState, listener: onAuthStateChanged(auth, (user) => {
                     setUser(user)
-                    if (user) { setUsername(user.displayName) }
+                    if (user) {
+                        setUsername(user.displayName)
+                    }
                     setAuthState(oldState => ({ ...oldState, isAuthLoaded: true }));
                 })
-            });
+            })
         }
 
         // unsubscribe
@@ -30,11 +33,18 @@ export const AuthProvider = ({ children }) => {
         }
     }, [])
 
-
     useEffect(() => {
-        // TODO : for debugging purposes 
-        console.log(user)
-    }, [user])
+        console.log("----")
+        console.log("username: " + username)
+        console.log("auth state: " + authState.isAuthLoaded)
+        if (user) {
+            console.log("user: " + user.displayName)
+        } else {
+            console.log("user: not init")
+        }
+
+        console.log("----")
+    }, [authState, user, username])
 
 
     return (

@@ -27,7 +27,7 @@ export default function GroupProfilePage() {
     const [isLoading, setIsLoading] = useState(false)
 
     // toast notifications
-    const { setToastMessages, setToastCount } = useContext(ToastContext)
+    const { queueToast } = useContext(ToastContext)
 
     // fetch group data based on group ID
     const { data: groupData, error: groupError, isLoading: groupIsLoading, mutate: groupMutate }
@@ -92,13 +92,11 @@ export default function GroupProfilePage() {
                     case "joined group successfully":
                         onMembershipChange()
 
-                        setToastMessages((prevState) => [...prevState, "Joined group successfully"])
-                        setToastCount((prevState) => prevState + 1)
+                        queueToast("Joined group successfully")
                         break
                     case "group is full":
                         //group full error
-                        setToastMessages((prevState) => [...prevState, "Group is full, unable to join"])
-                        setToastCount((prevState) => prevState + 1)
+                        queueToast("Group is full, unable to join")
                         break
                     default:
                     // error

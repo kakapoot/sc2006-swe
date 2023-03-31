@@ -16,6 +16,7 @@ import { SWRConfig } from 'swr';
 import PrivatePageLayout from './pages/PrivatePageLayout';
 import PublicPageLayout from './pages/PublicPageLayout';
 import NotFoundPage from './pages/NotFoundPage';
+import GroupChatPage from './pages/GroupChatPage';
 
 const App = () => {
   const { authState } = useContext(AuthContext)
@@ -35,6 +36,7 @@ const App = () => {
                   <Route path='/study_areas' element={<StudyAreasPage />} />
                   <Route path='/user/:username' element={<UserProfilePage />} />
                   <Route path='/group/:groupId' element={<GroupProfilePage />} />
+                  <Route path='/chat/:groupId' element={<GroupChatPage />} />
                 </Route>
               </Route>
 

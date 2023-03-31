@@ -12,6 +12,7 @@ export default function UserProfilePage() {
     const [userProfileData, setUserProfileData] = useState(null)
     const { username: authenticatedUser } = useContext(AuthContext)
 
+    // fetch user data
     const { data, error, isLoading, mutate } = useSWR(`http://localhost:5000/get_user/${username}`, fetcher)
 
     useEffect(() => {

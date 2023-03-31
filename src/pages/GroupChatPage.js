@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { DisplayTag, formatTagType } from '../components/Tag'
 import { useParams } from 'react-router';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { AuthContext } from '../context/AuthContext';
@@ -7,6 +6,8 @@ import useSWR from 'swr';
 import { fetcher } from "../components/Util";
 import { ToastContext } from '../context/ToastContext';
 import { ReceiveChatMessage, SendChatMessage } from '../components/ChatMessage';
+import { Timestamp, collection, onSnapshot, query, addDoc, orderBy, limit } from "firebase/firestore";
+import { db } from '../firebase/firebase';
 
 export default function GroupChatPage() {
     const { groupId } = useParams();
@@ -17,12 +18,18 @@ export default function GroupChatPage() {
     const { data: userRightsData, error: userRightsError, isLoading: userRightsIsLoading, mutate: userRightsMutate, isMutating: userRightsIsMutating }
         = useSWR(`http://localhost:5000/get_user_rights/${username}?groupId=${groupId}`, fetcher)
 
+    // fetch user profile data
+    const { data: userProfileData, error, isLoading: userProfileIsLoading, mutate } = useSWR(`http://localhost:5000/get_user/${username}`, fetcher)
+
     const [userRights, setUserRights] = useState({
         isGroupOwner: false,
         isGroupMember: false
     })
 
     const [isLoading, setIsLoading] = useState(false)
+
+    const [inputMessage, setInputMessage] = useState("")
+    const [messagesData, setMessagesData] = useState([])
 
     // toast notifications
     const { queueToast } = useContext(ToastContext)
@@ -31,6 +38,23 @@ export default function GroupChatPage() {
     const { data: groupData, error: groupError, isLoading: groupIsLoading, mutate: groupMutate }
         = useSWR(`http://localhost:5000/get_group/${groupId}`, fetcher)
 
+    // get messages subcollection in group document inside chatdb collection
+    const chatMessagesRef = collection(db, "chatdb", groupId, "messages")
+
+    const handleMessageSubmit = async () => {
+        const messageData = {
+            username: username,
+            name: userProfileData.name,
+            message: inputMessage,
+            timestamp: Timestamp.now()
+        }
+
+        // Add setMessage to firestore group chat document
+        await addDoc(chatMessagesRef, messageData)
+
+        setInputMessage("")
+    }
+
     // set view based on user rights
     useEffect(() => {
         // data not fetched yet
@@ -38,6 +62,7 @@ export default function GroupChatPage() {
             return
         }
 
+        // TODO : for restricting access to group chat
         switch (userRightsData.message) {
             case "user is an owner":
                 setUserRights({
@@ -65,10 +90,30 @@ export default function GroupChatPage() {
         }
     }, [userRightsData])
 
+    useEffect(() => {
+        // Get 50 most recent messages
+        const q = query(
+            chatMessagesRef,
+            orderBy("timestamp"),
+            limit(50)
+        )
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const messagesResult = []
+            querySnapshot.forEach((doc) => {
+                messagesResult.push({ ...doc.data(), id: doc.id })
+            })
+            setMessagesData(messagesResult)
+        })
+
+        return () => unsubscribe
+    }, [])
+
+
     return (
         <>
             {/* Loading */}
-            {(isLoading || groupIsLoading) &&
+            {(userProfileIsLoading || userRightsIsLoading || groupIsLoading) &&
                 <div className="col">
                     <LoadingSpinner />
                 </div>}
@@ -76,7 +121,7 @@ export default function GroupChatPage() {
             {groupError && <div className="col">{groupError.message}</div>}
 
             { /* Content */}
-            {!isLoading && !groupIsLoading && groupData &&
+            {!userProfileIsLoading && !userRightsIsLoading && !groupIsLoading && groupData &&
                 <div className="col d-flex flex-column vh-100">
                     {/* Header */}
                     <div className="row bg-secondary">
@@ -92,36 +137,31 @@ export default function GroupChatPage() {
                         </div>
                     </div>
 
-                    {/* Chat */}
+                    {/* Chat messages container*/}
                     <div className="col overflow-auto my-5 d-flex flex-column-reverse">
                         <div className="container">
                             <div className="col fs-5 d-flex flex-column gap-3">
-                                <SendChatMessage message="Hello! This is a chat messageHello! This is a chat messageHello! This is a chat messageHello! This is a chat messageHello! This is a chat messageHello! This is a chat messageHello! This is a chat messageHello! This is a chat messageHello! This is a adsfsdffasfddafadsfssdfsdfschat"
-                                    name="Mr Beans" username="givemeyourbeans" timestamp="6.30pm, 1/4/2023" />
-
-                                <ReceiveChatMessage message="Hello! "
-                                    name="Number 1 Clown" username="clownshow" timestamp="6.31pm, 1/4/2023" />
-
-                                <ReceiveChatMessage message="Hello! "
-                                    name="Number 1 Clown" username="clownshow" timestamp="6.31pm, 1/4/2023" />
-
-                                <ReceiveChatMessage message="Hello! This is a chat messageHello! This is a chat messageHello! This is a chat messageHello! This is a chat messageHello! This is a chat messageHell "
-                                    name="Number 1 Clown" username="clownshow" timestamp="6.31pm, 1/4/2023" />
-
-                                <SendChatMessage message="Hello! T"
-                                    name="Mr Beans" username="givemeyourbeans" timestamp="6.32pm, 1/4/2023" />
+                                {/* chat messages here */}
+                                {messagesData.map((messageData) =>
+                                    messageData.username === username
+                                        ? <SendChatMessage key={messageData.id} message={messageData.message} username={messageData.username} name={messageData.name} timestamp={messageData.timestamp.toDate().toLocaleString()} />
+                                        : <ReceiveChatMessage key={messageData.id} message={messageData.message} username={messageData.username} name={messageData.name} timestamp={messageData.timestamp.toDate().toLocaleString()} />
+                                )}
                             </div>
                         </div>
                     </div>
 
+                    {/* Chatbar */}
                     <div className="container">
                         <div className="mb-5 d-flex gap-3 text-primary">
-                            {/* Chatbar */}
-                            <input type="text" className="form-control form-control-lg" name="message" placeholder="Write a message..." />
+                            {/* Chat message input */}
+                            <input type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)}
+                                className="form-control form-control-lg" name="inputMessage" placeholder="Write a message..." />
 
+                            {/* TODO: send message on keyboard enter button */}
                             {/* Send button */}
-                            <button className="btn btn-primary p-3 d-flex align-items-center gap-3 text-uppercase">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                            <button onClick={handleMessageSubmit} className="btn btn-primary p-3 d-flex align-items-center gap-3 text-uppercase">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-send" viewBox="0 0 16 16">
                                     <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z" />
                                 </svg>
                                 <span>Send</span>

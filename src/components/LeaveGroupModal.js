@@ -18,7 +18,6 @@ export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading
         }
     }, [])
 
-    // TODO
     const handleLeaveSubmit = () => {
         const data = {
             username: username,

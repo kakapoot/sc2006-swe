@@ -148,32 +148,32 @@ const RegisterPage = () => {
               <div className="form-group d-flex flex-column w-100">
                 <label htmlFor="username"><strong>Username</strong></label>
                 <input type="text" value={values.username} onChange={handleInputChange} className="form-control" name="username" placeholder="Username" />
-                <p className="text-danger"><small>{[errors.username, takenErrors.username]}</small></p>
+                <span className="text-danger"><small>{[errors.username, takenErrors.username]}</small></span>
               </div>
 
               <div className="form-group d-flex flex-column w-100">
                 <label htmlFor="email"><strong>Email</strong></label>
                 <input type="text" value={values.email} onChange={handleInputChange} className="form-control" name="email" placeholder="Email" />
-                <p className="text-danger"><small>{[errors.email, takenErrors.email]}</small></p>
+                <span className="text-danger"><small>{[errors.email, takenErrors.email]}</small></span>
               </div>
 
               <div className="form-group d-flex flex-column w-100">
                 <label htmlFor="password"><strong>Password</strong></label>
                 <input type="password" value={values.password} onChange={handleInputChange} className="form-control" name="password" placeholder="Password" />
-                <p className="text-danger"><small>{errors.password}</small></p>
+                <span className="text-danger"><small>{errors.password}</small></span>
               </div>
 
               <div className="form-group d-flex flex-column w-100">
                 <label htmlFor="confirmPassword"><strong>Confirm password</strong></label>
                 <input type="password" value={values.confirmPassword} onChange={handleInputChange} className="form-control" name="confirmPassword" placeholder="Confirm password" />
-                <p className="text-danger"><small>{errors.confirmPassword}</small></p>
+                <span className="text-danger"><small>{errors.confirmPassword}</small></span>
               </div>
 
               {/* Profile Details */}
               <div className="form-group d-flex flex-column w-100">
                 <label htmlFor="name"><strong>Name</strong></label>
                 <input type="text" value={values.name} onChange={handleInputChange} className="form-control" name="name" placeholder="Name" />
-                <p className="text-danger"><small>{errors.name}</small></p>
+                <span className="text-danger"><small>{errors.name}</small></span>
               </div>
 
               <div className="form-group d-flex flex-column w-100">
@@ -187,13 +187,13 @@ const RegisterPage = () => {
               <div className="form-group d-flex flex-column w-100">
                 <label htmlFor="birthday"><strong>Birthday</strong></label>
                 <input type="date" value={values.birthday} onChange={handleInputChange} min="1980-01-01" max="2020-12-31" name="birthday" />
-                <p className="text-danger"><small>{errors.birthday}</small></p>
+                <span className="text-danger"><small>{errors.birthday}</small></span>
               </div>
 
               <div className="form-group d-flex flex-column w-100">
                 <label htmlFor="organization"><strong>Organization</strong></label>
                 <input type="text" value={values.organization} onChange={handleInputChange} className="form-control" name="organization" placeholder="Organization" />
-                <p className="text-danger"><small>{errors.organization}</small></p>
+                <span className="text-danger"><small>{errors.organization}</small></span>
               </div>
 
               <div className="form-group d-flex flex-column w-100">

@@ -96,7 +96,7 @@ export function JoinPrivateGroupModal() {
                             <div className="form-group d-flex flex-column w-100">
                                 <label htmlFor="name"><strong>Code</strong></label>
                                 <input type="text" value={code} onChange={(e) => setCode(e.target.value)} className="form-control" id="code" placeholder="Enter code..." />
-                                <p className="text-danger"><small>{codeError}</small></p>
+                                <span className="text-danger"><small>{codeError}</small></span>
                             </div>
                             <button onClick={handleJoinSubmit} type="button" className="p-3 btn w-100 btn-primary text-uppercase">Join</button>
                         </div>

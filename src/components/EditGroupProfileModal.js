@@ -66,7 +66,8 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                     .then(response => response.json())
                     .then(data => {
                         console.log(data);
-                        // TODO redirect to group
+
+                        // redirect to group
                         navigate(`/group/${data.groupId}`)
 
                         // Close modal
@@ -175,7 +176,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="name"><strong>Name</strong></label>
                                 <input type="text" value={profile.name} onChange={handleInputChange} className="form-control" name="name" placeholder="Enter name..." />
-                                <p className="text-danger"><small>{errors.name}</small></p>
+                                <span className="text-danger"><small>{errors.name}</small></span>
                             </div>
                             <div className="form-group d-flex flex-column">
                                 <label htmlFor="privacy"><strong>Privacy</strong></label>
@@ -192,7 +193,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="studyArea"><strong>Study Area</strong></label>
                                 <input type="text" value={profile.studyArea} onChange={handleInputChange} className="form-control" name="studyArea" placeholder="Enter study area..." />
-                                <p className="text-danger"><small>{errors.studyArea}</small></p>
+                                <span className="text-danger"><small>{errors.studyArea}</small></span>
                             </div>
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="description"><strong>Description</strong></label>

@@ -57,7 +57,7 @@ export default function UserProfilePage() {
                         <div className="row my-5">
                             {/* Profile Sidebar */}
                             <div className="col-lg-4 d-flex flex-column align-items-start gap-3">
-                                <span><strong>{getAge(userProfileData.birthday)}, {userProfileData.gender}</strong></span>
+                                <span className="text-capitalize"><strong>{getAge(userProfileData.birthday)}, {userProfileData.gender}</strong></span>
                                 <span>{userProfileData.organization}</span>
 
                                 {/* Tags */}

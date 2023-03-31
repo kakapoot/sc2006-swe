@@ -80,19 +80,16 @@ const LoginPage = () => {
               <div className="form-group d-flex flex-column w-100">
                 <label htmlFor="email"><strong>Email</strong></label>
                 <input type="text" value={values.email} onChange={handleInputChange} className="form-control" name="email" placeholder="Email" />
-                <p className="text-danger"><small>{errors.email}</small></p>
+                <span className="text-danger"><small>{errors.email}</small></span>
               </div>
 
               <div className="form-group d-flex flex-column w-100">
                 <label htmlFor="password"><strong>Password</strong></label>
                 <input type="password" value={values.password} onChange={handleInputChange} className="form-control" name="password" placeholder="Password" />
-                <p className="text-danger"><small>{errors.password}</small></p>
+                <span className="text-danger"><small>{errors.password}</small></span>
               </div>
 
-              <p className="text-danger text-break"><small>{loginError}</small></p>
-
-              {/* TODO */}
-              {/* <p className="text-primary"><u>Forgot password?</u></p> */}
+              <span className="text-danger text-break"><small>{loginError}</small></span>
             </form>
 
             {/* Buttons */}

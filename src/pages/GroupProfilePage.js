@@ -70,7 +70,6 @@ export default function GroupProfilePage() {
         }
     }, [userRightsData])
 
-    // TODO
     const handleJoinSubmit = () => {
         const data = {
             username: username,

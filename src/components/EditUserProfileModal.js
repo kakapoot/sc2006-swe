@@ -4,7 +4,6 @@ import { LoadingSpinner } from './LoadingSpinner'
 import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
 import { useTags } from './Tag'
 
-// TODO : ensure input fields are not blank
 export function EditUserProfileModal({ prevUserProfileData, mutate }) {
     const [profile, setProfile] = useState(prevUserProfileData)
     const [isLoading, setIsLoading] = useState(false)
@@ -27,7 +26,6 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
         setProfile({ ...profile, [inputType]: inputValue })
     }
 
-    // TODO : update database with new user profile data
     const handleApplyChangesSubmit = () => {
         const errorResults = validate(profile)
         setErrors(errorResults)
@@ -113,7 +111,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="name"><strong>Name</strong></label>
                                 <input type="text" value={profile.name} onChange={handleInputChange} className="form-control" name="name" placeholder="Enter name..." />
-                                <p className="text-danger"><small>{errors.name}</small></p>
+                                <span className="text-danger"><small>{errors.name}</small></span>
                             </div>
                             <div className="form-group d-flex flex-column">
                                 <label htmlFor="gender"><strong>Gender</strong></label>
@@ -129,7 +127,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="organization"><strong>Organization</strong></label>
                                 <input type="text" value={profile.organization} onChange={handleInputChange} className="form-control" name="organization" placeholder="Enter organization..." />
-                                <p className="text-danger"><small>{errors.organization}</small></p>
+                                <span className="text-danger"><small>{errors.organization}</small></span>
                             </div>
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="description"><strong>Description</strong></label>

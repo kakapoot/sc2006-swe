@@ -208,25 +208,26 @@ def join_private_group():
     code = data["code"]
     group_doc_ref = groupdb.document(code)
 
-    group_doc_data = group_doc_ref.get().to_dict()
-
-    if not group_doc_data:
+    if not group_doc_ref.get().exists:
         return jsonify({"message": "code is invalid"})
-    if len(group_doc_data.get("members", [])) == int(group_doc_data.get("capacity", 0)):
+
+    group_doc_data = group_doc_ref.get().to_dict()
+    group_members = group_doc_data.get("members", [])
+    group_capacity = group_doc_data.get("capacity", 0)
+
+    # User is already in group
+    if username in group_members:
+        return jsonify({"message": "already in group"})
+
+    if len(group_members) == int(group_capacity):
         # The number of members in the group is equal to its capacity
         return jsonify({"message": "group is full"})
 
     # The number of members in the group is less than its capacity
     try:
+        # Add user to group
         group_doc_ref.update({"members": firestore.ArrayUnion([username])})
-        return jsonify(
-            {
-                "message": "group joined successfully"
-                + str(len(group_doc_data.get("members", [])))
-                + " "
-                + str(group_doc_data.get("capacity", 0))
-            }
-        )
+        return jsonify({"message": "joined group successfully"})
     except Exception as e:
         return jsonify({"message": "Error:" + str(e)})
 

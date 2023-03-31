@@ -135,7 +135,10 @@ export default function GroupProfilePage() {
                     <div className="col">
                         <div className="d-flex justify-content-between align-items-center my-4 container">
                             <div className="d-flex flex-column align-items-start text-light">
-                                <h5 className="text-uppercase">{groupData.privacy} Group (Code: {groupData.groupId})</h5>
+                                <h5>
+                                    <span className="text-uppercase">{groupData.privacy} Group</span>
+                                    {groupData.privacy === "private" ? <span> (CODE: {groupData.groupId})</span> : null}
+                                </h5>
                                 <h2><strong>{groupData.name}</strong></h2>
                             </div>
 

@@ -1,10 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { auth } from '../firebase/firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth';
-
-import '../assets/styles.css';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 
 const LoginPage = () => {

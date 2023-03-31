@@ -175,7 +175,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="name"><strong>Name</strong></label>
                                 <input type="text" value={profile.name} onChange={handleInputChange} className="form-control" name="name" placeholder="Enter name..." />
-                                <p className="modal-input-error">{errors.name}</p>
+                                <p className="text-danger"><small>{errors.name}</small></p>
                             </div>
                             <div className="form-group d-flex flex-column">
                                 <label htmlFor="privacy"><strong>Privacy</strong></label>
@@ -192,7 +192,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="studyArea"><strong>Study Area</strong></label>
                                 <input type="text" value={profile.studyArea} onChange={handleInputChange} className="form-control" name="studyArea" placeholder="Enter study area..." />
-                                <p className="modal-input-error">{errors.studyArea}</p>
+                                <p className="text-danger"><small>{errors.studyArea}</small></p>
                             </div>
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="description"><strong>Description</strong></label>

@@ -113,7 +113,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="name"><strong>Name</strong></label>
                                 <input type="text" value={profile.name} onChange={handleInputChange} className="form-control" name="name" placeholder="Enter name..." />
-                                <p className="modal-input-error">{errors.name}</p>
+                                <p className="text-danger"><small>{errors.name}</small></p>
                             </div>
                             <div className="form-group d-flex flex-column">
                                 <label htmlFor="gender"><strong>Gender</strong></label>
@@ -129,7 +129,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="organization"><strong>Organization</strong></label>
                                 <input type="text" value={profile.organization} onChange={handleInputChange} className="form-control" name="organization" placeholder="Enter organization..." />
-                                <p className="modal-input-error">{errors.organization}</p>
+                                <p className="text-danger"><small>{errors.organization}</small></p>
                             </div>
                             <div className="form-group d-flex flex-column w-50">
                                 <label htmlFor="description"><strong>Description</strong></label>

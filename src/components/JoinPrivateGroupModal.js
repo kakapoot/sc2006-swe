@@ -1,52 +1,72 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useRef } from 'react'
 import { AuthContext } from '../context/AuthContext';
+import { ToastContext } from '../context/ToastContext';
+import { useNavigate } from 'react-router-dom';
 
 export function JoinPrivateGroupModal() {
     const [code, setCode] = useState("")
     const { username } = useContext(AuthContext)
+    const btnRef = useRef(null)
+
+    const [codeError, setCodeError] = useState("")
+
+    const { queueToast } = useContext(ToastContext)
+    const navigate = useNavigate()
+
     const data = {
         code: code,
         username: username
-      };
-    // TODO : logic for joining group and updating database
-    // TODO : errors on invalid/blank code or full group capacity, navigate to group page if successful
+    };
+
     const handleJoinSubmit = () => {
-        console.log(code)
-        fetch(`http://127.0.0.1:5000/join_private_group`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-          })
-          .then(response => response.json())
-          .then(data =>{
-            console.log(data)
-            if (data.message === 'group joined successfully')
-            {
-                //done
-            }
-            else if (data.message === 'group is full')
-            {
-                //full error 
-            }
-            else if (data.message === 'code is invalid')
-            {
-                //invalid code error
-            }
-            else
-            {
-                //other error, unsuccessful join
-            }
-          })
-          .catch(error => console.log(error));
-          setCode("")
+        // Validate code input ifeld
+        !code
+            ? setCodeError("Code should not be blank!")
+            : setCodeError("")
+
+        // Send request with form data to server if form is valid
+        if (code) {
+            fetch(`http://127.0.0.1:5000/join_private_group`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    switch (data.message) {
+                        case "joined group successfully":
+                            queueToast("Joined group successfully")
+
+                            // redirect to group
+                            navigate(`/group/${code}`)
+
+                            // Close modal
+                            btnRef.current.click()
+                            handleClose()
+                            break
+                        case "group is full":
+                            queueToast("Unable to join group, group is at full capacity")
+                            break
+                        case "code is invalid":
+                            queueToast("Unable to join group, code is invalid")
+                            break
+                        case "already in group":
+                            queueToast("You are already in the group")
+                            break
+                        default:
+                        // error
+                    }
+                })
+                .catch(error => console.log(error));
+        }
     }
 
     const handleClose = () => {
         setCode("")
     }
-
 
 
     return (
@@ -68,7 +88,7 @@ export function JoinPrivateGroupModal() {
                         {/* Modal Header */}
                         <div className="modal-header">
                             <h3 className="modal-title" id="joinPrivateGroupModalLabel"><strong>Join a Private Group</strong></h3>
-                            <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button ref={btnRef} onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
                         {/* Modal Body */}
@@ -76,8 +96,9 @@ export function JoinPrivateGroupModal() {
                             <div className="form-group d-flex flex-column w-100">
                                 <label htmlFor="name"><strong>Code</strong></label>
                                 <input type="text" value={code} onChange={(e) => setCode(e.target.value)} className="form-control" id="code" placeholder="Enter code..." />
+                                <p className="text-danger"><small>{codeError}</small></p>
                             </div>
-                            <button onClick={handleJoinSubmit} type="button" className="p-3 btn w-100 btn-primary text-uppercase" data-bs-dismiss="modal">Join</button>
+                            <button onClick={handleJoinSubmit} type="button" className="p-3 btn w-100 btn-primary text-uppercase">Join</button>
                         </div>
                     </div>
                 </div>

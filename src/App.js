@@ -15,6 +15,7 @@ import { LoadingSpinner } from './components/LoadingSpinner';
 import { SWRConfig } from 'swr';
 import PrivatePageLayout from './pages/PrivatePageLayout';
 import PublicPageLayout from './pages/PublicPageLayout';
+import NotFoundPage from './pages/NotFoundPage';
 
 const App = () => {
   const { authState } = useContext(AuthContext)
@@ -43,6 +44,8 @@ const App = () => {
                   <Route path='/register' element={<RegisterPage />} />
                 </Route>
               </Route>
+
+              <Route path='*' element={<NotFoundPage />} />
             </Routes>
           </BrowserRouter>
         </SWRConfig>}

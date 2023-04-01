@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
 import { useState } from 'react';
-import { auth } from '../firebase/firebase';
+import { auth } from '../../firebase/firebase'
 import { updateProfile, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
-import { SelectableTag, formatTagType, handleIsSelected, handleSelectTag } from '../components/Tag'
-import { useTags } from '../utils/Fetch';
-import { LoadingSpinner } from '../components/LoadingSpinner';
+import { SelectableTag, formatTagType, handleIsSelected, handleSelectTag } from '../../components/Tag'
+import { useTags } from '../../utils/Fetch';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
-import { ToastContext } from '../context/ToastContext';
+import { ToastContext } from '../../context/ToastContext';
 
 const RegisterPage = () => {
   const [values, setValues] = useState({
@@ -34,7 +34,7 @@ const RegisterPage = () => {
 
   const navigate = useNavigate()
 
-  const { data: tagData, error, isLoading: tagDataIsLoading } = useTags()
+  const { data: tagData, isLoading: tagDataIsLoading } = useTags()
 
   const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$/;
 

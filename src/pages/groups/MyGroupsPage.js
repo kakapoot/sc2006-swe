@@ -1,17 +1,17 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { GroupCard } from '../components/GroupCard'
-import { JoinPrivateGroupModal } from '../components/JoinPrivateGroupModal'
-import { EditGroupProfileModal } from '../components/EditGroupProfileModal'
-import { AuthContext } from '../context/AuthContext'
-import { useUserGroups } from '../utils/Fetch';
-import { LoadingSpinner } from '../components/LoadingSpinner';
+import { GroupCard } from '../../components/groups/GroupCard'
+import { JoinPrivateGroupModal } from '../../components/groups/JoinPrivateGroupModal'
+import { EditGroupProfileModal } from '../../components/groups/EditGroupProfileModal'
+import { AuthContext } from '../../context/AuthContext'
+import { useUserGroups } from '../../utils/Fetch';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
 
 export default function MyGroupsPage() {
     const [groups, setGroups] = useState([])
     const { username } = useContext(AuthContext)
 
     // fetch groups data from firebase based on currently authenticated user
-    const { data, error, isLoading } = useUserGroups(username)
+    const { data, isLoading } = useUserGroups(username)
 
     useEffect(() => {
         if (data) {

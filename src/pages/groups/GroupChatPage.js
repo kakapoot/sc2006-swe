@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useParams, useNavigate } from 'react-router';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { AuthContext } from '../context/AuthContext';
-import { useGroup, useUserProfile, useUserRights } from '../utils/Fetch';
-import { ToastContext } from '../context/ToastContext';
-import { ReceiveChatMessage, SendChatMessage } from '../components/ChatMessage';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
+import { AuthContext } from '../../context/AuthContext';
+import { useGroup, useUserProfile, useUserRights } from '../../utils/Fetch';
+import { ToastContext } from '../../context/ToastContext';
+import { ReceiveChatMessage, SendChatMessage } from '../../components/groups/ChatMessage';
 import { Timestamp, collection, onSnapshot, query, addDoc, orderBy, limit } from "firebase/firestore";
-import { db } from '../firebase/firebase';
+import { db } from '../../firebase/firebase';
 
 export default function GroupChatPage() {
     const { groupId } = useParams();

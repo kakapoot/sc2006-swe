@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { DisplayTag } from './Tag'
+import { DisplayTag } from '../Tag'
 
 
 export function GroupCard({ group, isGroupMember }) {

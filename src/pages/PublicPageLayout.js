@@ -12,7 +12,7 @@ export default function PublicPageLayout() {
 
                 {/* Sidebar image */}
                 <div className="col p-0">
-                    <img src="/login_image.png" className="w-100 vh-100 sticky-top" style={{ objectFit: "cover", objectPosition: "left" }} />
+                    <img src="/login_image.png" alt="Login sidebar" className="w-100 vh-100 sticky-top" style={{ objectFit: "cover", objectPosition: "left" }} />
                 </div>
             </main>
         </div>

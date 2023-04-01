@@ -1,6 +1,6 @@
 import React, { useState, useContext, useRef } from 'react'
-import { AuthContext } from '../context/AuthContext';
-import { ToastContext } from '../context/ToastContext';
+import { AuthContext } from '../../context/AuthContext';
+import { ToastContext } from '../../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 
 export function JoinPrivateGroupModal() {

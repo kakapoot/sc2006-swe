@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ToastContext } from '../context/ToastContext'
-import { SelectableUserCard } from './UserCard'
-import { useGroup, useGroupMembers, useUserRights } from '../utils/Fetch'
+import { ToastContext } from '../../context/ToastContext'
+import { SelectableUserCard } from '../user/UserCard'
+import { useGroup, useGroupMembers, useUserRights } from '../../utils/Fetch'
 
 export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading }) {
     const { queueToast } = useContext(ToastContext)
@@ -24,7 +24,7 @@ export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading
         if (remainingMembersData.length > 0) {
             setNewOwner(remainingMembersData[0].username)
         }
-    }, [])
+    }, [remainingMembersData])
 
     const handleLeaveSubmit = () => {
         const data = {

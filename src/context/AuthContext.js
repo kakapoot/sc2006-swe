@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
             if (authState.listener)
                 authState.listener()
         }
-    }, [])
+    }, [authState])
 
     // TODO : for debug purposes
     useEffect(() => {

@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef, useContext } from 'react'
-import { ToastContext } from '../context/ToastContext'
-import { LoadingSpinner } from './LoadingSpinner'
-import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
-import { useTags } from '../utils/Fetch'
+import { ToastContext } from '../../context/ToastContext'
+import { LoadingSpinner } from '../LoadingSpinner'
+import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from '../Tag'
+import { useTags } from '../../utils/Fetch'
 
 export function EditUserProfileModal({ prevUserProfileData, mutate }) {
     const [profile, setProfile] = useState(prevUserProfileData)
@@ -12,7 +12,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
 
     const { queueToast } = useContext(ToastContext)
 
-    const { data: tagData, error, isLoading: tagDataIsLoading } = useTags()
+    const { data: tagData, isLoading: tagDataIsLoading } = useTags()
 
     useEffect(() => {
         setProfile(prevUserProfileData)

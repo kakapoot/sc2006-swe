@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { DisplayTag, formatTagType } from '../components/Tag'
+import { DisplayTag, formatTagType } from '../../components/Tag'
 import { useParams } from 'react-router';
-import { EditUserProfileModal } from '../components/EditUserProfileModal';
-import { AuthContext } from '../context/AuthContext';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { useUserProfile } from '../utils/Fetch';
+import { EditUserProfileModal } from '../../components/user/EditUserProfileModal';
+import { AuthContext } from '../../context/AuthContext';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
+import { useUserProfile } from '../../utils/Fetch';
 
 export default function UserProfilePage() {
     const { username } = useParams()

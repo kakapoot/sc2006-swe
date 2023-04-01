@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { auth } from '../firebase/firebase'
+import { auth } from '../../firebase/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { LoadingSpinner } from '../components/LoadingSpinner';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
 
 const LoginPage = () => {
   const navigate = useNavigate();

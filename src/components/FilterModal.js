@@ -5,7 +5,7 @@ import { SelectableTag, DisplayTag, formatTagType } from './Tag'
 
 export function FilterModal({ onFilterTagsChange, prevFilterTags }) {
     const [selectedTags, setSelectedTags] = useState([])
-    const { data: tagData, error, isLoading: tagDataIsLoading } = useTags()
+    const { data: tagData, isLoading: tagDataIsLoading } = useTags()
 
     const handleSelectTag = (tag) => {
         selectedTags.some(selectedTag => selectedTag === tag)

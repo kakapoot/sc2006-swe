@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { DisplayTag, formatTagType } from '../components/Tag'
+import React, { useState, useContext } from 'react'
+import { DisplayTag, formatTagType } from '../../components/Tag'
 import { useParams, useNavigate } from 'react-router';
-import { EditGroupProfileModal } from '../components/EditGroupProfileModal';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { AuthContext } from '../context/AuthContext';
-import { useGroup, useGroupMembers, useUserRights } from '../utils/Fetch';
-import { LeaveGroupModal } from '../components/LeaveGroupModal';
-import { ToastContext } from '../context/ToastContext';
-import { RedirectableUserCard } from '../components/UserCard';
+import { EditGroupProfileModal } from '../../components/groups/EditGroupProfileModal';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
+import { AuthContext } from '../../context/AuthContext';
+import { useGroup, useGroupMembers, useUserRights } from '../../utils/Fetch';
+import { LeaveGroupModal } from '../../components/groups/LeaveGroupModal';
+import { ToastContext } from '../../context/ToastContext';
+import { RedirectableUserCard } from '../../components/user/UserCard';
 
 export default function GroupProfilePage() {
     const { groupId } = useParams();
@@ -21,7 +21,7 @@ export default function GroupProfilePage() {
     const { data: groupData, error: groupError, isLoading: groupIsLoading, mutate: groupMutate }
         = useGroup(groupId)
     // fetch list of members details based on group ID
-    const { data: membersData, error: membersError, isLoading: membersIsLoading, mutate: membersMutate }
+    const { data: membersData, isLoading: membersIsLoading, mutate: membersMutate }
         = useGroupMembers(groupId)
 
     const [isLoading, setIsLoading] = useState(false)

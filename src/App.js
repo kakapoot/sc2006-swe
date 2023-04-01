@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import MyGroupsPage from './pages/MyGroupsPage';
-import StudyAreasPage from './pages/StudyAreasPage';
-import UserProfilePage from './pages/UserProfilePage';
-import FindGroupsPage from './pages/FindGroupsPage';
-import GroupProfilePage from './pages/GroupProfilePage';
+import LoginPage from './pages/user/LoginPage';
+import RegisterPage from './pages/user/RegisterPage';
+import MyGroupsPage from './pages/groups/MyGroupsPage';
+import StudyAreasPage from './pages/study_areas/StudyAreasPage';
+import UserProfilePage from './pages/user/UserProfilePage';
+import FindGroupsPage from './pages/groups/FindGroupsPage';
+import GroupProfilePage from './pages/groups/GroupProfilePage';
 import './App.css';
 import { AuthContext } from './context/AuthContext';
 import { PrivateRoute, PublicRoute } from './components/Route';
@@ -16,7 +16,7 @@ import { SWRConfig } from 'swr';
 import PrivatePageLayout from './pages/PrivatePageLayout';
 import PublicPageLayout from './pages/PublicPageLayout';
 import NotFoundPage from './pages/NotFoundPage';
-import GroupChatPage from './pages/GroupChatPage';
+import GroupChatPage from './pages/groups/GroupChatPage';
 
 const App = () => {
   const { authState } = useContext(AuthContext)

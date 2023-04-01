@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AuthContext } from '../context/AuthContext'
-import { ToastContext } from '../context/ToastContext'
-import { LoadingSpinner } from './LoadingSpinner'
-import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
-import { useTags } from '../utils/Fetch'
+import { AuthContext } from '../../context/AuthContext'
+import { ToastContext } from '../../context/ToastContext'
+import { LoadingSpinner } from '../LoadingSpinner'
+import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from '../Tag'
+import { useTags } from '../../utils/Fetch'
 
 export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) {
     const [profile, setProfile] = useState(prevGroupData)
@@ -12,7 +12,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
     const btnRef = useRef(null)
     const [errors, setErrors] = useState({})
 
-    const { data: tagData, error, isLoading: tagDataIsLoading } = useTags()
+    const { data: tagData, isLoading: tagDataIsLoading } = useTags()
 
     const { queueToast } = useContext(ToastContext)
 

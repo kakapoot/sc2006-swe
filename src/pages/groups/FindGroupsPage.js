@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { GroupCard } from '../components/GroupCard'
-import { Searchbar } from '../components/Searchbar'
-import { LoadingSpinner } from '../components/LoadingSpinner'
-import { AuthContext } from '../context/AuthContext'
+import { GroupCard } from '../../components/groups/GroupCard'
+import { Searchbar } from '../../components/Searchbar'
+import { LoadingSpinner } from '../../components/LoadingSpinner'
+import { AuthContext } from '../../context/AuthContext'
 
 export default function FindGroupsPages() {
     const [groups, setGroups] = useState([])

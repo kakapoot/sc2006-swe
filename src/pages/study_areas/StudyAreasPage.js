@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import GoogleMap from '../components/GoogleMap'
+import React, { useState } from 'react';
+import GoogleMap from '../../components/study_areas/GoogleMap';
 
 export default function StudyAreasPage() {
     const tagData = {

@@ -46,7 +46,7 @@ export default function MyGroupsPage() {
                     <div className="my-5 d-flex justify-content-between align-items-center">
                         <h2><strong>My Groups</strong></h2>
 
-                        <div className="d-flex gap-3">
+                        <div className="d-flex gap-3 align-items-center">
                             <EditGroupProfileModal isCreateGroup={true}
                                 prevGroupData={emptyGroupProfileData} />
 
@@ -59,7 +59,9 @@ export default function MyGroupsPage() {
                         {/* Loading */}
                         {isLoading && <LoadingSpinner />}
 
-                        {!isLoading && groups && groups.map((group) => <GroupCard group={group} key={group.groupId} />)}
+                        {!isLoading && groups && groups.map((group) =>
+                            <GroupCard isGroupMember={group.members.includes(username)} group={group} key={group.groupId} />
+                        )}
                         {!isLoading && groups.length === 0 ? "You are not currently in any groups" : null}
                     </div>
                 </div>

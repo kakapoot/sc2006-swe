@@ -2,10 +2,18 @@ import React, { useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ToastContext } from '../context/ToastContext'
 import { SelectableUserCard } from './UserCard'
+import { useGroup, useGroupMembers, useUserRights } from '../utils/Fetch'
 
-export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading, membersData, groupData, userRights }) {
+export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading }) {
     const { queueToast } = useContext(ToastContext)
     const navigate = useNavigate()
+
+    // fetch group data based on group ID
+    const { data: groupData } = useGroup(groupId)
+    // fetch list of members details based on group ID
+    const { data: membersData } = useGroupMembers(groupId)
+    const { userRights } = useUserRights(username, groupId)
+
 
     // Get remaining members which are not the current group owner
     const remainingMembersData = membersData.members.filter(member => member.username !== groupData.owner)
@@ -104,7 +112,7 @@ export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading
 
                         {/* Modal Footer */}
                         <div className="modal-footer d-flex flex-column align-items-start">
-                            <div className="mt-5 d-flex gap-3">
+                            <div className="mt-5 d-flex gap-3 align-items-center">
                                 <button onClick={handleLeaveSubmit} type="button" className="btn p-3 btn-primary text-uppercase" data-bs-dismiss="modal">Leave Group</button>
                             </div>
                         </div>

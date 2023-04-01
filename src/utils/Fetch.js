@@ -1,4 +1,5 @@
 import useSWR from 'swr';
+import { useState, useEffect } from 'react';
 
 export const fetcher = async (...args) => {
     const response = await fetch(...args)
@@ -25,11 +26,55 @@ export const useUserRights = (username, groupId) => {
     // fetch user rights for group based on currently authenticated user
     const { data, error, isLoading, mutate } = useSWR(`http://localhost:5000/get_user_rights/${username}?groupId=${groupId}`, fetcher)
 
+    const [userRights, setUserRights] = useState({
+        isGroupOwner: false,
+        isGroupMember: false,
+        isFetched: false
+    })
+
+    // set user rights based on fetched data
+    useEffect(() => {
+        // data not fetched yet
+        if (!data) {
+            return
+        }
+
+        switch (data.message) {
+            case "user is an owner":
+                setUserRights({
+                    isGroupOwner: true,
+                    isGroupMember: true,
+                    isFetched: true
+                })
+                break
+
+            case "user is a member":
+                setUserRights({
+                    isGroupOwner: false,
+                    isGroupMember: true,
+                    isFetched: true
+                })
+                break
+
+            case "user is not owner or member":
+                setUserRights({
+                    isGroupOwner: false,
+                    isGroupMember: false,
+                    isFetched: true
+                })
+                break
+            default:
+            // error
+
+        }
+    }, [data])
+
     return ({
         data,
         error,
         isLoading,
-        mutate
+        mutate,
+        userRights
     })
 }
 

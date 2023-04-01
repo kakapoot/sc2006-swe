@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { AuthContext } from '../context/AuthContext';
 import { useGroup, useUserProfile, useUserRights } from '../utils/Fetch';
@@ -14,26 +14,19 @@ export default function GroupChatPage() {
     const { username } = useContext(AuthContext)
 
     // fetch user rights based on currently authenticated user
-    const { data: userRightsData, error: userRightsError, isLoading: userRightsIsLoading }
+    const { userRights }
         = useUserRights(username, groupId)
     // fetch user profile data
-    const { data: userProfileData, error, isLoading: userProfileIsLoading } = useUserProfile(username)
+    const { data: userProfileData, error: userProfileError, isLoading: userProfileIsLoading } = useUserProfile(username)
     // fetch group data based on group ID
     const { data: groupData, error: groupError, isLoading: groupIsLoading } = useGroup(groupId)
-
-    const [userRights, setUserRights] = useState({
-        isGroupOwner: false,
-        isGroupMember: false
-    })
-
-    const [isLoading, setIsLoading] = useState(false)
 
     const [inputMessage, setInputMessage] = useState("")
     const [messagesData, setMessagesData] = useState([])
 
     // toast notifications
     const { queueToast } = useContext(ToastContext)
-
+    const navigate = useNavigate()
 
 
     // get messages subcollection in group document inside chatdb collection
@@ -55,38 +48,11 @@ export default function GroupChatPage() {
 
     // set view based on user rights
     useEffect(() => {
-        // data not fetched yet
-        if (!userRightsData) {
-            return
+        if (userRights.isFetched && !userRights.isGroupMember) {
+            queueToast(`You must be a member of this group to view the group chat`)
+            navigate("/my_groups")
         }
-
-        // TODO : for restricting access to group chat
-        switch (userRightsData.message) {
-            case "user is an owner":
-                setUserRights({
-                    isGroupOwner: true,
-                    isGroupMember: true
-                })
-                break
-
-            case "user is a member":
-                setUserRights({
-                    isGroupOwner: false,
-                    isGroupMember: true
-                })
-                break
-
-            case "user is not owner or member":
-                setUserRights({
-                    isGroupOwner: false,
-                    isGroupMember: false
-                })
-                break
-            default:
-            // error
-
-        }
-    }, [userRightsData])
+    }, [userRights])
 
     useEffect(() => {
         // Get 50 most recent messages
@@ -111,7 +77,7 @@ export default function GroupChatPage() {
     return (
         <>
             {/* Loading */}
-            {(userProfileIsLoading || userRightsIsLoading || groupIsLoading) &&
+            {(userProfileIsLoading || !userRights.isFetched || groupIsLoading) &&
                 <div className="col">
                     <LoadingSpinner />
                 </div>}
@@ -119,17 +85,28 @@ export default function GroupChatPage() {
             {groupError && <div className="col">{groupError.message}</div>}
 
             { /* Content */}
-            {!userProfileIsLoading && !userRightsIsLoading && !groupIsLoading && groupData &&
+            {!userProfileIsLoading && userRights.isFetched && !groupIsLoading && groupData &&
                 <div className="col d-flex flex-column vh-100">
                     {/* Header */}
                     <div className="row bg-secondary">
                         <div className="col">
-                            <div className="my-4 container">
+                            <div className="d-flex justify-content-between align-items-center my-4 container">
                                 <div className="d-flex flex-column align-items-start text-light">
                                     <h5>
                                         <span className="text-uppercase">{groupData.privacy} Group Chat</span>
                                     </h5>
                                     <h2><strong>{groupData.name}</strong></h2>
+                                </div>
+
+                                <div className="d-flex gap-3 align-items-center">
+                                    {/* Show Group Profile button */}
+                                    <button onClick={() => navigate(`/group/${groupId}`)} className="btn btn-primary p-3 d-flex align-items-center gap-3 text-uppercase">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-card-text" viewBox="0 0 16 16">
+                                            <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z" />
+                                            <path d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z" />
+                                        </svg>
+                                        <span className="text-uppercase">Group Profile</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -151,7 +128,7 @@ export default function GroupChatPage() {
 
                     {/* Chatbar */}
                     <div className="container">
-                        <div className="mb-5 d-flex gap-3 text-primary">
+                        <div className="mb-5 d-flex gap-3 text-primary align-items-center">
                             {/* Chat message input */}
                             <input type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)}
                                 className="form-control form-control-lg" name="inputMessage" placeholder="Write a message..." />

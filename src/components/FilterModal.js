@@ -72,7 +72,7 @@ export function FilterModal({ onFilterTagsChange, prevFilterTags }) {
                                     <div key={tag}><DisplayTag name={tag} /></div>
                                 )}
                             </div>
-                            <div className="mt-5 d-flex gap-3">
+                            <div className="mt-5 d-flex gap-3 align-items-center">
                                 <button onClick={handleApplyFiltersSubmit} type="button" className="btn p-3 btn-primary text-uppercase" data-bs-dismiss="modal">Apply Filters</button>
                                 <button onClick={handleResetSubmit} type="button" className="btn p-3 btn-secondary text-light text-uppercase">Reset Selection</button>
                             </div>

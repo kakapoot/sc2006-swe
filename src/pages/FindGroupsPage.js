@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { GroupCard } from '../components/GroupCard'
 import { Searchbar } from '../components/Searchbar'
 import { LoadingSpinner } from '../components/LoadingSpinner'
+import { AuthContext } from '../context/AuthContext'
 
 export default function FindGroupsPages() {
     const [groups, setGroups] = useState([])
     const [searchText, setSearchText] = useState("")
     const [filterTags, setFilterTags] = useState([])
     const [isLoading, setIsLoading] = useState(false)
+
+    const { username } = useContext(AuthContext)
 
 
     useEffect(() => {
@@ -66,7 +69,9 @@ export default function FindGroupsPages() {
                     <div className="d-flex flex-column gap-5">
                         {isLoading &&
                             <LoadingSpinner />}
-                        {!isLoading && groups.map((group) => <GroupCard group={group} key={group.name} />)}
+                        {!isLoading && groups.map((group) =>
+                            <GroupCard isGroupMember={group.members.includes(username)} group={group} key={group.name} />
+                        )}
                         {!isLoading && groups.length === 0 ? "No matching groups found" : null}
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { DisplayTag, formatTagType } from '../components/Tag'
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 import { EditGroupProfileModal } from '../components/EditGroupProfileModal';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { AuthContext } from '../context/AuthContext';
@@ -15,7 +15,7 @@ export default function GroupProfilePage() {
     const { username } = useContext(AuthContext)
 
     // fetch user rights based on currently authenticated user
-    const { data: userRightsData, error: userRightsError, isLoading: userRightsIsLoading, mutate: userRightsMutate }
+    const { userRights, mutate: userRightsMutate }
         = useUserRights(username, groupId)
     // fetch group data based on group ID
     const { data: groupData, error: groupError, isLoading: groupIsLoading, mutate: groupMutate }
@@ -24,50 +24,11 @@ export default function GroupProfilePage() {
     const { data: membersData, error: membersError, isLoading: membersIsLoading, mutate: membersMutate }
         = useGroupMembers(groupId)
 
-    const [userRights, setUserRights] = useState({
-        isGroupOwner: false,
-        isGroupMember: false
-    })
-
     const [isLoading, setIsLoading] = useState(false)
 
     // toast notifications
     const { queueToast } = useContext(ToastContext)
-
-
-    // set view based on user rights
-    useEffect(() => {
-        // data not fetched yet
-        if (!userRightsData) {
-            return
-        }
-
-        switch (userRightsData.message) {
-            case "user is an owner":
-                setUserRights({
-                    isGroupOwner: true,
-                    isGroupMember: true
-                })
-                break
-
-            case "user is a member":
-                setUserRights({
-                    isGroupOwner: false,
-                    isGroupMember: true
-                })
-                break
-
-            case "user is not owner or member":
-                setUserRights({
-                    isGroupOwner: false,
-                    isGroupMember: false
-                })
-                break
-            default:
-            // error
-
-        }
-    }, [userRightsData])
+    const navigate = useNavigate()
 
     const handleJoinSubmit = () => {
         const data = {
@@ -140,7 +101,7 @@ export default function GroupProfilePage() {
                                 <h2><strong>{groupData.name}</strong></h2>
                             </div>
 
-                            <div className="d-flex gap-3">
+                            <div className="d-flex gap-3 align-items-center">
                                 {/* Loading header buttons */}
                                 {isLoading && <LoadingSpinner />}
 
@@ -156,9 +117,18 @@ export default function GroupProfilePage() {
                                         groupId={groupId}
                                         onLeaveSubmit={onMembershipChange}
                                         setIsLoading={setIsLoading}
-                                        membersData={membersData}
-                                        groupData={groupData}
                                         userRights={userRights} />}
+
+                                {/* Show Chat button if authenticated user is group member */}
+                                {!isLoading && userRights.isGroupMember &&
+                                    <button onClick={() => navigate(`/chat/${groupId}`)} className="btn btn-primary p-3 d-flex align-items-center gap-3 text-uppercase">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chat-square-text" viewBox="0 0 16 16">
+                                            <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                            <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
+                                        </svg>
+                                        <span className="text-uppercase">Chat</span>
+                                    </button>
+                                }
 
                                 {/* Show Join button if authenticated user is not group member */}
                                 {!isLoading && !userRights.isGroupMember &&

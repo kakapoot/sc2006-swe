@@ -152,7 +152,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
 
                         {/* Modal Footer */}
                         <div className="modal-footer d-flex flex-column align-items-start">
-                            <div className="mt-5 d-flex gap-3">
+                            <div className="mt-5 d-flex gap-3 align-items-center">
                                 {isLoading && <LoadingSpinner />}
                                 {!isLoading && <button onClick={handleApplyChangesSubmit} type="button" className="btn p-3 btn-primary text-uppercase">Apply Changes</button>}
                             </div>

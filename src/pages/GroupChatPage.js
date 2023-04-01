@@ -130,10 +130,11 @@ export default function GroupChatPage() {
                     <div className="container">
                         <div className="mb-5 d-flex gap-3 text-primary align-items-center">
                             {/* Chat message input */}
-                            <input type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)}
+                            <input type="text" value={inputMessage}
+                                onChange={(e) => setInputMessage(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" ? handleMessageSubmit() : null} // Send message on keyboard enter button
                                 className="form-control form-control-lg" name="inputMessage" placeholder="Write a message..." />
 
-                            {/* TODO: send message on keyboard enter button */}
                             {/* Send button */}
                             <button onClick={handleMessageSubmit} className="btn btn-primary p-3 d-flex align-items-center gap-3 text-uppercase">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-send" viewBox="0 0 16 16">

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useTags } from './Tag'
+import { useTags } from '../utils/Fetch'
 import { LoadingSpinner } from './LoadingSpinner'
 import { SelectableTag, DisplayTag, formatTagType } from './Tag'
 

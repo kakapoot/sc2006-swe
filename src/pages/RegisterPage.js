@@ -2,7 +2,8 @@ import React, { useContext } from 'react';
 import { useState } from 'react';
 import { auth } from '../firebase/firebase';
 import { updateProfile, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
-import { SelectableTag, formatTagType, handleIsSelected, handleSelectTag, useTags } from '../components/Tag'
+import { SelectableTag, formatTagType, handleIsSelected, handleSelectTag } from '../components/Tag'
+import { useTags } from '../utils/Fetch';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
 import { ToastContext } from '../context/ToastContext';

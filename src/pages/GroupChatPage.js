@@ -2,8 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useParams } from 'react-router';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { AuthContext } from '../context/AuthContext';
-import useSWR from 'swr';
-import { fetcher } from "../components/Util";
+import { useGroup, useUserProfile, useUserRights } from '../utils/Fetch';
 import { ToastContext } from '../context/ToastContext';
 import { ReceiveChatMessage, SendChatMessage } from '../components/ChatMessage';
 import { Timestamp, collection, onSnapshot, query, addDoc, orderBy, limit } from "firebase/firestore";
@@ -15,11 +14,12 @@ export default function GroupChatPage() {
     const { username } = useContext(AuthContext)
 
     // fetch user rights based on currently authenticated user
-    const { data: userRightsData, error: userRightsError, isLoading: userRightsIsLoading, mutate: userRightsMutate, isMutating: userRightsIsMutating }
-        = useSWR(`http://localhost:5000/get_user_rights/${username}?groupId=${groupId}`, fetcher)
-
+    const { data: userRightsData, error: userRightsError, isLoading: userRightsIsLoading }
+        = useUserRights(username, groupId)
     // fetch user profile data
-    const { data: userProfileData, error, isLoading: userProfileIsLoading, mutate } = useSWR(`http://localhost:5000/get_user/${username}`, fetcher)
+    const { data: userProfileData, error, isLoading: userProfileIsLoading } = useUserProfile(username)
+    // fetch group data based on group ID
+    const { data: groupData, error: groupError, isLoading: groupIsLoading } = useGroup(groupId)
 
     const [userRights, setUserRights] = useState({
         isGroupOwner: false,
@@ -34,9 +34,7 @@ export default function GroupChatPage() {
     // toast notifications
     const { queueToast } = useContext(ToastContext)
 
-    // fetch group data based on group ID
-    const { data: groupData, error: groupError, isLoading: groupIsLoading, mutate: groupMutate }
-        = useSWR(`http://localhost:5000/get_group/${groupId}`, fetcher)
+
 
     // get messages subcollection in group document inside chatdb collection
     const chatMessagesRef = collection(db, "chatdb", groupId, "messages")

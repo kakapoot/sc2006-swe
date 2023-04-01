@@ -1,6 +1,4 @@
-import React from 'react'
-import useSWR from 'swr';
-import { fetcher } from "../components/Util";
+import React from 'react';
 
 export function DisplayTag({ name }) {
     return (
@@ -41,15 +39,4 @@ export function handleSelectTag(profile, setProfile, selectedTagType, selectedTa
 export function handleIsSelected(profile, selectedTagType, selectedTag) {
     // checks whether selected tag is already in the tags
     return profile["tags"][selectedTagType].some(tag => tag === selectedTag)
-}
-
-export const useTags = () => {
-    // fetch available tags in database
-    const { data, error, isLoading } = useSWR(`http://localhost:5000/get_tags`, fetcher)
-
-    return ({
-        data,
-        error,
-        isLoading
-    })
 }

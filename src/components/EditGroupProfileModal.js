@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext'
 import { ToastContext } from '../context/ToastContext'
 import { LoadingSpinner } from './LoadingSpinner'
 import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from './Tag'
-import { useTags } from './Tag'
+import { useTags } from '../utils/Fetch'
 
 export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) {
     const [profile, setProfile] = useState(prevGroupData)

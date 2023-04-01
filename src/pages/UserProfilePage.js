@@ -4,8 +4,7 @@ import { useParams } from 'react-router';
 import { EditUserProfileModal } from '../components/EditUserProfileModal';
 import { AuthContext } from '../context/AuthContext';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import useSWR from 'swr';
-import { fetcher } from '../components/Util';
+import { useUserProfile } from '../utils/Fetch';
 
 export default function UserProfilePage() {
     const { username } = useParams()
@@ -13,7 +12,7 @@ export default function UserProfilePage() {
     const { username: authenticatedUser } = useContext(AuthContext)
 
     // fetch user data
-    const { data, error, isLoading, mutate } = useSWR(`http://localhost:5000/get_user/${username}`, fetcher)
+    const { data, error, isLoading, mutate } = useUserProfile(username)
 
     useEffect(() => {
         setUserProfileData(data)

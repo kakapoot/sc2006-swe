@@ -3,16 +3,15 @@ import { GroupCard } from '../components/GroupCard'
 import { JoinPrivateGroupModal } from '../components/JoinPrivateGroupModal'
 import { EditGroupProfileModal } from '../components/EditGroupProfileModal'
 import { AuthContext } from '../context/AuthContext'
-import useSWR from 'swr';
-import { fetcher } from "../components/Util";
-import { LoadingSpinner } from '../components/LoadingSpinner'
+import { useUserGroups } from '../utils/Fetch';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 export default function MyGroupsPage() {
     const [groups, setGroups] = useState([])
     const { username } = useContext(AuthContext)
 
     // fetch groups data from firebase based on currently authenticated user
-    const { data, error, isLoading } = useSWR(`http://localhost:5000/get_my_groups/${username}`, fetcher)
+    const { data, error, isLoading } = useUserGroups(username)
 
     useEffect(() => {
         if (data) {

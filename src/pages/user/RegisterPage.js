@@ -87,6 +87,7 @@ const RegisterPage = () => {
       }
     } else {
       queueToast("Error creating account, please check all input details")
+      setTakenErrors({})
     }
   }
 

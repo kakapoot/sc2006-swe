@@ -22,6 +22,18 @@ def get_places(place_type):
     return jsonify({"places": places})
 
 
+# Gets all places with place details
+@StudyAreaRoutes.route("/get_available_places", methods=["GET"])
+def get_available_places():
+    docs = placedb.order_by("name").stream()
+
+    places = []
+    for doc in docs:
+        places.append(doc.to_dict())
+
+    return jsonify({"places": places})
+
+
 @StudyAreaRoutes.route("/update_places", methods=["POST"])
 def update_places():
     data = request.get_json()

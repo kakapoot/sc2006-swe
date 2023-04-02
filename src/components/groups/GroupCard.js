@@ -1,9 +1,25 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { DisplayTag } from '../Tag'
+import { StudyAreaMinimap } from '../study_areas/StudyAreaMinimap';
+
+import Popover from "react-bootstrap/Popover";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 
 
 export function GroupCard({ group, isGroupMember }) {
+
+    const [popover, setPopover] = useState(null)
+
+    useEffect(() => {
+        if (group) {
+            setPopover(
+                <Popover id="popover" title="Popover title" style={{ maxWidth: "none", width: "600px", height: "600px" }
+                }>
+                    <StudyAreaMinimap studyArea={group.studyArea} />
+                </Popover >)
+        }
+    }, [group])
 
 
     return (
@@ -31,7 +47,10 @@ export function GroupCard({ group, isGroupMember }) {
                 <h5 className="card-title">
                     <strong>
                         <span>Study Area: </span>
-                        <span className="text-danger">{group.studyArea}</span>
+                        <OverlayTrigger trigger="click" rootClose placement="right" overlay={popover}>
+                            <a href="#" className="text-danger">
+                                <u>{group.studyArea.name}</u></a>
+                        </OverlayTrigger>
                     </strong>
                 </h5>
 

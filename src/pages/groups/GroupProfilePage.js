@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { DisplayTag, formatTagType } from '../../components/Tag'
 import { useParams, useNavigate } from 'react-router';
 import { EditGroupProfileModal } from '../../components/groups/EditGroupProfileModal';
@@ -8,6 +8,10 @@ import { useGroup, useGroupMembers, useUserRights } from '../../utils/Fetch';
 import { LeaveGroupModal } from '../../components/groups/LeaveGroupModal';
 import { ToastContext } from '../../context/ToastContext';
 import { RedirectableUserCard } from '../../components/user/UserCard';
+import { StudyAreaMinimap } from '../../components/study_areas/StudyAreaMinimap';
+
+import Popover from "react-bootstrap/Popover";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 
 export default function GroupProfilePage() {
     const { groupId } = useParams();
@@ -77,10 +81,25 @@ export default function GroupProfilePage() {
     }
 
 
+    const [popover, setPopover] = useState(null)
+
+    useEffect(() => {
+        if (groupData) {
+            setPopover(
+                <Popover id="popover" title="Popover title" style={{ maxWidth: "none", width: "600px", height: "600px" }
+                }>
+                    <StudyAreaMinimap studyArea={groupData.studyArea} />
+                </Popover >)
+        }
+    }, [groupData])
+
+
+
+
     return (
         <>
             {/* Loading */}
-            {(isLoading || membersIsLoading || groupIsLoading) &&
+            {(!popover || isLoading || membersIsLoading || groupIsLoading) &&
                 <div className="col">
                     <LoadingSpinner />
                 </div>}
@@ -88,7 +107,7 @@ export default function GroupProfilePage() {
             {groupError && <div className="col">{groupError.message}</div>}
 
             { /* Content */}
-            {!isLoading && !membersIsLoading && !groupIsLoading && groupData && <div className="col">
+            {popover && !isLoading && !membersIsLoading && !groupIsLoading && groupData && <div className="col">
                 {/* Header */}
                 <div className="row bg-secondary">
                     <div className="col">
@@ -176,7 +195,12 @@ export default function GroupProfilePage() {
 
                                 {/* Profile Body */}
                                 <div className="col d-flex flex-column align-items-start gap-3">
-                                    <h5><strong>Study Area: </strong>{groupData.studyArea}</h5>
+                                    {/* Study Area Popover */}
+                                    <h5><strong>Study Area: <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={popover}>
+                                        <a href="#" className="text-danger">
+                                            <u>{groupData.studyArea.name}</u></a>
+                                    </OverlayTrigger>
+                                    </strong></h5>
                                     <div>
                                         <h5><strong>Description</strong></h5>
                                         <p>{groupData.description}</p>
@@ -189,3 +213,6 @@ export default function GroupProfilePage() {
         </>
     )
 }
+
+
+

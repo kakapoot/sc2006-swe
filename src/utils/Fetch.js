@@ -125,3 +125,15 @@ export const useUserGroups = (username) => {
         mutate
     })
 }
+
+export const useStudyAreas = () => {
+    // fetch available study areas data
+    const { data, error, isLoading, mutate } = useSWR(`http://localhost:5000/get_available_places`, fetcher)
+
+    return ({
+        data,
+        error,
+        isLoading,
+        mutate
+    })
+}

@@ -64,10 +64,11 @@ function Map() {
 
         // stop Google Maps from crashing while InfoWindow is open
         setActiveMarker(null)
-        map.panTo(center)
 
         // map needs to be loaded before service can be set
         if (map && !isLoading) {
+            map.panTo(center)
+
             setIsLoading(true)
             fetchPlacesData()
         }
@@ -154,7 +155,7 @@ function Map() {
                 <select disabled={isLoading} className="text-capitalize form-select mb-3" aria-label="Default select example"
                     onChange={(e) => setSelectedPlaceType(e.target.value)} >
                     {placeTypes.map((placeType) =>
-                        <option value={placeType}>{placeType}</option>
+                        <option value={placeType} key={placeType}>{placeType}</option>
                     )}
                 </select>
             </div>

@@ -124,5 +124,4 @@ export const useUserGroups = (username) => {
         isLoading,
         mutate
     })
-
 }

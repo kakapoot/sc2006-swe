@@ -7,13 +7,13 @@ StudyAreaRoutes = Blueprint("StudyAreaRoutes", __name__)
 
 @StudyAreaRoutes.route("/get_places/<place_type>", methods=["GET"])
 def get_places(place_type):
-    # get all places
-    if place_type == "all":
-        docs = placedb.stream()
-
     # filter by type of place
-    else:
+    if place_type in ["university", "cafe", "restaurant", "library"]:
         docs = placedb.where("type", "==", place_type).stream()
+
+    # get all places
+    else:
+        docs = placedb.stream()
 
     places = []
     for doc in docs:

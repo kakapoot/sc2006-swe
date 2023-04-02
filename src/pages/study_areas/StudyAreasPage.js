@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { GoogleMap, useJsApiLoader, MarkerF, InfoWindow, InfoWindowF } from "@react-google-maps/api";
 import { LoadingSpinner } from "../../components/LoadingSpinner"
-import { usePlaces } from '../../utils/Fetch';
 import { StarRating } from '../../components/StarRating';
 import { DisplayTag } from '../../components/Tag';
 
@@ -164,7 +163,7 @@ function Map() {
             <GoogleMap
                 zoom={11}
                 center={center}
-                mapContainerClassName={isLoading ? "invisible" : "w-100 h-100"} // hide Google Maps when loading places data
+                mapContainerClassName={isLoading ? "invisible" : "w-100 h-100 rounded"} // hide Google Maps when loading places data
                 onLoad={map => setMap(map)}
                 clickableIcons={false}>
 
@@ -217,8 +216,10 @@ function Map() {
 
                                     <span><span className="fw-bold">Opening Hours:</span>
                                         <ul className="list-group">
-                                            {place.opening_hours.map((day) =>
-                                                <li className="list-group-item">{day}</li>)}
+                                            {place.opening_hours.length > 0
+                                                ? place.opening_hours.map((day) =>
+                                                    <li className="list-group-item">{day}</li>)
+                                                : <li className="list-group-item">24/7</li>}
                                         </ul>
                                     </span>
                                 </div>

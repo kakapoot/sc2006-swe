@@ -125,15 +125,3 @@ export const useUserGroups = (username) => {
         mutate
     })
 }
-
-export const usePlaces = () => {
-    // fetch places data from firebase
-    const { data, error, isLoading, mutate } = useSWR(`http://localhost:5000/get_places`, fetcher)
-
-    return ({
-        data,
-        error,
-        isLoading,
-        mutate
-    })
-}

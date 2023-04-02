@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { GoogleMap, useJsApiLoader, MarkerF, InfoWindow, InfoWindowF } from "@react-google-maps/api";
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { GoogleMap, useJsApiLoader, MarkerF, InfoWindowF, Autocomplete } from "@react-google-maps/api";
 import { LoadingSpinner } from "../../components/LoadingSpinner"
 import { StarRating } from '../../components/StarRating';
 import { DisplayTag } from '../../components/Tag';
@@ -35,21 +35,22 @@ export default function StudyAreasPage() {
 
 function Map() {
     const center = useMemo(() => ({ lat: 1.3521, lng: 103.8198 }), [])
-
     const [map, setMap] = useState(/** @type google.maps.Map */ null)
     const [activeMarker, setActiveMarker] = useState(null)
 
     const [placesData, setPlacesData] = useState(null)
-
     const [places, setPlaces] = useState([])
-
-
-    const [isLoading, setIsLoading] = useState(false)
-
     const placeTypes = ["all", "library", "cafe", "university", "restaurant"]
     const [selectedPlaceType, setSelectedPlaceType] = useState("all")
 
+    const [autocomplete, setAutocomplete] = useState(null)
+    const [searchedPlace, setSearchedPlace] = useState(null)
+    const [searchedPlaceLocation, setSearchedPlaceLocation] = useState(null)
+    const autocompleteInputRef = useRef(null)
 
+    const [isLoading, setIsLoading] = useState(false)
+
+    // fetch data on different filters
     useEffect(() => {
         const fetchPlacesData = async () => {
             try {
@@ -67,15 +68,17 @@ function Map() {
 
         // map needs to be loaded before service can be set
         if (map && !isLoading) {
-            map.panTo(center)
+            // pan to relevant place markers
+            searchedPlace
+                ? map.panTo(searchedPlaceLocation)
+                : map.panTo(center)
 
             setIsLoading(true)
             fetchPlacesData()
         }
-
     }, [selectedPlaceType, map])
 
-
+    // update firestore database with new fetched data from Google Maps API
     useEffect(() => {
         console.log(places)
         // update firestore database only when all place details have been fetched
@@ -96,12 +99,11 @@ function Map() {
         }
     }, [placesData, places])
 
-
-
-
+    // fetch missing place detail data for all the placeIds in firestore database
     const fetchPlaceDetails = (placesData) => {
         setPlaces([])
 
+        // intialize Google Places JavaScript API
         const placesService = new google.maps.places.PlacesService(map)
 
         // get details for places fetched by firestore database
@@ -115,7 +117,6 @@ function Map() {
 
                 placesService.getDetails(request, function (results, status) {
                     if (status === google.maps.places.PlacesServiceStatus.OK) {
-
                         const placeDetails = {
                             ...results,
                             // get LatLng values for geometry
@@ -144,23 +145,63 @@ function Map() {
         })
     }
 
+    // autocomplete input change
+    const handlePlaceChanged = () => {
+        if (autocomplete) {
+            const place = autocomplete.getPlace()
+            setSearchedPlace(place)
+
+            const location = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
+            setSearchedPlaceLocation(location)
+            // pan to searched place
+            map.panTo(location)
+        }
+        else {
+            setSearchedPlace(null)
+        }
+    }
+
+    // autocomplete input reset
+    const handleResetSearchedPlace = () => {
+        setSearchedPlace(null)
+        map.panTo(center)
+
+        autocompleteInputRef.current.value = ""
+    }
 
 
     return (
         <div className="w-100 h-100">
-            {/* Filter */}
-            <div>
-                <h5 className="fw-bold">Filter by Type of Study Area</h5>
-
-                <select disabled={isLoading} className="text-capitalize form-select mb-3" aria-label="Default select example"
+            <div className="mb-3 d-flex flex-column gap-3">
+                {/* Filter */}
+                <h5 className="mb-0 fw-bold">Filter by Type of Study Area</h5>
+                <select disabled={isLoading} className="text-capitalize form-select"
                     onChange={(e) => setSelectedPlaceType(e.target.value)} >
                     {placeTypes.map((placeType) =>
                         <option value={placeType} key={placeType}>{placeType}</option>
                     )}
                 </select>
+
+                <div className="d-flex gap-3">
+                    {/* Autocomplete Input */}
+                    <Autocomplete className="flex-fill"
+                        onLoad={autocomplete => setAutocomplete(autocomplete)}
+                        onPlaceChanged={handlePlaceChanged}
+                        options={{
+                            componentRestrictions: { country: "sg" },
+                            fields: ["name", "geometry"]
+                        }}>
+                        <input type="text" ref={autocompleteInputRef} className="form-control" placeholder="Search for a location..." />
+                    </Autocomplete>
+
+                    {/* Reset Autocomplete Input Button */}
+                    <button onClick={handleResetSearchedPlace} className="btn btn-primary text-uppercase">Reset</button>
+                </div>
             </div>
 
+            {/* Loading */}
             {isLoading && <LoadingSpinner />}
+            {/* Google Map */}
             <GoogleMap
                 zoom={11}
                 center={center}
@@ -168,11 +209,19 @@ function Map() {
                 onLoad={map => setMap(map)}
                 clickableIcons={false}>
 
+                {/* Autocomplete Place Marker */}
+                {searchedPlace &&
+                    <MarkerF position={searchedPlaceLocation}
+                        icon="/map_marker.png">
+                    </MarkerF>}
+
+                {/* Filtered Places Markers*/}
                 {!isLoading && places.map((place) =>
                     <MarkerF key={place.place_id} position={place.location}
                         onClick={() => place.place_id !== activeMarker ? setActiveMarker(place.place_id) : null}>
 
                         {activeMarker === place.place_id
+                            // Filtered Places Info Windows
                             ? (<InfoWindowF onCloseClick={() => setActiveMarker(null)}>
 
                                 <div className="p-2 d-flex flex-column gap-2" style={{ width: "300px", fontFamily: "Poppins" }}>
@@ -219,16 +268,13 @@ function Map() {
                                         <ul className="list-group">
                                             {place.opening_hours.length > 0
                                                 ? place.opening_hours.map((day) =>
-                                                    <li className="list-group-item">{day}</li>)
+                                                    <li className="list-group-item" key={day}>{day}</li>)
                                                 : <li className="list-group-item">24/7</li>}
                                         </ul>
                                     </span>
                                 </div>
                             </InfoWindowF>)
                             : null}
-
-
-
                     </MarkerF>)}
             </GoogleMap>
         </div >

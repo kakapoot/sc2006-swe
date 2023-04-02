@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { GoogleMap, useJsApiLoader, MarkerF, InfoWindowF, Autocomplete } from "@react-google-maps/api";
 import { LoadingSpinner } from "../../components/LoadingSpinner"
-import { StarRating } from '../../components/StarRating';
+import { StarRating } from "../../components/StarRating"
 import { DisplayTag } from '../../components/Tag';
 
 /* global google */

@@ -30,6 +30,7 @@ db = firestore.client()
 userdb = db.collection("userdb")
 groupdb = db.collection("groupdb")
 tagdb = db.collection("tagdb")
+placedb = db.collection("placedb")
 
 GOOGLE_APPLICATION_CREDENTIALS = dir_path + "/key/application_default_credentials.json"
 os.environ["GCLOUD_PROJECT"] = "sc2006-e3ff1"
@@ -44,11 +45,13 @@ app.config["SESSION_TYPE"] = "filesystem"
 from control.GroupMgr import GroupRoutes
 from control.Util import UtilRoutes
 from control.UserMgr import UserRoutes
+from control.StudyAreaMgr import StudyAreaRoutes
 
 # TODO : return errors for API
 app.register_blueprint(UtilRoutes)
 app.register_blueprint(GroupRoutes)
 app.register_blueprint(UserRoutes)
+app.register_blueprint(StudyAreaRoutes)
 
 
 if __name__ == "__main__":

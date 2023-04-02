@@ -9,15 +9,13 @@ import { DisplayTag } from '../../components/Tag';
 export default function StudyAreasPage() {
     const libraries = useMemo(() => ["places"], [])
 
-    // TODO: setup environment variable for API key
+    // TODO: setup environment variable for API key, create new API key
+    // Load Google Maps API
     const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+        googleMapsApiKey: "AIzaSyABU-v5GXOjHAdJroPTfJa9iPxnv327g9I",
         libraries: libraries
     })
 
-    useEffect(() => {
-        console.log(process.env.REACT_APP_GOOGLE_MAPS_API_KEY)
-    }, [])
 
     return (
         <>
@@ -40,26 +38,40 @@ function Map() {
     const center = useMemo(() => ({ lat: 1.3521, lng: 103.8198 }), [])
 
     const [map, setMap] = useState(/** @type google.maps.Map */ null)
-    const [markers, setMarkers] = useState([])
-
     const [activeMarker, setActiveMarker] = useState(null)
 
+    const [placesData, setPlacesData] = useState(null)
 
-
-
-    const { data: placesData, isLoading: placesDataIsLoading } = usePlaces()
-
-    // TODO : fetch from firestore database
     const [places, setPlaces] = useState([])
 
 
     const [isLoading, setIsLoading] = useState(true)
 
+    const placeTypes = ["library", "cafe", "university", "restaurant"]
+    const [selectedPlaceType, setSelectedPlaceType] = useState("all")
+
     useEffect(() => {
-        if (placesData) {
-            fetchPlaceDetails()
+        console.log(selectedPlaceType)
+
+        // map needs to be loaded before service can be set
+        if (map) {
+            const fetchPlacesData = async () => {
+                try {
+                    const response = await fetch(`http://localhost:5000/get_places`)
+                    const data = await response.json()
+                    setPlacesData(data)
+                    fetchPlaceDetails(data)
+
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+            fetchPlacesData()
         }
-    }, [placesData])
+
+
+    }, [selectedPlaceType, map])
+
 
     useEffect(() => {
         console.log(places)
@@ -79,13 +91,14 @@ function Map() {
                 })
                 .catch(error => console.error(error))
         }
-    }, [places])
+    }, [placesData, places])
 
 
-    const placeTypes = ["library", "cafe", "university", "restaurant"]
 
-    const fetchPlaceDetails = () => {
+
+    const fetchPlaceDetails = (placesData) => {
         setPlaces([])
+
         const placesService = new google.maps.places.PlacesService(map)
 
         // get details for places fetched by firestore database
@@ -101,6 +114,8 @@ function Map() {
                 console.log("get details for place id" + place.place_id)
 
                 placesService.getDetails(request, function (results, status) {
+                    console.log(results)
+                    console.log(status)
                     if (status === google.maps.places.PlacesServiceStatus.OK) {
 
                         const placeDetails = {
@@ -131,101 +146,93 @@ function Map() {
         })
     }
 
-    const [selectedPlaceType, setSelectedPlaceType] = useState("all")
 
-    useEffect(() => {
-        console.log(selectedPlaceType)
-    }, [selectedPlaceType])
 
 
     return (
         <div className="w-100 h-100">
+            {/* Filter */}
+            <div>
+                <h5 className="fw-bold">Filter by Type of Study Area</h5>
+
+                <select disabled={isLoading} className="text-capitalize form-select mb-3" aria-label="Default select example"
+                    onChange={(e) => setSelectedPlaceType(e.target.value)} >
+                    <option selected value="all">All</option>
+                    {placeTypes.map((placeType) =>
+                        <option value={placeType}>{placeType}</option>
+                    )}
+                </select>
+            </div>
+
             {isLoading && <LoadingSpinner />}
+            <GoogleMap
+                zoom={11}
+                center={center}
+                mapContainerClassName="w-100 h-100"
+                onLoad={map => setMap(map)}
+                clickableIcons={false}>
 
-            {!isLoading &&
-                <div>
-                    <h5 className="fw-bold">Filter by Type of Study Area</h5>
+                {!isLoading && places.map((place) =>
+                    <MarkerF key={place.place_id} position={place.location}
+                        onClick={() => place.place_id !== activeMarker ? setActiveMarker(place.place_id) : null}>
 
-                    <select className="text-capitalize form-select mb-3" aria-label="Default select example"
-                        onChange={(e) => setSelectedPlaceType(e.target.value)} >
-                        <option selected value="all">All</option>
-                        {placeTypes.map((placeType) =>
-                            <option value={placeType}>{placeType}</option>
-                        )}
-                    </select>
-                </div>
-            }
-            {
-                !isLoading &&
-                <GoogleMap
-                    zoom={11}
-                    center={center}
-                    mapContainerClassName="w-100 h-100"
-                    onLoad={map => setMap(map)}
-                    clickableIcons={false}>
+                        {activeMarker === place.place_id
+                            ? (<InfoWindowF onCloseClick={() => setActiveMarker(null)}>
 
-                    {places.map((place) =>
-                        <MarkerF key={place.place_id} position={place.location}
-                            onClick={() => place.place_id !== activeMarker ? setActiveMarker(place.place_id) : null}>
-
-                            {activeMarker === place.place_id
-                                ? (<InfoWindowF onCloseClick={() => setActiveMarker(null)}>
-
-                                    <div className="p-2 d-flex flex-column gap-2" style={{ width: "300px", fontFamily: "Poppins" }}>
-                                        {/* Image Carousel */}
-                                        <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
-                                            <div className="carousel-inner">
-                                                <div className="carousel-item active">
-                                                    {place.photos
-                                                        ? <img src={place.photos[0]} style={{ objectFit: "cover", height: "200px" }} className="d-block rounded w-100" alt="..." />
-                                                        : <span>No photos found</span>}
-                                                </div>
-                                                {place.photos.map((photo, index) => (
-                                                    index === 0 // skip first image
-                                                        ? null
-                                                        : <div className="carousel-item">
-                                                            <img src={place.photos[index]} style={{ objectFit: "cover", height: "200px" }} className="d-block rounded w-100" alt="..." />
-                                                        </div>
-                                                ))}
+                                <div className="p-2 d-flex flex-column gap-2" style={{ width: "300px", fontFamily: "Poppins" }}>
+                                    {/* Image Carousel */}
+                                    <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
+                                        <div className="carousel-inner">
+                                            <div className="carousel-item active">
+                                                {place.photos
+                                                    ? <img src={place.photos[0]} style={{ objectFit: "cover", height: "200px" }} className="d-block rounded w-100" alt="..." />
+                                                    : <span>No photos found</span>}
                                             </div>
-                                            <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                                                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                <span className="visually-hidden">Previous</span>
-                                            </button>
-                                            <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                                                <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                                                <span className="visually-hidden">Next</span>
-                                            </button>
+                                            {place.photos.map((photo, index) => (
+                                                index === 0 // skip first image
+                                                    ? null
+                                                    : <div className="carousel-item">
+                                                        <img src={place.photos[index]} style={{ objectFit: "cover", height: "200px" }} className="d-block rounded w-100" alt="..." />
+                                                    </div>
+                                            ))}
                                         </div>
-
-                                        {/* Place Details */}
-                                        <h5 className="mb-0"><strong>{place.name}</strong></h5>
-
-                                        <div className="d-flex align-items-center gap-2">
-                                            <DisplayTag name={place.type} />
-
-                                            {/* Rating */}
-                                            {place.rating.toFixed(1)}
-                                            <StarRating rating={place.rating} />
-                                        </div>
-
-                                        <span><span className="fw-bold">Address:</span> {place.formatted_address}</span>
-
-                                        <span><span className="fw-bold">Opening Hours:</span>
-                                            <ul className="list-group">
-                                                {place.opening_hours.map((day) =>
-                                                    <li className="list-group-item">{day}</li>)}
-                                            </ul>
-                                        </span>
+                                        <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                                            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span className="visually-hidden">Previous</span>
+                                        </button>
+                                        <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                                            <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span className="visually-hidden">Next</span>
+                                        </button>
                                     </div>
-                                </InfoWindowF>)
-                                : null}
+
+                                    {/* Place Details */}
+                                    <h5 className="mb-0"><strong>{place.name}</strong></h5>
+
+                                    <div className="d-flex align-items-center gap-2">
+                                        <DisplayTag name={place.type} />
+
+                                        {/* Rating */}
+                                        {place.rating.toFixed(1)}
+                                        <StarRating rating={place.rating} />
+                                    </div>
+
+                                    <span><span className="fw-bold">Address:</span> {place.formatted_address}</span>
+
+                                    <span><span className="fw-bold">Opening Hours:</span>
+                                        <ul className="list-group">
+                                            {place.opening_hours.map((day) =>
+                                                <li className="list-group-item">{day}</li>)}
+                                        </ul>
+                                    </span>
+                                </div>
+                            </InfoWindowF>)
+                            : null}
 
 
 
-                        </MarkerF>)}
-                </GoogleMap>
-            }
+                    </MarkerF>)}
+            </GoogleMap>
         </div >
 
     )

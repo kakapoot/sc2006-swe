@@ -63,6 +63,10 @@ function Map() {
             }
         }
 
+        // stop Google Maps from crashing while InfoWindow is open
+        setActiveMarker(null)
+        map.panTo(center)
+
         // map needs to be loaded before service can be set
         if (map && !isLoading) {
             setIsLoading(true)

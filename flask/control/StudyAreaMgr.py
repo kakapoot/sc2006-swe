@@ -5,10 +5,15 @@ from firebase_admin import firestore
 StudyAreaRoutes = Blueprint("StudyAreaRoutes", __name__)
 
 
-# TODO : filter by types
-@StudyAreaRoutes.route("/get_places", methods=["GET"])
-def get_places():
-    docs = placedb.stream()
+@StudyAreaRoutes.route("/get_places/<place_type>", methods=["GET"])
+def get_places(place_type):
+    # get all places
+    if place_type == "all":
+        docs = placedb.stream()
+
+    # filter by type of place
+    else:
+        docs = placedb.where("type", "==", place_type).stream()
 
     places = []
     for doc in docs:

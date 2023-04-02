@@ -45,30 +45,29 @@ function Map() {
     const [places, setPlaces] = useState([])
 
 
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
 
-    const placeTypes = ["library", "cafe", "university", "restaurant"]
+    const placeTypes = ["all", "library", "cafe", "university", "restaurant"]
     const [selectedPlaceType, setSelectedPlaceType] = useState("all")
 
+
     useEffect(() => {
-        console.log(selectedPlaceType)
-
-        // map needs to be loaded before service can be set
-        if (map) {
-            const fetchPlacesData = async () => {
-                try {
-                    const response = await fetch(`http://localhost:5000/get_places`)
-                    const data = await response.json()
-                    setPlacesData(data)
-                    fetchPlaceDetails(data)
-
-                } catch (error) {
-                    console.log(error)
-                }
+        const fetchPlacesData = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/get_places/${selectedPlaceType}`)
+                const data = await response.json()
+                setPlacesData(data)
+                fetchPlaceDetails(data)
+            } catch (error) {
+                console.log(error)
             }
-            fetchPlacesData()
         }
 
+        // map needs to be loaded before service can be set
+        if (map && !isLoading) {
+            setIsLoading(true)
+            fetchPlacesData()
+        }
 
     }, [selectedPlaceType, map])
 
@@ -77,7 +76,7 @@ function Map() {
         console.log(places)
         // update firestore database only when all place details have been fetched
         if (placesData && placesData.places.length === places.length) {
-            fetch('http://localhost:5000/update_places', {
+            fetch(`http://localhost:5000/update_places`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -110,12 +109,7 @@ function Map() {
                     fields: ["place_id", "name", "formatted_address", "rating", "geometry", "opening_hours", "type", "photos"]
                 }
 
-                // TODO : debug
-                console.log("get details for place id" + place.place_id)
-
                 placesService.getDetails(request, function (results, status) {
-                    console.log(results)
-                    console.log(status)
                     if (status === google.maps.places.PlacesServiceStatus.OK) {
 
                         const placeDetails = {
@@ -148,7 +142,6 @@ function Map() {
 
 
 
-
     return (
         <div className="w-100 h-100">
             {/* Filter */}
@@ -157,7 +150,6 @@ function Map() {
 
                 <select disabled={isLoading} className="text-capitalize form-select mb-3" aria-label="Default select example"
                     onChange={(e) => setSelectedPlaceType(e.target.value)} >
-                    <option selected value="all">All</option>
                     {placeTypes.map((placeType) =>
                         <option value={placeType}>{placeType}</option>
                     )}
@@ -168,7 +160,7 @@ function Map() {
             <GoogleMap
                 zoom={11}
                 center={center}
-                mapContainerClassName="w-100 h-100"
+                mapContainerClassName={isLoading ? "invisible" : "w-100 h-100"} // hide Google Maps when loading places data
                 onLoad={map => setMap(map)}
                 clickableIcons={false}>
 

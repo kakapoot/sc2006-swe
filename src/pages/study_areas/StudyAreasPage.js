@@ -4,7 +4,6 @@ import { LoadingSpinner } from "../../components/LoadingSpinner"
 import { StarRating } from "../../components/StarRating"
 import { DisplayTag } from '../../components/Tag';
 
-/* global google */
 export default function StudyAreasPage() {
     const libraries = useMemo(() => ["places"], [])
 
@@ -33,6 +32,7 @@ export default function StudyAreasPage() {
     )
 }
 
+// TODO : figure out if can refactor this without google is not defined bug
 function Map() {
     const center = useMemo(() => ({ lat: 1.3521, lng: 103.8198 }), [])
     const [map, setMap] = useState(/** @type google.maps.Map */ null)

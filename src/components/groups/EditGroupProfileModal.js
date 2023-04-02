@@ -4,7 +4,8 @@ import { AuthContext } from '../../context/AuthContext'
 import { ToastContext } from '../../context/ToastContext'
 import { LoadingSpinner } from '../LoadingSpinner'
 import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from '../Tag'
-import { useTags } from '../../utils/Fetch'
+import { useStudyAreas, useTags } from '../../utils/Fetch'
+import Select from 'react-select'
 
 export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) {
     const [profile, setProfile] = useState(prevGroupData)
@@ -13,6 +14,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
     const [errors, setErrors] = useState({})
 
     const { data: tagData, isLoading: tagDataIsLoading } = useTags()
+    const { data: studyAreasData, isLoading: studyAreasDataIsLoading } = useStudyAreas()
 
     const { queueToast } = useContext(ToastContext)
 
@@ -38,6 +40,15 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
 
         setProfile({ ...profile, [inputType]: inputValue })
     }
+
+    const handleStudyAreaInputChange = (e) => {
+        setProfile({ ...profile, "studyArea": e.value })
+    }
+
+    useEffect(() => {
+        console.log(profile)
+    }, [profile])
+
 
 
     // Update database with new group profile data
@@ -145,6 +156,18 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
         return memberCount > 0 ? memberCount : 1
     }
 
+    const [options, setOptions] = useState([])
+
+    useEffect(() => {
+        if (studyAreasData) {
+            studyAreasData.places.map((studyArea) => {
+                setOptions((prevState) => [...prevState,
+                { value: studyArea, label: `${studyArea.name} (${studyArea.formatted_address})` }])
+            })
+        }
+    }, [studyAreasData])
+
+
     return (
         <div>
             {/* Modal Button */}
@@ -159,8 +182,6 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
             {/* Modal */}
             <div className="modal fade" id="editGroupProfileModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="modalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-xl modal-dialog-scrollable">
-
-
                     <div className="p-4 modal-content">
                         {/* Modal Header */}
                         <div className="modal-header">
@@ -171,50 +192,57 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                         </div>
 
                         {/* Modal Body */}
-                        <div className="modal-body d-flex flex-column align-items-start gap-4">
 
-                            <div className="form-group d-flex flex-column w-50">
-                                <label htmlFor="name"><strong>Name</strong></label>
-                                <input type="text" value={profile.name} onChange={handleInputChange} className="form-control" name="name" placeholder="Enter name..." />
-                                <span className="text-danger"><small>{errors.name}</small></span>
-                            </div>
-                            <div className="form-group d-flex flex-column">
-                                <label htmlFor="privacy"><strong>Privacy</strong></label>
-                                <select value={profile.privacy} onChange={handleInputChange} className="form-select" name="privacy">
-                                    <option value="private">Private</option>
-                                    <option value="public">Public</option>
-                                </select>
-                            </div>
-                            <div className="form-group d-flex flex-column w-50">
-                                <label htmlFor="capacity"><strong>Capacity</strong></label>
-                                <input type="number" value={profile.capacity} onChange={handleInputChange} className="form-control" name="capacity" placeholder="Enter capacity..." />
-                            </div>
-                            {/* TODO : select from all available study areas in database */}
-                            <div className="form-group d-flex flex-column w-50">
-                                <label htmlFor="studyArea"><strong>Study Area</strong></label>
-                                <input type="text" value={profile.studyArea} onChange={handleInputChange} className="form-control" name="studyArea" placeholder="Enter study area..." />
-                                <span className="text-danger"><small>{errors.studyArea}</small></span>
-                            </div>
-                            <div className="form-group d-flex flex-column w-50">
-                                <label htmlFor="description"><strong>Description</strong></label>
-                                <textarea value={profile.description} onChange={handleInputChange} rows="4" className="form-control" name="description" placeholder="Enter a description about the group..."></textarea>
-                            </div>
+                        {/* Loading */}
+                        {(studyAreasDataIsLoading || tagDataIsLoading) && <LoadingSpinner />}
 
-                            {/* Tags */}
-                            {tagDataIsLoading && <LoadingSpinner />}
-                            {tagData && Object.entries(tagData).map(([tagType, tags]) => (
-                                <div key={tagType} className="d-flex flex-column align-items-start">
-                                    <span><strong>{formatTagType(tagType)}</strong></span>
-
-                                    <div className="d-flex flex-wrap gap-2">
-                                        {tags.map((tag) =>
-                                            <div key={tag}><SelectableTag name={tag} onSelectTag={() => { handleSelectTag(profile, setProfile, tagType, tag) }} isSelected={handleIsSelected(profile, tagType, tag)} /></div>
-                                        )}
-                                    </div>
-
+                        {studyAreasData && tagData &&
+                            <div className="modal-body d-flex flex-column align-items-start gap-4">
+                                <div className="form-group d-flex flex-column w-50">
+                                    <label htmlFor="name"><strong>Name</strong></label>
+                                    <input type="text" value={profile.name} onChange={handleInputChange} className="form-control" name="name" placeholder="Enter name..." />
+                                    <span className="text-danger"><small>{errors.name}</small></span>
                                 </div>
-                            ))}
-                        </div>
+                                <div className="form-group d-flex flex-column">
+                                    <label htmlFor="privacy"><strong>Privacy</strong></label>
+                                    <select value={profile.privacy} onChange={handleInputChange} className="form-select" name="privacy">
+                                        <option value="private">Private</option>
+                                        <option value="public">Public</option>
+                                    </select>
+                                </div>
+                                <div className="form-group d-flex flex-column w-50">
+                                    <label htmlFor="capacity"><strong>Capacity</strong></label>
+                                    <input type="number" value={profile.capacity} onChange={handleInputChange} className="form-control" name="capacity" placeholder="Enter capacity..." />
+                                </div>
+                                {/* TODO : select from all available study areas in database */}
+                                <div className="form-group d-flex flex-column w-50">
+                                    <label htmlFor="studyArea"><strong>Study Area</strong></label>
+                                    <Select options={options}
+                                        onChange={handleStudyAreaInputChange}
+                                        defaultValue={prevGroupData
+                                            ? { label: prevGroupData.studyArea.name, value: prevGroupData.studyArea }
+                                            : null} />
+                                </div>
+
+                                <div className="form-group d-flex flex-column w-50">
+                                    <label htmlFor="description"><strong>Description</strong></label>
+                                    <textarea value={profile.description} onChange={handleInputChange} rows="4" className="form-control" name="description" placeholder="Enter a description about the group..."></textarea>
+                                </div>
+
+                                {/* Tags */}
+                                {Object.entries(tagData).map(([tagType, tags]) => (
+                                    <div key={tagType} className="d-flex flex-column align-items-start">
+                                        <span><strong>{formatTagType(tagType)}</strong></span>
+
+                                        <div className="d-flex flex-wrap gap-2">
+                                            {tags.map((tag) =>
+                                                <div key={tag}><SelectableTag name={tag} onSelectTag={() => { handleSelectTag(profile, setProfile, tagType, tag) }} isSelected={handleIsSelected(profile, tagType, tag)} /></div>
+                                            )}
+                                        </div>
+
+                                    </div>
+                                ))}
+                            </div>}
 
                         {/* Modal Footer */}
                         <div className="modal-footer d-flex flex-column align-items-start">

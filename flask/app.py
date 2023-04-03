@@ -47,7 +47,7 @@ from control.Util import UtilRoutes
 from control.UserMgr import UserRoutes
 from control.StudyAreaMgr import StudyAreaRoutes
 
-# TODO : return errors for API
+
 app.register_blueprint(UtilRoutes)
 app.register_blueprint(GroupRoutes)
 app.register_blueprint(UserRoutes)

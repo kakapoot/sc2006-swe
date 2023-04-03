@@ -44,6 +44,10 @@ def update_group():
 
 @UserRoutes.route("/register", methods=["POST"])
 def register():
+    """
+    This function registers the user by creating
+    an account in the database using the given input details
+    """
     data = request.get_json()
     username = data["username"]
     password = data["password"]

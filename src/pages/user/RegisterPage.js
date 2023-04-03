@@ -8,6 +8,7 @@ import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
 import { ToastContext } from '../../context/ToastContext';
 
+/* Page for user to create a new account */
 const RegisterPage = () => {
   const [values, setValues] = useState({
     username: "",
@@ -36,13 +37,16 @@ const RegisterPage = () => {
 
   const { data: tagData, isLoading: tagDataIsLoading } = useTags()
 
+  // Checks for at least 1 lowercase, 1 uppercase, 1 number, 1 special character, and is at least 8 characters long
   const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$/;
 
   const handleInputChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   }
 
+  // Create user in database and Firebase Authentication when register form is submitted
   const handleRegisterSubmit = async () => {
+    // Validate form
     const errorResults = validate(values)
     setErrors(errorResults);
 
@@ -59,11 +63,13 @@ const RegisterPage = () => {
           body: JSON.stringify(values)
         })
         const data = await response.json()
+        // If username or email is taken, display error message
         if (data.message !== "registration successful") {
           setTakenErrors(taken(data.message))
           queueToast("Error creating account, please check all input details")
         }
         else {
+          // Reset errors
           setTakenErrors({})
 
           // Create account in Firebase Auth
@@ -86,11 +92,13 @@ const RegisterPage = () => {
         setIsLoading(false)
       }
     } else {
+      // Display error message if form is invalid
       queueToast("Error creating account, please check all input details")
       setTakenErrors({})
     }
   }
 
+  // Display error message if username or email is taken
   const taken = (string) => {
     const takenErrors = {};
     if (string === "username is taken") {
@@ -103,6 +111,7 @@ const RegisterPage = () => {
     return takenErrors
   }
 
+  // Input validation for registration form
   const validate = (values) => {
     const errors = {};
     if (!values.name) {

@@ -7,6 +7,7 @@ import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from 
 import { useStudyAreas, useTags } from '../../utils/Fetch'
 import Select from 'react-select'
 
+/* Component to edit or create a new group profile */
 export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) {
     const [profile, setProfile] = useState(prevGroupData)
     const [isLoading, setIsLoading] = useState(false)
@@ -19,6 +20,11 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
     const { queueToast } = useContext(ToastContext)
 
     const { username } = useContext(AuthContext)
+
+    // reference to Study Areas select input form
+    const selectRef = useRef(null)
+    // options for Study Areas
+    const [options, setOptions] = useState([])
 
     const navigate = useNavigate()
 
@@ -44,10 +50,6 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
     const handleStudyAreaInputChange = (e) => {
         setProfile({ ...profile, "studyArea": e.value })
     }
-
-    useEffect(() => {
-        console.log(profile)
-    }, [profile])
 
 
 
@@ -126,8 +128,6 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
         }
     }
 
-    const selectRef = useRef(null)
-
     const handleClose = () => {
         // clear unsaved changes by resetting to previous data
         setProfile(prevGroupData)
@@ -137,6 +137,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
         selectRef.current.setValue(resetSelectValue())
     }
 
+    // Input validation for edit group profile form
     const validate = (profileValues) => {
         const errors = {};
         if (!profileValues.name) {
@@ -154,23 +155,25 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
         return errors;
     };
 
+    // Get the minimum possible capacity that can be set for given group
     const getMinCapacity = () => {
         const memberCount = prevGroupData.members.length
         // set minimum capacity to current member count or 1 (current user counts for 1 capacity)
         return memberCount > 0 ? memberCount : 1
     }
 
-    const [options, setOptions] = useState([])
+
 
     useEffect(() => {
         if (studyAreasData) {
-            studyAreasData.places.map((studyArea) => {
+            studyAreasData.places.map((studyArea) =>
                 setOptions((prevState) => [...prevState,
                 { value: studyArea, label: `${studyArea.name} (${studyArea.formatted_address})` }])
-            })
+            )
         }
     }, [studyAreasData])
 
+    // Reset study area select input value
     const resetSelectValue = () => {
         if (prevGroupData) {
             if (prevGroupData.studyArea.name !== "") {
@@ -232,7 +235,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                                     <label htmlFor="capacity"><strong>Capacity</strong></label>
                                     <input type="number" value={profile.capacity} onChange={handleInputChange} className="form-control" name="capacity" placeholder="Enter capacity..." />
                                 </div>
-                                {/* TODO : select from all available study areas in database */}
+
                                 <div className="form-group d-flex flex-column w-50">
                                     <label htmlFor="studyArea"><strong>Study Area</strong></label>
                                     <Select options={options}

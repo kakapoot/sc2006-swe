@@ -4,6 +4,7 @@ import { LoadingSpinner } from '../LoadingSpinner'
 import { SelectableTag, handleSelectTag, handleIsSelected, formatTagType } from '../Tag'
 import { useTags } from '../../utils/Fetch'
 
+/* Component to edit user profile */
 export function EditUserProfileModal({ prevUserProfileData, mutate }) {
     const [profile, setProfile] = useState(prevUserProfileData)
     const [isLoading, setIsLoading] = useState(false)
@@ -27,6 +28,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
     }
 
     const handleApplyChangesSubmit = () => {
+        // Validate form
         const errorResults = validate(profile)
         setErrors(errorResults)
 
@@ -68,6 +70,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
         setErrors(resetErrors)
     }
 
+    // Input validation for edit user profile form
     const validate = (profileValues) => {
         const errors = {};
         if (!profileValues.name) {

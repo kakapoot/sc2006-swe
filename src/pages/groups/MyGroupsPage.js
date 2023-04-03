@@ -6,6 +6,7 @@ import { AuthContext } from '../../context/AuthContext'
 import { useUserGroups } from '../../utils/Fetch';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 
+/* Page for user to view their currently joined groups */
 export default function MyGroupsPage() {
     const [groups, setGroups] = useState([])
     const { username } = useContext(AuthContext)
@@ -13,6 +14,7 @@ export default function MyGroupsPage() {
     // fetch groups data from firebase based on currently authenticated user
     const { data, isLoading } = useUserGroups(username)
 
+    // update groups data when data is fetched
     useEffect(() => {
         if (data) {
             Object.keys(data).length !== 0 ? setGroups(data.groups) : setGroups([])

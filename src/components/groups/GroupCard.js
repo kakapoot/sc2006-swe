@@ -6,11 +6,10 @@ import { StudyAreaMinimap } from '../study_areas/StudyAreaMinimap';
 import Popover from "react-bootstrap/Popover";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 
-
+/* Component to display brief description of given group */
 export function GroupCard({ group, isGroupMember }) {
-
+    // Popover to show Google Maps when user clicks on Study Area
     const [popover, setPopover] = useState(null)
-
     useEffect(() => {
         if (group) {
             setPopover(
@@ -47,6 +46,7 @@ export function GroupCard({ group, isGroupMember }) {
                 <h5 className="card-title">
                     <strong>
                         <span>Study Area: </span>
+                        {/* Popover */}
                         <OverlayTrigger trigger="click" rootClose placement="right" overlay={popover}>
                             <a href="#" className="text-danger">
                                 <u>{group.studyArea.name}</u></a>

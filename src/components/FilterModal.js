@@ -3,6 +3,7 @@ import { useTags } from '../utils/Fetch'
 import { LoadingSpinner } from './LoadingSpinner'
 import { SelectableTag, DisplayTag, formatTagType } from './Tag'
 
+/* Component to display and filter using tags */
 export function FilterModal({ onFilterTagsChange, prevFilterTags }) {
     const [selectedTags, setSelectedTags] = useState([])
     const { data: tagData, isLoading: tagDataIsLoading } = useTags()

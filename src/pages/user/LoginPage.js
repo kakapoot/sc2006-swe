@@ -5,6 +5,7 @@ import { auth } from '../../firebase/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 
+/* Page for user to login */
 const LoginPage = () => {
   const navigate = useNavigate();
 
@@ -21,7 +22,9 @@ const LoginPage = () => {
     setValues({ ...values, [e.target.name]: e.target.value });
   }
 
+  // Sign in using Firebase Authentication when login form is submitted
   const handleLoginSubmit = async () => {
+    // Validate form
     const errorResults = validate(values)
     setErrors(errorResults);
 
@@ -41,11 +44,12 @@ const LoginPage = () => {
     }
   }
 
+  // Navigate to register page when register button is clicked
   const handleRegisterSubmit = () => {
     navigate('/register')
   }
 
-
+  // Input validation for login form
   const validate = (values) => {
     const errors = {};
     if (!values.email) {

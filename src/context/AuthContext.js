@@ -2,8 +2,10 @@ import { onAuthStateChanged } from "@firebase/auth";
 import React, { useEffect, useState, createContext } from "react";
 import { auth } from '../firebase/firebase'
 
+/* Context for storing currently authenticated user */
 export const AuthContext = createContext();
 
+/* Provider for AuthContext */
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
     const [username, setUsername] = useState(null)
@@ -32,11 +34,6 @@ export const AuthProvider = ({ children }) => {
                 authState.listener()
         }
     }, [authState])
-
-    // TODO : for debug purposes
-    useEffect(() => {
-        console.log(user)
-    }, [user])
 
 
     return (

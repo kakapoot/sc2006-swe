@@ -6,18 +6,23 @@ import { AuthContext } from '../../context/AuthContext';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { useUserProfile } from '../../utils/Fetch';
 
+/* Page for the given user profile */
 export default function UserProfilePage() {
+    // Get username from URL
     const { username } = useParams()
+
     const [userProfileData, setUserProfileData] = useState(null)
     const { username: authenticatedUser } = useContext(AuthContext)
 
-    // fetch user data
+    // Fetch user data
     const { data, error, isLoading, mutate } = useUserProfile(username)
 
+    // Update user profile data when data is fetched
     useEffect(() => {
         setUserProfileData(data)
     }, [data])
 
+    // Calculate age from birthday
     const getAge = (birthday) => Math.floor((new Date() - new Date(birthday).getTime()) / 3.15576e+10)
 
     return (

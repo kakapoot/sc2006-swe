@@ -8,16 +8,17 @@ import { ReceiveChatMessage, SendChatMessage } from '../../components/groups/Cha
 import { Timestamp, collection, onSnapshot, query, addDoc, orderBy, limit } from "firebase/firestore";
 import { db } from '../../firebase/firebase';
 
+/* Page for group chat of given group */
 export default function GroupChatPage() {
+    // get group ID from URL
     const { groupId } = useParams();
 
     const { username } = useContext(AuthContext)
-
     // fetch user rights based on currently authenticated user
     const { userRights }
         = useUserRights(username, groupId)
     // fetch user profile data
-    const { data: userProfileData, error: userProfileError, isLoading: userProfileIsLoading } = useUserProfile(username)
+    const { data: userProfileData, isLoading: userProfileIsLoading } = useUserProfile(username)
     // fetch group data based on group ID
     const { data: groupData, error: groupError, isLoading: groupIsLoading } = useGroup(groupId)
 
@@ -28,10 +29,10 @@ export default function GroupChatPage() {
     const { queueToast } = useContext(ToastContext)
     const navigate = useNavigate()
 
-
     // get messages subcollection in group document inside chatdb collection
     const chatMessagesRef = collection(db, "chatdb", groupId, "messages")
 
+    // Creates message in chat when message is sent
     const handleMessageSubmit = async () => {
         const messageData = {
             username: username,
@@ -54,6 +55,7 @@ export default function GroupChatPage() {
         }
     }, [userRights])
 
+    // get messages from firestore
     useEffect(() => {
         // Get 50 most recent messages
         const q = query(

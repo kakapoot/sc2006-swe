@@ -4,6 +4,7 @@ import { Searchbar } from '../../components/Searchbar'
 import { LoadingSpinner } from '../../components/LoadingSpinner'
 import { AuthContext } from '../../context/AuthContext'
 
+/* Page to view and filter public groups */
 export default function FindGroupsPages() {
     const [groups, setGroups] = useState([])
     const [searchText, setSearchText] = useState("")
@@ -12,11 +13,9 @@ export default function FindGroupsPages() {
 
     const { username } = useContext(AuthContext)
 
-
+    // Get initial group list
     useEffect(() => {
         setIsLoading(true)
-
-        // get initial group list
         handleSearch()
     }, [])
 
@@ -24,17 +23,17 @@ export default function FindGroupsPages() {
     const handleSearchTextChange = (searchText) => {
         setSearchText(searchText)
     }
-
-
     const handleFilterTagsChange = (filterTags) => {
         setFilterTags(filterTags)
     }
 
+    // Search for groups using input search text and filer tags
     const handleSearch = () => {
         console.log(searchText)
         console.log(filterTags)
 
         setIsLoading(true)
+        // Get matching groups from database
         fetch('http://localhost:5000/find_groups', {
             method: 'POST',
             headers: {
@@ -44,6 +43,7 @@ export default function FindGroupsPages() {
         })
             .then(response => response.json())
             .then(data => {
+                // Update groups list
                 Object.keys(data).length !== 0 ? setGroups(data.groups) : setGroups([])
             })
             .catch(error => console.error(error))

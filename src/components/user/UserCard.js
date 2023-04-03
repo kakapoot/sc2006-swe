@@ -1,8 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-
-
+/* Component for displaying a selectable user card */
 export function SelectableUserCard({ newOwner, onSelectUserCard, username, name, organization }) {
     const handleClick = () => {
         onSelectUserCard(username)
@@ -21,8 +20,10 @@ export function SelectableUserCard({ newOwner, onSelectUserCard, username, name,
     )
 }
 
+/* Component for displaying a redirectable user card */
 export function RedirectableUserCard({ username, name, organization, groupOwner }) {
     return (
+        // Redirect to selected user's profile
         <Link to={`/user/${username}`} className="text-start btn btn-warning">
             <div className="d-flex gap-2">
                 <div className="d-flex flex-column w-100">

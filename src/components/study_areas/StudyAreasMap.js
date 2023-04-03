@@ -5,18 +5,18 @@ import { StarRating } from "../../components/StarRating"
 import { DisplayTag } from '../../components/Tag';
 import { LoadingSpinner } from "../../components/LoadingSpinner"
 
-
+// Do not remove global google comment! Fixes "google is not defined" bug
 /*global google*/
-export function StudyAreasMap() {
-    const libraries = useMemo(() => ["places"], [])
 
+/* Component to display a Google Map of all available Study Areas */
+export function StudyAreasMap() {
     // TODO: setup environment variable for API key, create new API key
     // Load Google Maps API
+    const libraries = useMemo(() => ["places"], [])
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: "AIzaSyABU-v5GXOjHAdJroPTfJa9iPxnv327g9I",
         libraries: libraries
     })
-
 
     const center = useMemo(() => ({ lat: 1.3521, lng: 103.8198 }), [])
     const [map, setMap] = useState(null)

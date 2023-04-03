@@ -1,6 +1,7 @@
 import React from 'react'
 import { FilterModal } from './FilterModal'
 
+/* Component for search bar */
 export function Searchbar({ searchText, onSearchTextChange, onSearch, onFilterTagsChange, prevFilterTags }) {
     const handleSearchSubmit = (e) => {
         e.preventDefault()

@@ -7,6 +7,10 @@ StudyAreaRoutes = Blueprint("StudyAreaRoutes", __name__)
 
 @StudyAreaRoutes.route("/get_places/<place_type>", methods=["GET"])
 def get_places(place_type):
+    """
+    This function returns a list of study areas from the database
+    depending on the filter type applied
+    """
     # filter by type of place
     if place_type in ["university", "cafe", "restaurant", "library"]:
         docs = placedb.where("type", "==", place_type).stream()
@@ -25,6 +29,10 @@ def get_places(place_type):
 # Gets all places with place details
 @StudyAreaRoutes.route("/get_available_places", methods=["GET"])
 def get_available_places():
+    """
+    This function returns a list of study areas with pre-fetched
+    place details from the database
+    """
     docs = placedb.order_by("name").stream()
 
     places = []
@@ -36,6 +44,10 @@ def get_available_places():
 
 @StudyAreaRoutes.route("/update_places", methods=["POST"])
 def update_places():
+    """
+    This function updates the list of study areas in the database
+    with the newly fetched place details
+    """
     data = request.get_json()
     places = data["places"]
     for place in places:

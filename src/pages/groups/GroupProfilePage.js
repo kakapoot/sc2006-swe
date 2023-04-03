@@ -13,11 +13,12 @@ import { StudyAreaMinimap } from '../../components/study_areas/StudyAreaMinimap'
 import Popover from "react-bootstrap/Popover";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 
+/* Page to view given group profile */
 export default function GroupProfilePage() {
+    // Get group ID from URL
     const { groupId } = useParams();
 
     const { username } = useContext(AuthContext)
-
     // fetch user rights based on currently authenticated user
     const { userRights, mutate: userRightsMutate }
         = useUserRights(username, groupId)
@@ -34,6 +35,19 @@ export default function GroupProfilePage() {
     const { queueToast } = useContext(ToastContext)
     const navigate = useNavigate()
 
+    // Popover to show Google Maps when user clicks on Study Area
+    const [popover, setPopover] = useState(null)
+    useEffect(() => {
+        if (groupData) {
+            setPopover(
+                <Popover id="popover" title="Popover title" style={{ maxWidth: "none", width: "600px", height: "600px" }
+                }>
+                    <StudyAreaMinimap studyArea={groupData.studyArea} />
+                </Popover >)
+        }
+    }, [groupData])
+
+    // Adds user to group when join button is clicked
     const handleJoinSubmit = () => {
         const data = {
             username: username,
@@ -41,6 +55,7 @@ export default function GroupProfilePage() {
         }
 
         setIsLoading(true)
+        // send request to join group
         fetch('http://localhost:5000/join_public_group', {
             method: 'POST',
             headers: {
@@ -52,13 +67,14 @@ export default function GroupProfilePage() {
             .then(data => {
                 console.log(data)
                 switch (data.message) {
+                    // Add user to group in database
                     case "joined group successfully":
                         onMembershipChange()
 
                         queueToast("Joined group successfully")
                         break
+                    // Group is full
                     case "group is full":
-                        //group full error
                         queueToast("Group is full, unable to join")
                         break
                     default:
@@ -79,22 +95,6 @@ export default function GroupProfilePage() {
         membersMutate()
         userRightsMutate()
     }
-
-
-    const [popover, setPopover] = useState(null)
-
-    useEffect(() => {
-        if (groupData) {
-            setPopover(
-                <Popover id="popover" title="Popover title" style={{ maxWidth: "none", width: "600px", height: "600px" }
-                }>
-                    <StudyAreaMinimap studyArea={groupData.studyArea} />
-                </Popover >)
-        }
-    }, [groupData])
-
-
-
 
     return (
         <>

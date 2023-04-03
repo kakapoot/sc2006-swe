@@ -2,6 +2,7 @@ import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { ToastContainer } from '../components/Toast'
 
+/* Page Layout for a Public Route */
 export default function PublicPageLayout() {
     return (
         <div className="container-fluid">

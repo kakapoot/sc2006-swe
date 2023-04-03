@@ -3,6 +3,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { ToastContext } from '../../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 
+/* Component to join private group */
 export function JoinPrivateGroupModal() {
     const [code, setCode] = useState("")
     const { username } = useContext(AuthContext)

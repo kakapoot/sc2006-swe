@@ -1,5 +1,9 @@
 import React, { useContext } from 'react';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
+import { AuthContext } from './context/AuthContext';
+import { PrivateRoute, PublicRoute } from './components/Route';
+import { LoadingSpinner } from './components/LoadingSpinner';
+import { SWRConfig } from 'swr';
 
 import LoginPage from './pages/user/LoginPage';
 import RegisterPage from './pages/user/RegisterPage';
@@ -8,11 +12,6 @@ import StudyAreasPage from './pages/study_areas/StudyAreasPage';
 import UserProfilePage from './pages/user/UserProfilePage';
 import FindGroupsPage from './pages/groups/FindGroupsPage';
 import GroupProfilePage from './pages/groups/GroupProfilePage';
-import './App.css';
-import { AuthContext } from './context/AuthContext';
-import { PrivateRoute, PublicRoute } from './components/Route';
-import { LoadingSpinner } from './components/LoadingSpinner';
-import { SWRConfig } from 'swr';
 import PrivatePageLayout from './pages/PrivatePageLayout';
 import PublicPageLayout from './pages/PublicPageLayout';
 import NotFoundPage from './pages/NotFoundPage';
@@ -23,12 +22,14 @@ const App = () => {
 
   return (
     <div className="App">
+      {/* User authentication state loading */}
       {!authState.isAuthLoaded && <LoadingSpinner />}
 
       {authState.isAuthLoaded &&
         <SWRConfig value={{ shouldRetryOnError: false }}>
           <BrowserRouter>
             <Routes>
+              {/* Private Routes which require user to be logged in */}
               <Route element={<PrivateRoute />}>
                 <Route element={<PrivatePageLayout />}>
                   <Route path='/my_groups' element={<MyGroupsPage />} />
@@ -40,6 +41,7 @@ const App = () => {
                 </Route>
               </Route>
 
+              {/* Public Routes which do not require user to be logged in */}
               <Route element={<PublicPageLayout />}>
                 <Route element={<PublicRoute />}>
                   <Route path='/' element={<LoginPage />} />
@@ -47,6 +49,7 @@ const App = () => {
                 </Route>
               </Route>
 
+              {/* 404 Page Not Found route */}
               <Route path='*' element={<NotFoundPage />} />
             </Routes>
           </BrowserRouter>

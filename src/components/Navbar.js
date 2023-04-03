@@ -4,15 +4,18 @@ import { AuthContext } from '../context/AuthContext'
 import { auth } from '../firebase/firebase'
 import { signOut } from 'firebase/auth'
 
+/* Return className for selected Navbar tab */
 const currentTab = ({ isActive }) => {
     return isActive
         ? "p-3 btn btn-light text-danger gap-3 d-flex align-items-center"
         : "p-3 btn btn-primary gap-3 d-flex align-items-center"
 }
 
+/* Component for Navigation sidebar */
 export function Navbar() {
     const { username } = useContext(AuthContext)
 
+    // logout user
     const logout = async () => {
         try {
             await signOut(auth)

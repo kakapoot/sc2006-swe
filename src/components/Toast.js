@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import Toast from 'react-bootstrap/Toast'
 import { ToastContext } from "../context/ToastContext";
 
+/* Container component to store and handle toast popup notifications */
 export function ToastContainer() {
     const { toastMessages, setToastCount } = useContext(ToastContext)
 
@@ -17,6 +18,7 @@ export function ToastContainer() {
     </div>)
 }
 
+/* Toast popup notification component */
 export function ToastNotification({ message }) {
     const { setToastCount } = useContext(ToastContext)
 

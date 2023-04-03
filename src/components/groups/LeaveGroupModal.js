@@ -4,6 +4,7 @@ import { ToastContext } from '../../context/ToastContext'
 import { SelectableUserCard } from '../user/UserCard'
 import { useGroup, useGroupMembers, useUserRights } from '../../utils/Fetch'
 
+/* Component for confirmation of leaving a group */
 export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading }) {
     const { queueToast } = useContext(ToastContext)
     const navigate = useNavigate()
@@ -14,7 +15,6 @@ export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading
     const { data: membersData } = useGroupMembers(groupId)
     const { userRights } = useUserRights(username, groupId)
 
-
     // Get remaining members which are not the current group owner
     const remainingMembersData = membersData.members.filter(member => member.username !== groupData.owner)
 
@@ -22,10 +22,12 @@ export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading
 
     useEffect(() => {
         if (remainingMembersData.length > 0) {
+            // Automatically set selected new owner to first member in list of remaining members
             setNewOwner(remainingMembersData[0].username)
         }
     }, [remainingMembersData])
 
+    // Handle submit of leaving group
     const handleLeaveSubmit = () => {
         const data = {
             username: username,

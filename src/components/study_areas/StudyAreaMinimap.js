@@ -5,9 +5,11 @@ import { StarRating } from "../StarRating"
 import { LoadingSpinner } from "../LoadingSpinner"
 import { DisplayTag } from '../Tag';
 
+// Do not remove global google comment! Fixes "google is not defined" bug
 /* global google */
 const google = window.google
 
+/* Component to display a Google Map of the selected Study Area */
 export function StudyAreaMinimap({ studyArea }) {
     // TODO: setup environment variable for API key, create new API key
     // Load Google Maps API

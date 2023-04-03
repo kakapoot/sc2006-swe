@@ -69,7 +69,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
 
                 // Create new group in database
                 setIsLoading(true)
-                fetch('http://localhost:5000/create_group', {
+                fetch(`${process.env.REACT_APP_SERVER_URL}/create_group`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -99,7 +99,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
 
                 // Update group data in database
                 setIsLoading(true)
-                fetch('http://localhost:5000/update_group', {
+                fetch(`${process.env.REACT_APP_SERVER_URL}/update_group`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

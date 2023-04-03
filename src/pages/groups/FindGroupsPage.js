@@ -34,7 +34,7 @@ export default function FindGroupsPages() {
 
         setIsLoading(true)
         // Get matching groups from database
-        fetch('http://localhost:5000/find_groups', {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/find_groups`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -55,7 +55,7 @@ const RegisterPage = () => {
       try {
         setIsLoading(true)
         // Create user in database
-        const response = await fetch('http://localhost:5000/register', {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

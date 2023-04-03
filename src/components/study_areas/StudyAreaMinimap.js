@@ -11,11 +11,10 @@ const google = window.google
 
 /* Component to display a Google Map of the selected Study Area */
 export function StudyAreaMinimap({ studyArea }) {
-    // TODO: setup environment variable for API key, create new API key
     // Load Google Maps API
     const libraries = useMemo(() => ["places"], [])
     const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: "AIzaSyABU-v5GXOjHAdJroPTfJa9iPxnv327g9I",
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries: libraries
     })
 

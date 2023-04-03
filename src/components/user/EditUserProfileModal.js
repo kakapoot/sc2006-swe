@@ -36,7 +36,7 @@ export function EditUserProfileModal({ prevUserProfileData, mutate }) {
         if (Object.keys(errorResults).length === 0) {
             // Update user data in database
             setIsLoading(true)
-            fetch('http://localhost:5000/update_user', {
+            fetch(`${process.env.REACT_APP_SERVER_URL}/update_user`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -36,7 +36,7 @@ export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading
         }
 
         setIsLoading(true)
-        fetch('http://localhost:5000/leave_group', {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/leave_group`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -37,7 +37,7 @@ os.environ["GCLOUD_PROJECT"] = "sc2006-e3ff1"
 
 
 # initialise flask app
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../build", static_url_path="/")
 CORS(app)
 app.secret_key = "secret"
 app.config["SESSION_TYPE"] = "filesystem"

@@ -56,7 +56,7 @@ export default function GroupProfilePage() {
 
         setIsLoading(true)
         // send request to join group
-        fetch('http://localhost:5000/join_public_group', {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/join_public_group`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -10,11 +10,10 @@ import { LoadingSpinner } from "../../components/LoadingSpinner"
 
 /* Component to display a Google Map of all available Study Areas */
 export function StudyAreasMap() {
-    // TODO: setup environment variable for API key, create new API key
     // Load Google Maps API
     const libraries = useMemo(() => ["places"], [])
     const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: "AIzaSyABU-v5GXOjHAdJroPTfJa9iPxnv327g9I",
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries: libraries
     })
 
@@ -38,7 +37,7 @@ export function StudyAreasMap() {
     useEffect(() => {
         const fetchPlacesData = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/get_places/${selectedPlaceType}`)
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/get_places/${selectedPlaceType}`)
                 const data = await response.json()
 
                 setPlacesData(data)
@@ -69,7 +68,7 @@ export function StudyAreasMap() {
 
         // update firestore database only when all place details have been fetched
         if (placesData && placesData.places.length === places.length) {
-            fetch(`http://localhost:5000/update_places`, {
+            fetch(`${process.env.REACT_APP_SERVER_URL}/update_places`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -104,36 +103,33 @@ export function StudyAreasMap() {
                     fields: ["place_id", "name", "formatted_address", "rating", "geometry", "opening_hours", "type", "photos"]
                 }
 
-
-                // timeout to bypass gmaps API OVER_QUERY_LIMIT when fetching new data
-                setTimeout(() => {
-                    placesService.getDetails(request, function (results, status) {
-                        if (status === google.maps.places.PlacesServiceStatus.OK) {
-                            const placeDetails = {
-                                ...results,
-                                // get LatLng values for geometry
-                                location: { lat: results.geometry.location.lat(), lng: results.geometry.location.lng() },
-                                // get url for each photo reference
-                                photos: results.photos.map((photo) => photo.getUrl()),
-                                // get opening hours text
-                                opening_hours: results.hasOwnProperty("opening_hours") ? results.opening_hours.weekday_text : [],
-                                // get the first relevant type of place
-                                type: results.types ? results.types.filter(type => placeTypes.includes(type))[0] : ""
-                            }
-
-                            // delete unneeded fields
-                            delete placeDetails["geometry"]
-                            delete placeDetails["html_attributions"]
-                            delete placeDetails["types"]
-
-                            setPlaces(prevState => [...prevState, placeDetails])
+                // get place details
+                placesService.getDetails(request, function (results, status) {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        const placeDetails = {
+                            ...results,
+                            // get LatLng values for geometry
+                            location: { lat: results.geometry.location.lat(), lng: results.geometry.location.lng() },
+                            // get url for each photo reference
+                            photos: results.photos.map((photo) => photo.getUrl()),
+                            // get opening hours text
+                            opening_hours: results.hasOwnProperty("opening_hours") ? results.opening_hours.weekday_text : [],
+                            // get the first relevant type of place
+                            type: results.types ? results.types.filter(type => placeTypes.includes(type))[0] : ""
                         }
-                        else {
-                            // error
-                            console.log(status)
-                        }
-                    });
-                }, 200 * index)
+
+                        // delete unneeded fields
+                        delete placeDetails["geometry"]
+                        delete placeDetails["html_attributions"]
+                        delete placeDetails["types"]
+
+                        setPlaces(prevState => [...prevState, placeDetails])
+                    }
+                    else {
+                        // error
+                        console.log(status)
+                    }
+                });
 
             }
             else {

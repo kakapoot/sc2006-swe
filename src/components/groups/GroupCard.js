@@ -20,6 +20,11 @@ export function GroupCard({ group, isGroupMember }) {
         }
     }, [group])
 
+    const truncateDescription = (description) => {
+        return description.length <= 150
+            ? description
+            : description.substring(0, 150) + "..."
+    }
 
     return (
         <div className="card">
@@ -53,6 +58,9 @@ export function GroupCard({ group, isGroupMember }) {
                         </OverlayTrigger>
                     </strong>
                 </h5>
+
+                {/* Display first 150 characters of description */}
+                <span>{truncateDescription(group.description)}</span>
 
                 <div className="d-flex flex-wrap gap-2 ">
                     {Object.entries(group.tags).map(([tagType, tags]) =>

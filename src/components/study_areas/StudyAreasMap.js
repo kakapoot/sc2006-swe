@@ -96,7 +96,6 @@ export function StudyAreasMap() {
         placesData.places.map((place, index) => {
             // fetch place data details if it does not already exist
             if (!place.hasOwnProperty("name")) {
-                // TODO : for debugging purposes
                 console.log("Fetching details for place ID" + place.place_id)
 
                 const request = {
@@ -104,36 +103,64 @@ export function StudyAreasMap() {
                     fields: ["place_id", "name", "formatted_address", "rating", "geometry", "opening_hours", "type", "photos"]
                 }
 
-
-                // timeout to bypass gmaps API OVER_QUERY_LIMIT when fetching new data
-                setTimeout(() => {
-                    placesService.getDetails(request, function (results, status) {
-                        if (status === google.maps.places.PlacesServiceStatus.OK) {
-                            const placeDetails = {
-                                ...results,
-                                // get LatLng values for geometry
-                                location: { lat: results.geometry.location.lat(), lng: results.geometry.location.lng() },
-                                // get url for each photo reference
-                                photos: results.photos.map((photo) => photo.getUrl()),
-                                // get opening hours text
-                                opening_hours: results.hasOwnProperty("opening_hours") ? results.opening_hours.weekday_text : [],
-                                // get the first relevant type of place
-                                type: results.types ? results.types.filter(type => placeTypes.includes(type))[0] : ""
-                            }
-
-                            // delete unneeded fields
-                            delete placeDetails["geometry"]
-                            delete placeDetails["html_attributions"]
-                            delete placeDetails["types"]
-
-                            setPlaces(prevState => [...prevState, placeDetails])
+                // get place details from Google Places API
+                placesService.getDetails(request, function (results, status) {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        const placeDetails = {
+                            ...results,
+                            // get LatLng values for geometry
+                            location: { lat: results.geometry.location.lat(), lng: results.geometry.location.lng() },
+                            // get url for each photo reference
+                            photos: results.photos.map((photo) => photo.getUrl()),
+                            // get opening hours text
+                            opening_hours: results.hasOwnProperty("opening_hours") ? results.opening_hours.weekday_text : [],
+                            // get the first relevant type of place
+                            type: results.types ? results.types.filter(type => placeTypes.includes(type))[0] : ""
                         }
-                        else {
-                            // error
-                            console.log(status)
-                        }
-                    });
-                }, 200 * index)
+
+                        // delete unneeded fields
+                        delete placeDetails["geometry"]
+                        delete placeDetails["html_attributions"]
+                        delete placeDetails["types"]
+
+                        setPlaces(prevState => [...prevState, placeDetails])
+                    }
+                    else {
+                        // error
+                        console.log(status)
+                    }
+                });
+
+                // TODO: use this instead for timeout to bypass gmaps API OVER_QUERY_LIMIT when fetching new data
+
+                // setTimeout(() => {
+                //     placesService.getDetails(request, function (results, status) {
+                //         if (status === google.maps.places.PlacesServiceStatus.OK) {
+                //             const placeDetails = {
+                //                 ...results,
+                //                 // get LatLng values for geometry
+                //                 location: { lat: results.geometry.location.lat(), lng: results.geometry.location.lng() },
+                //                 // get url for each photo reference
+                //                 photos: results.photos.map((photo) => photo.getUrl()),
+                //                 // get opening hours text
+                //                 opening_hours: results.hasOwnProperty("opening_hours") ? results.opening_hours.weekday_text : [],
+                //                 // get the first relevant type of place
+                //                 type: results.types ? results.types.filter(type => placeTypes.includes(type))[0] : ""
+                //             }
+
+                //             // delete unneeded fields
+                //             delete placeDetails["geometry"]
+                //             delete placeDetails["html_attributions"]
+                //             delete placeDetails["types"]
+
+                //             setPlaces(prevState => [...prevState, placeDetails])
+                //         }
+                //         else {
+                //             // error
+                //             console.log(status)
+                //         }
+                //     });
+                // }, 200 * index)
 
             }
             else {

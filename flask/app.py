@@ -14,13 +14,14 @@ firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 config = {
-    "apiKey": "AIzaSyDwu4cOwzt9YklyrbsLeSFT1XqDpdea9Ns",
-    "authDomain": "sc2006-e3ff1.firebaseapp.com",
-    "databaseURL": "https://sc2006-e3ff1-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "projectId": "sc2006-e3ff1",
-    "storageBucket": "sc2006-e3ff1.appspot.com",
-    "messagingSenderId": "79165116879",
-    "appId": "1:79165116879:web:ff79ad07c1710be0d482ba",
+    "apiKey": "AIzaSyC2KQ5F1GnZy5vb7lYdud2kPdGZYpOueXE",
+    "authDomain": "sc2006-temp.firebaseapp.com",
+    "databaseURL": "https://sc2006-temp-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "projectId": "sc2006-temp",
+    "storageBucket": "sc2006-temp.appspot.com",
+    "messagingSenderId": "536059698645",
+    "appId": "1:536059698645:web:5ba6c948cc9cbc3ee3b15c",
+    "measurementId": "G-FERZP9VZ9T",
 }
 
 firebase = pyrebase.initialize_app(config)
@@ -32,8 +33,8 @@ groupdb = db.collection("groupdb")
 tagdb = db.collection("tagdb")
 placedb = db.collection("placedb")
 
-GOOGLE_APPLICATION_CREDENTIALS = dir_path + "/key/application_default_credentials.json"
-os.environ["GCLOUD_PROJECT"] = "sc2006-e3ff1"
+# GOOGLE_APPLICATION_CREDENTIALS = dir_path + "/key/application_default_credentials.json"
+# os.environ["GCLOUD_PROJECT"] = "sc2006-temp"
 
 
 # initialise flask app

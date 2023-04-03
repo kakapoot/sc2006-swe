@@ -4,14 +4,13 @@ import { getFirestore } from "firebase/firestore";
 
 // Firebase initialiation for client-side use
 const firebaseConfig = {
-    apiKey: "AIzaSyDwu4cOwzt9YklyrbsLeSFT1XqDpdea9Ns",
-    authDomain: "sc2006-e3ff1.firebaseapp.com",
-    databaseURL: "https://sc2006-e3ff1-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "sc2006-e3ff1",
-    storageBucket: "sc2006-e3ff1.appspot.com",
-    messagingSenderId: "79165116879",
-    appId: "1:79165116879:web:fd7ee949a4e43f98d482ba",
-    measurementId: "G-NY9HXKB79F"
+    apiKey: "AIzaSyC2KQ5F1GnZy5vb7lYdud2kPdGZYpOueXE",
+    authDomain: "sc2006-temp.firebaseapp.com",
+    projectId: "sc2006-temp",
+    storageBucket: "sc2006-temp.appspot.com",
+    messagingSenderId: "536059698645",
+    appId: "1:536059698645:web:5ba6c948cc9cbc3ee3b15c",
+    measurementId: "G-FERZP9VZ9T"
 }
 
 const app = initializeApp(firebaseConfig)

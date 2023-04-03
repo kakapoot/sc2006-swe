@@ -42,7 +42,7 @@ export function GroupCard({ group, isGroupMember }) {
                 </span>
             </div>
 
-            <div className="card-body p-4 d-flex flex-column gap-2 align-items-start">
+            <div className="row card-body p-4 d-flex flex-column gap-2 align-items-start">
                 <h5 className="card-title">
                     <strong>
                         <span>Study Area: </span>
@@ -53,6 +53,8 @@ export function GroupCard({ group, isGroupMember }) {
                         </OverlayTrigger>
                     </strong>
                 </h5>
+
+                <div className="text-truncate">{group.description}</div>
 
                 <div className="d-flex flex-wrap gap-2 ">
                     {Object.entries(group.tags).map(([tagType, tags]) =>

@@ -132,8 +132,6 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
         // clear unsaved changes by resetting to previous data
         setProfile(prevGroupData)
         setErrors(resetErrors())
-
-        // select study area input
         selectRef.current.setValue(resetSelectValue())
     }
 
@@ -182,7 +180,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                 return { label: `${prevGroupData.studyArea.name} (${prevGroupData.studyArea.formatted_address})`, value: prevGroupData.studyArea }
             }
             else {
-                return ""
+                return { label: "Select...", value: prevGroupData.studyArea }
             }
         }
         else {

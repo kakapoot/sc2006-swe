@@ -21,7 +21,7 @@ export function LeaveGroupModal({ username, groupId, onLeaveSubmit, setIsLoading
     const [newOwner, setNewOwner] = useState(null)
 
     useEffect(() => {
-        if (remainingMembersData.length > 0) {
+        if (remainingMembersData.length > 0 && !newOwner) {
             // Automatically set selected new owner to first member in list of remaining members
             setNewOwner(remainingMembersData[0].username)
         }

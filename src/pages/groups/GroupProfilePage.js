@@ -203,13 +203,13 @@ export default function GroupProfilePage() {
                                     </strong></h5>
                                     <div>
                                         <h5><strong>Description</strong></h5>
-                                        <p>{groupData.description}</p>
+                                        <p style={{ whiteSpace: "pre-wrap" }}>{groupData.description}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>}
-            </div>}
+            </div >}
         </>
     )
 }

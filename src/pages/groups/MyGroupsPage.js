@@ -25,7 +25,10 @@ export default function MyGroupsPage() {
         name: "",
         privacy: "private",
         capacity: 10,
-        studyArea: "",
+        studyArea: {
+            name: "",
+            formatted_address: ""
+        },
         description: "",
         tags: {
             subjects: [],

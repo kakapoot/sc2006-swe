@@ -126,11 +126,15 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
         }
     }
 
+    const selectRef = useRef(null)
+
     const handleClose = () => {
-        // clear unsaved changes
+        // clear unsaved changes by resetting to previous data
         setProfile(prevGroupData)
         setErrors(resetErrors())
 
+        // select study area input
+        selectRef.current.setValue(resetSelectValue())
     }
 
     const validate = (profileValues) => {
@@ -138,7 +142,7 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
         if (!profileValues.name) {
             errors.name = "Name should not be blank!";
         }
-        if (!profileValues.studyArea) {
+        if (!profileValues.studyArea || !profileValues.studyArea.name) {
             errors.studyArea = "Study area should not be blank!"
         }
 
@@ -166,6 +170,20 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
             })
         }
     }, [studyAreasData])
+
+    const resetSelectValue = () => {
+        if (prevGroupData) {
+            if (prevGroupData.studyArea.name !== "") {
+                return { label: `${prevGroupData.studyArea.name} (${prevGroupData.studyArea.formatted_address})`, value: prevGroupData.studyArea }
+            }
+            else {
+                return ""
+            }
+        }
+        else {
+            return null
+        }
+    }
 
 
     return (
@@ -219,9 +237,9 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
                                     <label htmlFor="studyArea"><strong>Study Area</strong></label>
                                     <Select options={options}
                                         onChange={handleStudyAreaInputChange}
-                                        defaultValue={prevGroupData
-                                            ? { label: prevGroupData.studyArea.name, value: prevGroupData.studyArea }
-                                            : null} />
+                                        ref={selectRef}
+                                        defaultValue={resetSelectValue} />
+                                    <span className="text-danger"><small>{errors.studyArea}</small></span>
                                 </div>
 
                                 <div className="form-group d-flex flex-column w-50">

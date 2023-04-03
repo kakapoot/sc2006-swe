@@ -21,6 +21,7 @@ export function StudyAreasMap() {
     const center = useMemo(() => ({ lat: 1.3521, lng: 103.8198 }), [])
     const [map, setMap] = useState(null)
     const [activeMarker, setActiveMarker] = useState(null)
+    const [hoverMarker, setHoverMarker] = useState(null)
 
     const [placesData, setPlacesData] = useState(null)
     const [places, setPlaces] = useState([])
@@ -243,26 +244,40 @@ export function StudyAreasMap() {
                 {/* Filtered Places Markers*/}
                 {!isLoading && places.map((place) =>
                     <MarkerF key={place.place_id} position={place.location}
-                        onClick={() => place.place_id !== activeMarker ? setActiveMarker(place.place_id) : null}>
+                        onClick={() => place.place_id !== activeMarker
+                            ? setActiveMarker(place.place_id)
+                            : null}
+                        onMouseOver={() => place.place_id !== hoverMarker
+                            ? setHoverMarker(place.place_id)
+                            : null}
+                        onMouseOut={() => setHoverMarker(null)}>
 
+                        {/* Show name of place when hovering over marker */}
+                        {!activeMarker && hoverMarker === place.place_id
+                            ? (<InfoWindowF>
+                                <div>{place.name}</div>
+                            </InfoWindowF>)
+                            : null}
+
+                        {/* Show place details when marker is clicked */}
                         {activeMarker === place.place_id
                             // Filtered Places Info Windows
-                            ? (<InfoWindowF onCloseClick={() => setActiveMarker(null)}>
-
-                                <div className="p-2 d-flex flex-column gap-2" style={{ width: "300px", fontFamily: "Poppins" }}>
+                            ? (<InfoWindowF
+                                onCloseClick={() => setActiveMarker(null)}>
+                                <div className="p-2 d-flex flex-column gap-2" style={{ height: "300px", width: "300px", fontFamily: "Poppins" }}>
                                     {/* Image Carousel */}
                                     <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
                                         <div className="carousel-inner">
                                             <div className="carousel-item active">
                                                 {place.photos
-                                                    ? <img src={place.photos[0]} style={{ objectFit: "cover", height: "200px" }} className="d-block rounded w-100" alt="..." />
+                                                    ? <img src={place.photos[0]} style={{ objectFit: "cover", height: "100px" }} className="d-block rounded w-100" alt="..." />
                                                     : <span>No photos found</span>}
                                             </div>
                                             {place.photos.map((photo, index) => (
                                                 index === 0 // skip first image
                                                     ? null
                                                     : <div className="carousel-item">
-                                                        <img key={photo} src={place.photos[index]} style={{ objectFit: "cover", height: "200px" }} className="d-block rounded w-100" alt="..." />
+                                                        <img key={photo} src={place.photos[index]} style={{ objectFit: "cover", height: "100px" }} className="d-block rounded w-100" alt="..." />
                                                     </div>
                                             ))}
                                         </div>

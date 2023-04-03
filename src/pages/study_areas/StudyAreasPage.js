@@ -10,7 +10,7 @@ export default function StudyAreasPage() {
                 <div className="container">
                     {/* Header */}
                     <h2 className="my-5 d-flex"><strong>Study Areas</strong></h2>
-                    <div style={{ height: "600px" }}>
+                    <div style={{ height: "50vh" }}>
                         <StudyAreasMap />
                     </div>
                 </div>

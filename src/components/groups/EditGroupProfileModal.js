@@ -163,9 +163,11 @@ export function EditGroupProfileModal({ isCreateGroup, prevGroupData, mutate }) 
     }
 
 
-
+    // prevent select option from appearing twice
+    let optionsIsSet = false
     useEffect(() => {
-        if (studyAreasData) {
+        if (studyAreasData && !optionsIsSet) {
+            optionsIsSet = true
             studyAreasData.places.map((studyArea) =>
                 setOptions((prevState) => [...prevState,
                 { value: studyArea, label: `${studyArea.name} (${studyArea.formatted_address})` }])

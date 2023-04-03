@@ -21,7 +21,7 @@ def find_groups():
         data = groupdb.where("privacy", "==", "public").get()
         for doc in data:
             name = doc.get("name")
-            if subname in name:
+            if subname.upper() in name.upper():
                 toSearch.append(name)
 
         if len(toSearch) > 0:

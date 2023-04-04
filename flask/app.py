@@ -27,15 +27,12 @@ firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firestore.client()
 
+# get Firestore databases
 userdb = db.collection("userdb")
 groupdb = db.collection("groupdb")
 tagdb = db.collection("tagdb")
 placedb = db.collection("placedb")
 cachedplacedb = db.collection("cachedplacedb")
-
-# GOOGLE_APPLICATION_CREDENTIALS = dir_path + "/key/application_default_credentials.json"
-# os.environ["GCLOUD_PROJECT"] = "sc2006-e3ff1"
-
 
 # initialise flask app
 app = Flask(__name__)
@@ -48,7 +45,7 @@ from control.Util import UtilRoutes
 from control.UserMgr import UserRoutes
 from control.StudyAreaMgr import StudyAreaRoutes
 
-
+# register routes
 app.register_blueprint(UtilRoutes)
 app.register_blueprint(GroupRoutes)
 app.register_blueprint(UserRoutes)

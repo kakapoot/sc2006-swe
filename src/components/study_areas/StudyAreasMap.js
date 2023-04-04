@@ -39,8 +39,9 @@ export function StudyAreasMap() {
     useEffect(() => {
         const fetchPlacesData = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/get_places/${selectedPlaceType}`)
+                const response = await fetch(`http://localhost:5000/get_cached_places/${selectedPlaceType}`)
                 const data = await response.json()
+                console.log(data)
 
                 setPlacesData(data)
                 fetchPlaceDetails(data)
@@ -70,7 +71,7 @@ export function StudyAreasMap() {
 
         // update firestore database only when all place details have been fetched
         if (placesData && placesData.places.length === places.length) {
-            fetch(`http://localhost:5000/update_places`, {
+            fetch(`http://localhost:5000/update_cached_places`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

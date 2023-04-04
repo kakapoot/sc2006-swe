@@ -136,7 +136,7 @@ export const useUserGroups = (username) => {
 /* Utility function to fetch all available study areas data from database */
 export const useStudyAreas = () => {
     // fetch available study areas data
-    const { data, error, isLoading, mutate } = useSWR(`http://localhost:5000/get_available_places`, fetcher)
+    const { data, error, isLoading, mutate } = useSWR(`http://localhost:5000/get_cached_places/all`, fetcher)
 
     return ({
         data,

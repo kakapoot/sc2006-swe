@@ -32,6 +32,7 @@ userdb = db.collection("userdb")
 groupdb = db.collection("groupdb")
 tagdb = db.collection("tagdb")
 placedb = db.collection("placedb")
+cachedplacedb = db.collection("cachedplacedb")
 
 # GOOGLE_APPLICATION_CREDENTIALS = dir_path + "/key/application_default_credentials.json"
 # os.environ["GCLOUD_PROJECT"] = "sc2006-temp"

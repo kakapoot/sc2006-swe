@@ -45,6 +45,7 @@ export function StudyAreasMap() {
 
                 setPlacesData(data)
                 fetchPlaceDetails(data)
+                setIsLoading(false)
             } catch (error) {
                 console.log(error)
             }
@@ -65,27 +66,28 @@ export function StudyAreasMap() {
         }
     }, [selectedPlaceType, map])
 
-    // update firestore database with new fetched data from Google Maps API
-    useEffect(() => {
-        console.log(places)
+    /* Uncomment when fetching non-cached data to update database */
+    // // update firestore database with new fetched data from Google Maps API
+    // useEffect(() => {
+    //     console.log(places)
 
-        // update firestore database only when all place details have been fetched
-        if (placesData && placesData.places.length === places.length) {
-            fetch(`http://localhost:5000/update_cached_places`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ "places": places })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data)
-                    setIsLoading(false)
-                })
-                .catch(error => console.error(error))
-        }
-    }, [placesData, places])
+    //     // update firestore database only when all place details have been fetched
+    //     if (placesData && placesData.places.length === places.length) {
+    //         fetch(`http://localhost:5000/update_cached_places`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify({ "places": places })
+    //         })
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 console.log(data)
+    //                 setIsLoading(false)
+    //             })
+    //             .catch(error => console.error(error))
+    //     }
+    // }, [placesData, places])
 
     // fetch missing place detail data for all the placeIds in firestore database
     const fetchPlaceDetails = (placesData) => {

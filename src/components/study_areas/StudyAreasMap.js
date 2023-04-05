@@ -269,7 +269,7 @@ export function StudyAreasMap() {
                                 onCloseClick={() => setActiveMarker(null)}>
                                 <div className="p-2 d-flex flex-column gap-2" style={{ height: "300px", width: "300px", fontFamily: "Poppins" }}>
                                     {/* Image Carousel */}
-                                    <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
+                                    {/* <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
                                         <div className="carousel-inner">
                                             <div className="carousel-item active">
                                                 {place.photos
@@ -292,7 +292,7 @@ export function StudyAreasMap() {
                                             <span className="carousel-control-next-icon" aria-hidden="true"></span>
                                             <span className="visually-hidden">Next</span>
                                         </button>
-                                    </div>
+                                    </div> */}
 
                                     {/* Place Details */}
                                     <h5 className="mb-0"><strong>{place.name}</strong></h5>

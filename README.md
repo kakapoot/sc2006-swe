@@ -3,10 +3,7 @@
 
 StudyKakis is a web application that serves as a platform to bring these individuals together to form study groups, based on their needs. StudyKakis will facilitate these study groups in seeking suitable study locations within Singapore for meetups.
 
-<img src="https://github.com/kakapoot/sc2006-swe/assets/79402167/886f8160-08b8-4bae-8e71-55505b9a35b5" width="400">
-<img src="https://github.com/kakapoot/sc2006-swe/assets/79402167/09da56da-9368-41d6-bc3e-d107ae5c1a72" width="400">
-<img src="https://github.com/kakapoot/sc2006-swe/assets/79402167/6d331b5c-9036-4ab3-8452-be906f049781" width="400">
-<img src="https://github.com/kakapoot/sc2006-swe/assets/79402167/08dbf72a-2515-4901-b8c2-eb5c1978a53d" width="400">
+<img src="https://i.gyazo.com/6315b4c55841217ab82b8e86b33a46e0.png" width="500"> <img src="https://i.gyazo.com/9a016f2d6dbf886c118522682dec440e.png" width="500"> <img src="https://i.gyazo.com/a09abb72b35bee300b4465cc29672d96.png" width="500"> <img src="https://i.gyazo.com/756b21e76047a61c6a895c12fbc6d114.png" width="500">
 
 ## Project Setup
 Setup by going to root directory `sc2006-swe` and execute these commands in terminal
